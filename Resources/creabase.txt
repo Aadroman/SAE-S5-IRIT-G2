@@ -1,0 +1,23 @@
+-- DB1
+create table customers(
+    customer_id INT,
+    person_id INT,
+    name VARCHAR(50),
+    zipcode INT,
+    
+    CONSTRAINT pk_customer_id PRIMARY KEY (customer_id)
+);
+--DB2
+create table orders(
+    order_id VARCHAR(50),
+    customer_id INT,
+    
+    CONSTRAINT pk_order_id PRIMARY KEY (order_id)
+);
+create table products(
+    product_id INT,
+    brand VARCHAR(50),
+    title VARCHAR(100),
+    
+    CONSTRAINT pk_product_id PRIMARY KEY (product_id)
+);

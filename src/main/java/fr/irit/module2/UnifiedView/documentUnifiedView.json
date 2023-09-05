@@ -1,0 +1,149 @@
+{
+  "type": "document",
+  "uvTables": [
+    {
+      "label": "Customers",
+      "stores": [
+        {
+          "name": "DB1",
+          "type": "RELATIONAL",
+          "columns": [
+            {
+              "columnUV": "Customers.customer_id",
+              "columnLinked": "Customers.customer_id"
+            },
+            {
+              "columnUV": "Customers.person_id",
+              "columnLinked": "Customers.person_id"
+            },
+            {
+              "columnUV": "Customers.name",
+              "columnLinked": "Customers.name"
+            },
+            {
+              "columnUV": "Customers.zipcode",
+              "columnLinked": "Customers.zipcode"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Orders",
+      "stores": [
+        {
+          "name": "DB2",
+          "type": "RELATIONAL",
+          "columns": [
+            {
+              "columnUV": "Orders.order_id",
+              "columnLinked": "Orders.order_id",
+              "isKey": true
+            },
+            {
+              "columnUV": "Orders.customer_id",
+              "columnLinked": "Orders.customer_id"
+            }
+          ]
+        },
+        {
+          "name": "DB3",
+          "type": "DOCUMENT",
+          "columns": [
+            {
+              "columnUV": "Orders.order_id",
+              "columnLinked": "Orders.order_id",
+              "isKey": true
+            },
+            {
+              "columnUV": "Orders.total_price",
+              "columnLinked": "Orders.total_price"
+            },
+            {
+              "columnUV": "Orders.order_line.product_id",
+              "columnLinked": "Orders.order_line.product_id"
+            },
+            {
+              "columnUV": "Orders.order_line.price",
+              "columnLinked": "Orders.order_line.price"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Products",
+      "stores": [
+        {
+          "name": "DB2",
+          "type": "RELATIONAL",
+          "columns": [
+            {
+              "columnUV": "Products.product_id",
+              "columnLinked": "Products.product_id",
+              "isKey": true
+            },
+            {
+              "columnUV": "Products.brand",
+              "columnLinked": "Products.brand"
+            },
+            {
+              "columnUV": "Products.title",
+              "columnLinked": "Products.title"
+            }
+          ]
+        },
+        {
+          "name": "DB3",
+          "type": "DOCUMENT",
+          "columns": [
+            {
+              "columnUV": "Products.product_id",
+              "columnLinked": "Products.product_id",
+              "isKey": true
+            },
+            {
+              "columnUV": "Products.p_price",
+              "columnLinked": "Products.p_price"
+            },
+            {
+              "columnUV": "Products.order_line.order_id",
+              "columnLinked": "Orders.order_id"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Reviews",
+      "stores": [
+        {
+          "name": "DB3",
+          "type": "DOCUMENT",
+          "columns": [
+            {
+              "columnUV": "Reviews.review_id",
+              "columnLinked": "Reviews.review_id"
+            },
+            {
+              "columnUV": "Reviews.customer_id",
+              "columnLinked": "Reviews.customer_id"
+            },
+            {
+              "columnUV": "Reviews.product_id",
+              "columnLinked": "Reviews.product_id"
+            },
+            {
+              "columnUV": "Reviews.rating",
+              "columnLinked": "Reviews.rating"
+            },
+            {
+              "columnUV": "Reviews.feedback",
+              "columnLinked": "Reviews.feedback"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

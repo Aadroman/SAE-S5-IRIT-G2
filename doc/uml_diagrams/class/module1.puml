@@ -1,0 +1,75 @@
+@startuml 
+title Query tree modules - class diagram
+
+package fr.irit.query_tree_modules {
+    class Main { }
+
+    package module1 {
+        class QueryParser {
+            {static} parseSqlQuery();
+        }
+        class AlgebraicTree {
+            TreeNode root
+            AlgebraicTree()
+        }
+        package algebraictree {
+            abstract class TreeNode {
+                TreeNode parent
+                boolean isRoot()
+                {abstract} String toString()
+                {abstract} List<String> listIncludedTables()
+                {abstract} TreeNode findLowestNodeContainingTables(List<String> tableList)
+                {abstract} void addChildren(TreeNode... children)
+                {abstract} void print(String prefix)
+            }
+            class Projection<T (String or DotNotation)> extends TreeNode{
+                TreeNode child
+                T attributes
+                Projection(T)
+            }
+            class Selection extends TreeNode{
+                TreeNode child
+                List<Predicate> predicates
+                Selection(List<Predicate>)
+                Selection(Predicate)
+            }
+            class Join extends TreeNode{
+                TreeNode leftChild
+                TreeNode rightChild
+                DotNotation[] condition
+                Join(DotNotation, DotNotation)
+            }
+            class Table extends TreeNode{
+                String label
+                Table(String)
+            }
+            class Predicate {
+                DotNotation attribute
+                String operator
+                String value
+                Predicate(DotNotation, String, String)
+                String toString();
+            }
+            class DotNotation {
+                String table
+                String column
+                DotNotation(String, String)
+                String toString();
+          }
+     }
+     package antlr4 <<Cloud>>{
+     }
+ }
+}
+'----- Relations -----'
+ Main -- QueryParser
+ QueryParser -- antlr4
+ Main -- AlgebraicTree
+ AlgebraicTree -- TreeNode
+ Selection -- Predicate
+ Predicate -- DotNotation
+ Projection -- DotNotation
+ Join -- DotNotation
+
+
+@enduml

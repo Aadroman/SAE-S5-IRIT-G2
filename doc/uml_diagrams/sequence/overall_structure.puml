@@ -1,0 +1,24 @@
+@startuml 
+title Query tree modules - sequence diagram
+
+actor       User     as U
+participant "module1&2"  as M1
+participant module3  as M3
+participant module4  as M4
+participant module5  as M5
+database    SQL_DB as SQL_DB #blue
+database    NOSQL_DB as NOSQL_DB #green
+
+U -> M1 ++ : SQL or NoSQL Query
+M1 -> M1 : Parse SQL Query and \ntranslate it into algebraic form
+M1 -> M3 --++ : Global algebraic tree
+M3 -> M3 : Add joins to the tree to \nseparate the different db's
+M3 -> M4 --++ : Multi-store algebraic tree
+M4 -> M4 : Add necessary data transfers \nand conversion to the tree
+M4 -> M5 --++ : Algebraic tree with transfers and conversion
+M5 -[#blue]> SQL_DB ++ #blue : Execute SQL Queries
+return SQL Results
+M5 -[#green]> NOSQL_DB ++ #green : Execute NO SQL Queries
+return NOSQL Results
+U <-- M5 -- : Initial Query result
+@enduml

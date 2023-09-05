@@ -1,0 +1,10 @@
+SELECT * FROM Orders WHERE total_price <= 1000;
+SELECT product_id, brand FROM Products;
+SELECT order_id FROM Orders WHERE total_price > 100;
+SELECT * FROM Orders O, Order_line L WHERE O.order_id=L.order_id;
+SELECT * FROM Reviews R, Products P WHERE R.product_id=P.product_id and R.rating=5;
+SELECT product_id, title, rating FROM Product P, Reviews R WHERE P.product_id=R.product_id;
+SELECT price FROM Order_line OL, Orders O WHERE O.order_id = OL.order_id;
+SELECT order_id FROM Customer C, Orders O WHERE O.customer_id = C.customer_id AND C.zipcode=31;
+SELECT O.order_id FROM Reviews R, Products P, Orders O WHERE R.product_id = P.product_id AND P.product_id = O.order_line.product_id AND R.Rating >= 3;
+SELECT * FROM Orders O, Products P WHERE O.order_line.product_id = P.product_id AND O.order_line.price > 15;
