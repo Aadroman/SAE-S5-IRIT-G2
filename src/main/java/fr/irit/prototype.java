@@ -17,16 +17,27 @@ public class prototype {
     public static void main(String[] argsv){
         String query = "SELECT Order_line.price FROM Order_line";
         Query queryParsed = QueryParserUtils.parse(query);
-        GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
-        globalAlgebraicTree.getRootNode().print("");
-        TreeNode rootNode = globalAlgebraicTree.getRootNode();
+        System.out.println("--- queryParsed ---");
         System.out.println(queryParsed.getTablesNames());
 
+        System.out.println("\n --- getRootNode ---");
+        GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
+        globalAlgebraicTree.getRootNode().print("");
+        
+        
+        TreeNode rootNode = globalAlgebraicTree.getRootNode();
+        
         MultistoreAlgebraicTree multistoreAlgebraicTree = new MultistoreAlgebraicTree(globalAlgebraicTree);
-        System.out.println("test1");
+
+
+        System.out.println("\n --- getMultistoreAlgebraicTree ---");
         System.out.println(multistoreAlgebraicTree.getMultistoreAlgebraicTree().listDistinctColumnsRecursive());
+        System.out.println("- LE print");
         multistoreAlgebraicTree.getMultistoreAlgebraicTree().print("");
 
+        System.out.println("\n --- getTables ---");
+        Table table = globalAlgebraicTree.getTables().get(0);
+        System.out.println(table.getStore().toString());
 
     }
 }
