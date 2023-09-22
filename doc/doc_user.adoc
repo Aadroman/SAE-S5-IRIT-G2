@@ -1,0 +1,64 @@
+= Doc user
+:incremental:
+:numbered:
+:TOC:
+:TOC-title: Sommaire
+
+== Application IRIT (du repository gitlab de l'IRIT)
+
+### Clone repository 
+
+```bash
+cd /project_folder
+git clone https://gitlab.irit.fr/sig/these-lea-el-ahdab/query-tree-modules.git
+```
+After the previous step a popup window will ask for your git username and password.
+
+`Note : If you cannot succeed to connect with your password you can try used a gitlab personal access token instead`
+
+[How Generate a gitlab token ?](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#create-a-personal-access-token)
+
+### Requirements
+
+`Note : All the tools listed below are indicated with the versions used to develop the project.
+To be sure you can run the project, use at least these versions or newer.`
+
+- Java 20 : https://www.oracle.com/fr/java/technologies/downloads/#jdk20-windows
+- Select one :
+  - IntelliJ IDE 2023 (contain maven): https://www.jetbrains.com/fr-fr/idea/
+  - NetBeans 18 (contain maven): https://netbeans.apache.org/
+  - Maven 3.9.2 https://maven.apache.org/download.cgi
+
+### Installation
+
+**Note 1 :** Thanks to maven dependencies management you can find all dependencies in [pom.xml](./pom.xml)
+
+**Note 2 :** Program can produce algebraic tree in output but that require unicode characters to display it.
+Have a look to the following link to enable all unicode characters in windows : https://itsontreinamentos.com/2022/03/31/comment-changer-codage-des-caracteres-windows-11/
+
+#### With IntelliJ IDEA
+
+- Open /cloned_project_folder in IntelliJ
+- Open the maven tool window (top right of the IDE) and in **Lifecycle** click on **install**
+
+You can now run the application using IntelliJ run or use the polyglot.jar generated under /target folder with the following cmd :
+```shell
+java -jar .\target\polyglot.jar --help
+```
+
+### With NetBeans 
+- Open query-tree-modules project under /cloned_project_folder in NetBeans
+- Under /Project_Files right click on pom.xml and click on _Run maven > Goals..._
+- In Goals field type '**install**' and then **OK**
+
+You can now run the application using NetBeans run or use the polyglot.jar generated under /target folder with the following cmd :
+```shell
+java -jar .\target\polyglot.jar --help
+```
+
+### Without IDE
+```bash
+cd /cloned_project_folder
+mvn install
+java -jar .\target\polyglot.jar --help
+```
