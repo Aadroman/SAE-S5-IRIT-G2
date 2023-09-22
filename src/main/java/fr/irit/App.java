@@ -43,11 +43,7 @@ public class App
 
 
         //TODO Handle Table alias
-//        String query = "SELECT * FROM Customers C, Products P. Orders O, Reviews R " +
-//                "WHERE R.rating> 4 " +
-//                "AND R.product_id = P.product_id " +
-//                "AND R.order_id=O.order_id " +
-//                "AND C.customer_id=O.customer_id;";
+//        String query = "SELECT * FROM Orders";
         String query = "SELECT Customers.customer_id, Orders.order_id, Orders.total_price, Products.brand " +
                 "FROM Reviews, Orders, Products, Customers " +
                 "WHERE (Orders.total_price > 10000 OR Customers.zipcode = 31000) " +
@@ -55,7 +51,7 @@ public class App
                 "AND Reviews.order_id = Orders.order_id " +
                 "AND Reviews.product_id = Products.product_id " +
                 "AND Customers.customer_id = Orders.customer_id ";
-
+//
         Query queryParsed = QueryParserUtils.parse(query);
         GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
 
