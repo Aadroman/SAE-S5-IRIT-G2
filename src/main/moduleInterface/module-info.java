@@ -7,6 +7,7 @@ module query_tree_modules{
     requires info.picocli;
     requires com.google.gson;
     requires org.antlr.antlr4.runtime;
+    requires com.fasterxml.jackson.databind;
 
     exports com.main.irit;
     exports fr.irit.module1;

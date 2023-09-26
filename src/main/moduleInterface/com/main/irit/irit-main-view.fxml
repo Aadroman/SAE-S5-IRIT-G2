@@ -12,7 +12,7 @@
         <Pane pickOnBounds="false" prefHeight="131.0" prefWidth="976.0" BorderPane.alignment="CENTER">
             <children>
                 <TextField fx:id="welcomeText" layoutX="148.0" layoutY="60.0" prefHeight="31.0" prefWidth="535.0" />
-                <Button fx:id="requestOK" layoutX="704.0" layoutY="60.0" mnemonicParsing="false" onAction="#onOkButtonClick" prefHeight="31.0" prefWidth="48.0" text="OK" />
+                <Button fx:id="requestOK" layoutX="704.0" layoutY="60.0" mnemonicParsing="false" onAction="#interactWithPolystore" prefHeight="31.0" prefWidth="48.0" text="OK" />
             </children>
         </Pane>
     </top>

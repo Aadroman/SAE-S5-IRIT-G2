@@ -7,6 +7,7 @@ import fr.irit.module2.MultistoreAlgebraicTree;
 import fr.irit.module3.TransformationTransferAlgebraicTree;
 import fxgraph.cells.LabelCell;
 import fxgraph.edges.CorneredEdge;
+import fxgraph.edges.Edge;
 import fxgraph.graph.Graph;
 import fxgraph.graph.ICell;
 import fxgraph.graph.Model;
@@ -14,19 +15,22 @@ import fxgraph.layout.AbegoTreeLayout;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.abego.treelayout.Configuration;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class iritMainController implements Initializable {
 
@@ -63,35 +67,107 @@ public class iritMainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        getAllTablesDB();
     }
 
-    private void interactWithPolystore(){
-        //faire verif que textfiel est jamais vide + alerte quand texte est vide
-        String query = welcomeText.getText();
-//        String query = "SELECT Customers.customer_id, Orders.order_id, Orders.total_price, Products.brand " +
-//                "FROM Reviews, Orders, Products, Customers " +
-//                "WHERE (Orders.total_price > 10000 OR Customers.zipcode = 31000) " +
-//                "AND Products.brand = nike AND Products.p_price > 100 " +
-//                "AND Reviews.order_id = Orders.order_id " +
-//                "AND Reviews.product_id = Products.product_id " +
-//                "AND Customers.customer_id = Orders.customer_id ";
-//
-        Query queryParsed = QueryParserUtils.parse(query);
-        GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
+    @FXML
+    private void interactWithPolystore() {
+        List<String> tablesnames = getAllTablesDB();
+        boolean allTablesFound = false;
+        try {
+            //faire verif que textfiel est jamais vide + alerte quand texte est vide
+            String query = this.welcomeText.getText();
+            // Define a regex pattern to match table names in the SQL query
+            Pattern pattern = Pattern.compile("from\\s+(\\w+)", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(query);
+            List<String> foundTables = new ArrayList<>();
+            // Find and collect all table names mentioned in the SQL query
+            while (matcher.find()) {
+                foundTables.add(matcher.group(1));
+            }
+            // Check if the found tables are in the predefined table names list
+            allTablesFound = true;
+            for (String tableName : foundTables) {
+                if (!tablesnames.contains(tableName)) {
+                    allTablesFound = false;
+                }
+            }
 
-        System.out.println("Algebraic Tree : ");
-        globalAlgebraicTree.getRootNode().print("");
+            Query queryParsed = QueryParserUtils.parse(query);
+            GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
 
-        MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
+            System.out.println("Algebraic Tree : ");
+            globalAlgebraicTree.getRootNode().print("");
 
-        System.out.println("");
-        System.out.println("Algebraic Multi-stores Tree : ");
-        mat.getMultistoreAlgebraicTree().print("");
+            MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
 
-        TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat);
-        System.out.println("");
-        System.out.println("Algebraic Multi-stores Tree : ");
-        ttat.getTransformationTransferAlgebraicTree().print("");
+            System.out.println("");
+            System.out.println("Algebraic Multi-stores Tree : ");
+            mat.getMultistoreAlgebraicTree().print("");
+
+            TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat);
+            System.out.println("");
+            System.out.println("Algebraic Multi-stores Tree : ");
+            ttat.getTransformationTransferAlgebraicTree().print("");
+        } catch (Exception e) {
+            if (welcomeText.getText().isEmpty()) {
+                Alert warning = new Alert(Alert.AlertType.WARNING);
+                warning.setTitle("Requête vide");
+                warning.setHeaderText("Votre requête est vide !");
+                warning.setContentText(e.toString());
+                warning.showAndWait();
+            } else if (allTablesFound==false) {
+                Alert warning = new Alert(Alert.AlertType.WARNING);
+                warning.setTitle("Erreur requête");
+                warning.setHeaderText("Mettez une majuscule à votre table");
+                warning.setContentText(e.toString());
+                warning.showAndWait();
+            } else {
+                Alert warning = new Alert(Alert.AlertType.WARNING);
+                warning.setTitle("Erreur requête");
+                warning.setHeaderText("Votre requête est incorrecte");
+                warning.setContentText(e.toString());
+                warning.showAndWait();
+            }
+        }
+
+    }
+
+    protected List<String> getAllTablesDB(){
+        List<String> tablesNames = new ArrayList<>();
+        // Specify the path to your JSON file
+        String documentJSON = "C:\\Users\\ruben\\Desktop\\SAE-S5-IRIT-G2\\src\\main\\java\\fr\\irit\\module2\\UnifiedView\\documentUnifiedView.json";
+        String relationalJSON = "C:\\Users\\ruben\\Desktop\\SAE-S5-IRIT-G2\\src\\main\\java\\fr\\irit\\module2\\UnifiedView\\relationalUnifiedView.json";
+        try{
+            // Initialize the ObjectMapper (Jackson library)
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            // Read the JSON file and parse it into a JsonNode
+            JsonNode documentNode = objectMapper.readTree(new File(documentJSON));
+            JsonNode relationalNode = objectMapper.readTree(new File(relationalJSON));
+
+            // Get the "uvTables" array
+            JsonNode documentUVTablesNode = documentNode.get("uvTables");
+            JsonNode relationalUVTablesNode = relationalNode.get("uvTables");
+
+            // Create a List to store the "label" values
+            List<String> labelList = new ArrayList<>();
+
+            // Iterate through the JSON array and extract "label" values
+            for (JsonNode node : documentUVTablesNode) {
+                String label = node.get("label").asText();
+                if (!tablesNames.contains(label))
+                    tablesNames.add(label);
+            }
+            for (JsonNode node : relationalUVTablesNode) {
+                String label = node.get("label").asText();
+                if (!tablesNames.contains(label))
+                    tablesNames.add(label);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tablesNames;
     }
 
     private TitledPane updatePane(TitledPane pane) {
@@ -118,11 +194,11 @@ public class iritMainController implements Initializable {
         final ICell cellF = new LabelCell("Orders : DB2-RELATIONAL \n [Orders.order_id <-> Orders.order_id, Orders.customer_id <-> Orders.customer_id]");
         final ICell cellG = new LabelCell("π *");
         final ICell cellH = new LabelCell("⨝ Orders.order_id = Orders.order_id");
-//        final ICell cellI = new LabelCell("Transfer : DB3 -> DB1");
-//        final ICell cellJ = new LabelCell("Transfer : DB2 -> DB1");
-//        final ICell cellK = new LabelCell("Transformation : DOCUMENT -> RELATIONAL");
-//        final ICell cellL = new LabelCell("Orders : DB3-DOCUMENT [Orders.order_id <-> Orders.order_id, Orders.total_price <-> Orders.total_price]");
-//        final ICell cellM = new LabelCell("Orders : DB2-RELATIONAL [Orders.order_id <-> Orders.order_id, Orders.customer_id <-> Orders.customer_id]");
+        final ICell cellI = new LabelCell("Transfer : DB3 -> DB1");
+        final ICell cellJ = new LabelCell("Transfer : DB2 -> DB1");
+        final ICell cellK = new LabelCell("Transformation : DOCUMENT -> RELATIONAL");
+        final ICell cellL = new LabelCell("Orders : DB3-DOCUMENT [Orders.order_id <-> Orders.order_id, Orders.total_price <-> Orders.total_price]");
+        final ICell cellM = new LabelCell("Orders : DB2-RELATIONAL [Orders.order_id <-> Orders.order_id, Orders.customer_id <-> Orders.customer_id]");
 
         model.addCell(cellA);
         model.addCell(cellB);
@@ -130,13 +206,13 @@ public class iritMainController implements Initializable {
         model.addCell(cellD);
         model.addCell(cellE);
         model.addCell(cellF);
-//        model.addCell(cellG);
-//        model.addCell(cellH);
-//        model.addCell(cellI);
-//        model.addCell(cellJ);
-//        model.addCell(cellK);
-//        model.addCell(cellL);
-//        model.addCell(cellM);
+        model.addCell(cellG);
+        model.addCell(cellH);
+        model.addCell(cellI);
+        model.addCell(cellJ);
+        model.addCell(cellK);
+        model.addCell(cellL);
+        model.addCell(cellM);
 
         //algebric tree
         final CorneredEdge edgeAlgebricTreeProjection = new CorneredEdge(cellA, cellB, Orientation.VERTICAL);
@@ -152,21 +228,21 @@ public class iritMainController implements Initializable {
         model.addEdge(edgeMultiStoreDataType2);
 
         //algebric multi stores tree with transformation
-//        final Edge edgeAlgebricMultiStoresWTransferAndTransformationTreeProjection = new Edge(cellH, cellG);
-//        model.addEdge(edgeAlgebricMultiStoresWTransferAndTransformationTreeProjection);
-//
-//        final CorneredEdge edgeMultiStoreTransfer1 = new CorneredEdge(cellI, cellH, Orientation.HORIZONTAL);
-//        model.addEdge(edgeMultiStoreTransfer1);
-//        final CorneredEdge edgeMultiStoreTransfer2 = new CorneredEdge(cellJ, cellH, Orientation.HORIZONTAL);
-//        model.addEdge(edgeMultiStoreTransfer2);
-//
-//        final CorneredEdge edgeMultiStoreTransformation1 = new CorneredEdge(cellK, cellI, Orientation.HORIZONTAL);
-//        model.addEdge(edgeMultiStoreTransformation1);
-//
-//        final CorneredEdge edgeMultiStoresWTransferAndTransformationDataType1 = new CorneredEdge(cellL, cellK, Orientation.HORIZONTAL);
-//        model.addEdge(edgeMultiStoresWTransferAndTransformationDataType1);
-//        final CorneredEdge edgeMultiStoresWTransferAndTransformationDataType2 = new CorneredEdge(cellM, cellJ, Orientation.HORIZONTAL);
-//        model.addEdge(edgeMultiStoresWTransferAndTransformationDataType2);
+        final Edge edgeAlgebricMultiStoresWTransferAndTransformationTreeProjection = new Edge(cellH, cellG);
+        model.addEdge(edgeAlgebricMultiStoresWTransferAndTransformationTreeProjection);
+
+        final CorneredEdge edgeMultiStoreTransfer1 = new CorneredEdge(cellI, cellH, Orientation.HORIZONTAL);
+        model.addEdge(edgeMultiStoreTransfer1);
+        final CorneredEdge edgeMultiStoreTransfer2 = new CorneredEdge(cellJ, cellH, Orientation.HORIZONTAL);
+        model.addEdge(edgeMultiStoreTransfer2);
+
+        final CorneredEdge edgeMultiStoreTransformation1 = new CorneredEdge(cellK, cellI, Orientation.HORIZONTAL);
+        model.addEdge(edgeMultiStoreTransformation1);
+
+        final CorneredEdge edgeMultiStoresWTransferAndTransformationDataType1 = new CorneredEdge(cellL, cellK, Orientation.HORIZONTAL);
+        model.addEdge(edgeMultiStoresWTransferAndTransformationDataType1);
+        final CorneredEdge edgeMultiStoresWTransferAndTransformationDataType2 = new CorneredEdge(cellM, cellJ, Orientation.HORIZONTAL);
+        model.addEdge(edgeMultiStoresWTransferAndTransformationDataType2);
 
         graph.endUpdate();
     }
