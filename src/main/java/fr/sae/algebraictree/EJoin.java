@@ -18,10 +18,15 @@ public class EJoin extends ETreeNode {
     //endregion
     //region CONSTRUCTOR
     public EJoin (Join j) {
+
         this.correspondingJoin = j;
+        this.condition = new fr.irit.algebraictree.DotNotation[]{j.getCondition()[0], j.getCondition()[1]};
         this.leftChild = ETreeNode.createTree(j.getLeftChild());
         this.rightChild = ETreeNode.createTree(j.getRightChild());
     }
+
+
+
     //endregion
     //region GETTERS & SETTERS
     public ETreeNode getLeftChild() {

@@ -55,4 +55,8 @@ public class Transfer extends TreeNode {
     public void renameColumnsRecursive(Map<DotNotation, DotNotation> columnNamingMap) {
         this.child.renameColumnsRecursive(columnNamingMap);
     }
+    public TreeNode getChild() {
+        return this.child;
+    }
+
 }

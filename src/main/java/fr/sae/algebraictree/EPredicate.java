@@ -17,12 +17,6 @@ public class EPredicate {
         this.correspondingPredicate = p;
 
     }
-    /*
-    public EProjection (Projection p) {
-        this.correspondingProjection = p;
-        this.child = ETreeNode.createTree(p.getChild()) ;
-    }
-     */
 
     public String toString(){
         return attribute + " " + operator + " " + value;

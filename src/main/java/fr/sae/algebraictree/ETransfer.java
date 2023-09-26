@@ -1,16 +1,25 @@
 package fr.sae.algebraictree;
 
+import fr.irit.algebraictree.Projection;
+import fr.irit.algebraictree.Transfer;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class ETransfer extends ETreeNode {
     private ETreeNode child;
+    private Transfer correspondingTransfer;
     private String sourceDatabase;
     private String targetDatabase;
     public ETransfer(String sourceDatabase, String targetDatabase){
         this.sourceDatabase = sourceDatabase;
         this.targetDatabase = targetDatabase;
+    }
+
+    public ETransfer(Transfer node) {
+        this.correspondingTransfer = node ;
+        this.child = ETreeNode.createTree(node.getChild()) ;
     }
 
     @Override
