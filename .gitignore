@@ -162,3 +162,6 @@ buildNumber.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,maven
 Cli.run/
+
+# this file is way to big for github
+Resources/orders_db3.json
