@@ -136,8 +136,9 @@ public class iritMainController implements Initializable {
     protected List<String> getAllTablesDB(){
         List<String> tablesNames = new ArrayList<>();
         // Specify the path to your JSON file
-        String documentJSON = "C:\\Users\\ruben\\Desktop\\SAE-S5-IRIT-G2\\src\\main\\java\\fr\\irit\\module2\\UnifiedView\\documentUnifiedView.json";
-        String relationalJSON = "C:\\Users\\ruben\\Desktop\\SAE-S5-IRIT-G2\\src\\main\\java\\fr\\irit\\module2\\UnifiedView\\relationalUnifiedView.json";
+        String documentJSON = "src/main/java/fr/irit/module2/UnifiedView/documentUnifiedView.json";
+        String relationalJSON = "src/main/java/fr/irit/module2/UnifiedView/relationalUnifiedView.json";
+        
         try{
             // Initialize the ObjectMapper (Jackson library)
             ObjectMapper objectMapper = new ObjectMapper();
