@@ -8,14 +8,14 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
-public class Jointure extends AbstractCell {
+public class SelectionCell extends AbstractCell {
 
     Label text = new Label();
 
-    public Jointure() {
+    public SelectionCell() {
     }
 
-    public Jointure(String texte) {
+    public SelectionCell(String texte) {
         this.text.setText(texte);
     }
 
@@ -23,23 +23,22 @@ public class Jointure extends AbstractCell {
     public Region getGraphic(Graph graph) {
         final Polygon view = new Polygon();
         view.getPoints().addAll(new Double[]{
-                -10.0, 0.0,
-                -10.0, 50.0,
-                60.0, 0.0,
-                60.0, 50.0});
+                0.0, 10.0,
+                -20.0, 40.0,
+                70.0, 40.0,
+                50.0, 10.0});
+        view.setRotate(90);
 
         view.setStroke(Color.DODGERBLUE);
         view.setFill(Color.DODGERBLUE);
 
         Group group = new Group(view, text);
 
-        text.setLayoutX(65);
+        text.setLayoutX(45);
         text.setLayoutY(15);
 
         final Pane pane = new Pane(group);
         pane.setPrefSize(50, 50);
-
-
 
         return pane;
     }

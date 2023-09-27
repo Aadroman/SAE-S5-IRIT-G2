@@ -8,14 +8,14 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
-public class Selection extends AbstractCell {
+public class ProjectionCell extends AbstractCell {
 
     Label text = new Label();
 
-    public Selection() {
+    public ProjectionCell() {
     }
 
-    public Selection(String texte) {
+    public ProjectionCell(String texte) {
         this.text.setText(texte);
     }
 
@@ -27,14 +27,13 @@ public class Selection extends AbstractCell {
                 -20.0, 40.0,
                 70.0, 40.0,
                 50.0, 10.0});
-        view.setRotate(90);
 
         view.setStroke(Color.DODGERBLUE);
         view.setFill(Color.DODGERBLUE);
 
         Group group = new Group(view, text);
 
-        text.setLayoutX(45);
+        text.setLayoutX(65);
         text.setLayoutY(15);
 
         final Pane pane = new Pane(group);

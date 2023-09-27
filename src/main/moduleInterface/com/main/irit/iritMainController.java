@@ -1,11 +1,14 @@
 package com.main.irit;
 
+import fr.irit.algebraictree.Projection;
 import fr.irit.module1.GlobalAlgebraicTree;
 import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
 import fr.irit.module2.MultistoreAlgebraicTree;
 import fr.irit.module3.TransformationTransferAlgebraicTree;
+import fxgraph.cells.JointureCell;
 import fxgraph.cells.LabelCell;
+import fxgraph.cells.ProjectionCell;
 import fxgraph.edges.CorneredEdge;
 import fxgraph.edges.Edge;
 import fxgraph.graph.Graph;
@@ -99,6 +102,10 @@ public class iritMainController implements Initializable {
             System.out.println("Algebraic Tree : ");
             globalAlgebraicTree.getRootNode().print("");
 
+            Projection proj = (Projection) globalAlgebraicTree.getRootNode();
+
+            createGraph(proj);
+
             MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
 
             System.out.println("");
@@ -131,6 +138,33 @@ public class iritMainController implements Initializable {
             }
         }
 
+    }
+
+    //temp method to test the generation of a globalAlgebraicTree
+    private void createGraph(Projection proj){
+        Pane childPane;
+        Graph graph = new Graph();
+        // Add content to graph
+
+        final Model model = graph.getModel();
+        graph.beginUpdate();
+
+        final ProjectionCell projectionGlobal = new ProjectionCell("π "+proj.toString());
+        String child = proj.getChild().toString();
+        final ICell labelGlobal = new LabelCell(child);
+
+        model.addCell(projectionGlobal);
+        model.addCell(labelGlobal);
+
+        model.addEdge(projectionGlobal, labelGlobal);
+
+        graph.endUpdate();
+
+        // Layout nodes
+        AbegoTreeLayout layout = new AbegoTreeLayout(100, 500, Configuration.Location.Bottom);
+        graph.layout(layout);
+        childPane = graph.getCanvas();
+        paneGraph.setContent(childPane);
     }
 
     protected List<String> getAllTablesDB(){
@@ -187,14 +221,24 @@ public class iritMainController implements Initializable {
     private void populateGraph(Graph graph) {
         final Model model = graph.getModel();
         graph.beginUpdate();
-        final ICell cellA = new LabelCell("π *");
+
+
+        //les cellules en commentaires sont remplacées par des cellules de projection, selection ou jointure
+        //elles sont mises de coté pour l'implementation de différents types de cells autre que des labelCell
+
+        //final ICell cellA = new LabelCell("π *");
+        final ProjectionCell cellA = new ProjectionCell("π *");
         final ICell cellB = new LabelCell(" Orders");
-        final ICell cellC = new LabelCell("π *");
-        final ICell cellD = new LabelCell("⨝ Orders.order_id = Orders.order_id");
+        //final ICell cellC = new LabelCell("π *");
+        final ProjectionCell cellC = new ProjectionCell("π *");
+        //final ICell cellD = new LabelCell("⨝ Orders.order_id = Orders.order_id");
+        final JointureCell cellD = new JointureCell("⨝ Orders.order_id = Orders.order_id");
         final ICell cellE = new LabelCell("Orders : DB3-DOCUMENT \n [Orders.order_id <-> Orders.order_id, Orders.total_price <-> Orders.total_price]");
         final ICell cellF = new LabelCell("Orders : DB2-RELATIONAL \n [Orders.order_id <-> Orders.order_id, Orders.customer_id <-> Orders.customer_id]");
-        final ICell cellG = new LabelCell("π *");
-        final ICell cellH = new LabelCell("⨝ Orders.order_id = Orders.order_id");
+        //final ICell cellG = new LabelCell("π *");
+        final ProjectionCell cellG = new ProjectionCell("π *");
+        //final ICell cellH = new LabelCell("⨝ Orders.order_id = Orders.order_id");
+        final JointureCell cellH = new JointureCell("⨝ Orders.order_id = Orders.order_id");
         final ICell cellI = new LabelCell("Transfer : DB3 -> DB1");
         final ICell cellJ = new LabelCell("Transfer : DB2 -> DB1");
         final ICell cellK = new LabelCell("Transformation : DOCUMENT -> RELATIONAL");
