@@ -61,7 +61,7 @@ public class ETreeNode {
     /**
      * @return List of columns ('table.column') included in the node and its children
      */
-    public Set<DotNotation> listDistinctColumnsRecursive() {
+    public Set<EDotNotation> listDistinctColumnsRecursive() {
 
         return null;
     }
@@ -73,7 +73,7 @@ public class ETreeNode {
 
     }
 
-    public void renameColumnsRecursive(Map<DotNotation, DotNotation> columnNamingMap) {
+    public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
 
     }
     //TODO rename table also ?

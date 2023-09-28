@@ -1,6 +1,7 @@
 package fr.sae.algebraictree;
 
 
+import fr.irit.algebraictree.DotNotation;
 import fr.irit.algebraictree.Join;
 
 import java.util.HashSet;
@@ -12,7 +13,10 @@ public class EJoin extends ETreeNode {
     //region ATTRIBUTES
     private ETreeNode leftChild;
     private ETreeNode rightChild;
-    private DotNotation[] condition;
+    private EDotNotation[] condition;
+
+    private DotNotation lchild;
+    private DotNotation rchild;
     private Join correspondingJoin ;
 
     //endregion
@@ -20,7 +24,9 @@ public class EJoin extends ETreeNode {
     public EJoin (Join j) {
 
         this.correspondingJoin = j;
-        this.condition = new fr.irit.algebraictree.DotNotation[]{j.getCondition()[0], j.getCondition()[1]};
+        this.lchild = j.getCondition()[0];
+        this.rchild = j.getCondition()[1];
+        this.condition = new EDotNotation[]{new EDotNotation(lchild), new EDotNotation(rchild)};
         this.leftChild = ETreeNode.createTree(j.getLeftChild());
         this.rightChild = ETreeNode.createTree(j.getRightChild());
     }
@@ -35,7 +41,7 @@ public class EJoin extends ETreeNode {
     public ETreeNode getRightChild() {
         return rightChild;
     }
-    public DotNotation[] getCondition() {
+    public EDotNotation[] getCondition() {
         return condition;
     }
     //endregion
@@ -68,7 +74,7 @@ public class EJoin extends ETreeNode {
     /**
      * Don't rename because Join columns name should be the same on unified view and real implementation
      */
-    public void renameColumnsRecursive(Map<DotNotation, DotNotation> columnNamingMap) {
+    public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
         this.leftChild.renameColumnsRecursive(columnNamingMap);
         this.rightChild.renameColumnsRecursive(columnNamingMap);
     }
@@ -105,9 +111,9 @@ public class EJoin extends ETreeNode {
         }
     }
     @Override
-    public Set<DotNotation> listDistinctColumnsRecursive() {
-        Set<DotNotation> includedColumns = new HashSet<>();
-        for (DotNotation condition : this.condition){
+    public Set<EDotNotation> listDistinctColumnsRecursive() {
+        Set<EDotNotation> includedColumns = new HashSet<>();
+        for (EDotNotation condition : this.condition){
             includedColumns.add(condition);
         }
         if(leftChild.listDistinctColumnsRecursive() != null) {

@@ -1,6 +1,5 @@
 package fr.sae.algebraictree;
 
-import fr.irit.algebraictree.Projection;
 import fr.irit.algebraictree.Table;
 import fr.irit.module2.UnifiedView.Store;
 
@@ -61,7 +60,7 @@ public class ETable extends ETreeNode {
         return tableList.contains(this.label) && tableList.size() == 1 ? this : null;
     }
     @Override
-    public Set<DotNotation> listDistinctColumnsRecursive() {
+    public Set<EDotNotation> listDistinctColumnsRecursive() {
         return new HashSet<>();
     }
 
@@ -80,7 +79,7 @@ public class ETable extends ETreeNode {
     }
 
     @Override
-    public void renameColumnsRecursive(Map<DotNotation, DotNotation> columnNamingMap) {
+    public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
         return;
     }
     //endregion

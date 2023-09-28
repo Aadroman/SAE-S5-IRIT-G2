@@ -30,7 +30,7 @@ public class ETransformation extends ETreeNode {
         }
     }
     @Override
-    public Set<DotNotation> listDistinctColumnsRecursive() {
+    public Set<EDotNotation> listDistinctColumnsRecursive() {
         return child.listDistinctColumnsRecursive();
     }
     @Override
@@ -52,7 +52,7 @@ public class ETransformation extends ETreeNode {
         this.child.print(prefix + "    ");
     }
     @Override
-    public void renameColumnsRecursive(Map<DotNotation, DotNotation> columnNamingMap) {
+    public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
         this.child.renameColumnsRecursive(columnNamingMap);
     }
 }

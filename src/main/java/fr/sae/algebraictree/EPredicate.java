@@ -3,11 +3,11 @@ package fr.sae.algebraictree;
 import fr.irit.algebraictree.Predicate;
 
 public class EPredicate {
-    public DotNotation attribute;
+    public EDotNotation attribute;
     public String operator;
     public String value;
     private Predicate correspondingPredicate;
-    public EPredicate(DotNotation attribute, String operator, String value) {
+    public EPredicate(EDotNotation attribute, String operator, String value) {
         this.attribute = attribute;
         this.operator = operator;
         this.value = value;

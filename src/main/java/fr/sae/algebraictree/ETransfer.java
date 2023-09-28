@@ -1,6 +1,5 @@
 package fr.sae.algebraictree;
 
-import fr.irit.algebraictree.Projection;
 import fr.irit.algebraictree.Transfer;
 
 import java.util.List;
@@ -39,7 +38,7 @@ public class ETransfer extends ETreeNode {
         }
     }
     @Override
-    public Set<DotNotation> listDistinctColumnsRecursive() {
+    public Set<EDotNotation> listDistinctColumnsRecursive() {
         return child.listDistinctColumnsRecursive();
     }
     @Override
@@ -61,7 +60,7 @@ public class ETransfer extends ETreeNode {
         this.child.print(prefix + "    ");
     }
     @Override
-    public void renameColumnsRecursive(Map<DotNotation, DotNotation> columnNamingMap) {
+    public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
         this.child.renameColumnsRecursive(columnNamingMap);
     }
 }

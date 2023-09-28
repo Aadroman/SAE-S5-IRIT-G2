@@ -12,11 +12,11 @@ public class EProjection extends ETreeNode {
     /**
      * Attributes is null in case of wildcard (*)
      */
-    private List<DotNotation> attributes;
+    private List<EDotNotation> attributes;
     //endregion
     //region CONSTRUCTORS
     public EProjection() {}
-    public EProjection(List<DotNotation> attributes) {
+    public EProjection(List<EDotNotation> attributes) {
         this.attributes = attributes;
     }
 
@@ -30,7 +30,7 @@ public class EProjection extends ETreeNode {
     public ETreeNode getChild() {
         return child;
     }
-    public List<DotNotation> getAttributes() { return attributes; }
+    public List<EDotNotation> getAttributes() { return attributes; }
     //endregion
     //region METHODS
     @Override
@@ -50,10 +50,10 @@ public class EProjection extends ETreeNode {
     }
 
     @Override
-    public void renameColumnsRecursive(Map<DotNotation, DotNotation> columnNamingMap) {
+    public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
         if(this.attributes != null){
-            List<DotNotation> attributeListRenamed = new ArrayList<>();
-            for(DotNotation attribute : this.attributes){
+            List<EDotNotation> attributeListRenamed = new ArrayList<>();
+            for(EDotNotation attribute : this.attributes){
                 attributeListRenamed.add(columnNamingMap.get(attribute));
             }
             this.attributes = attributeListRenamed;
@@ -88,9 +88,9 @@ public class EProjection extends ETreeNode {
     }
 
     @Override
-    public Set<DotNotation> listDistinctColumnsRecursive() {
-        Set<DotNotation> includedColumns = new HashSet<DotNotation>();
-        for(DotNotation attribute : ListUtils.emptyIfNull(attributes)){
+    public Set<EDotNotation> listDistinctColumnsRecursive() {
+        Set<EDotNotation> includedColumns = new HashSet<EDotNotation>();
+        for(EDotNotation attribute : ListUtils.emptyIfNull(attributes)){
             includedColumns.add(attribute);
         }
         includedColumns.addAll(child.listDistinctColumnsRecursive());

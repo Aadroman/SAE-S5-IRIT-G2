@@ -26,6 +26,8 @@ public class ESelection extends ETreeNode {
         this.child = ETreeNode.createTree(s.getChild()) ;
     }
 
+
+
     //endregion
     //region GETTERS & SETTERS
     public ETreeNode getChild() { return child; }
@@ -55,7 +57,7 @@ public class ESelection extends ETreeNode {
     }
 
     @Override
-    public void renameColumnsRecursive(Map<DotNotation, DotNotation> columnNamingMap) {
+    public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
         for(EPredicate p : this.predicates){
             p.attribute = columnNamingMap.get(p.attribute);
         }
@@ -95,8 +97,8 @@ public class ESelection extends ETreeNode {
         }
     }
     @Override
-    public Set<DotNotation> listDistinctColumnsRecursive() {
-        Set<DotNotation> includedColumns = new HashSet<DotNotation>();
+    public Set<EDotNotation> listDistinctColumnsRecursive() {
+        Set<EDotNotation> includedColumns = new HashSet<EDotNotation>();
         for(EPredicate p : ListUtils.emptyIfNull(this.predicates)){
             includedColumns.add(p.attribute);
         }
