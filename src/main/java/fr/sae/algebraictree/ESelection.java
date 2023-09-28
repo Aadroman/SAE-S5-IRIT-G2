@@ -1,5 +1,6 @@
 package fr.sae.algebraictree;
 
+import fr.irit.algebraictree.Predicate;
 import fr.irit.algebraictree.Selection;
 import org.apache.commons.collections4.ListUtils;
 
@@ -23,10 +24,21 @@ public class ESelection extends ETreeNode {
 
     public ESelection (Selection s) {
         this.correspondingSelection = s;
+        this.predicates = new ArrayList<>();
+        for (EPredicate ep : getPredicates(s)){
+            this.predicates.add(new EPredicate(new EDotNotation(ep.getCorrespondingPredicate().attribute), ep.getCorrespondingPredicate().operator, ep.getCorrespondingPredicate().value));
+        }
         this.child = ETreeNode.createTree(s.getChild()) ;
     }
 
-
+    protected List<EPredicate> getPredicates(Selection s){
+        List<EPredicate> result = new ArrayList<>();
+        List<Predicate> source = s.getPredicates();
+        for(Predicate p : source){
+            result.add(new EPredicate(p));
+        }
+        return result;
+    }
 
     //endregion
     //region GETTERS & SETTERS

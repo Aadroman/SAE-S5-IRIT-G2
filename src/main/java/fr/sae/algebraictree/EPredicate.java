@@ -15,7 +15,10 @@ public class EPredicate {
 
     public EPredicate(Predicate p) {
         this.correspondingPredicate = p;
+    }
 
+    public Predicate getCorrespondingPredicate(){
+        return correspondingPredicate;
     }
 
     public String toString(){
