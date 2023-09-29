@@ -4,7 +4,7 @@
 :TOC:
 :TOC-title: Sommaire
 
-== Application IRIT (du repository gitlab de l'IRIT)
+== Application de l'IRIT (instructions du repository gitlab de l'IRIT)
 
 ### Clone repository 
 
@@ -62,3 +62,28 @@ cd /cloned_project_folder
 mvn install
 java -jar .\target\polyglot.jar --help
 ```
+
+== Application IHM
+
+=== exigences 
+
+Les exigences sont presques les mêmes que pour l'application de l'IRIT, c'est à dire :
+
+* Java
+* un IDE tel que 
+** éclipse
+** IntelliJ
+
+=== Lancement de l'application
+
+Pour démarrer l'application, il suffit, dans l'IDE, d'ouvrir le fichier src/main/moduleInterface/com/main/irit/iritMainApplication.java, et de lancer iritMainApplication
+
+=== Utilisation de l'application 
+
+L'application est divisée en trois parties : 
+
+* l'entrée de requête (en haut)
+* l'affichage de l'arbre (à gauche)
+* présentation de l'arbre en forme de répertoire (à droite)
+
+Il suffit d'entrer une requete (ex : "select * from Orders") et de clicker sur le bouton "ok" pour pouvoir faire afficher l'arbre algébrique correspondant à la reqête
