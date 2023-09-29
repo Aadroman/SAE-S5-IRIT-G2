@@ -12,20 +12,22 @@ LONGEQUE Rubén
 SANCHEZ-PORRO Aurélien (alternant présent avant l'heure) 
 
 
-## Repartition des fichiers
+## Repartition
 
 ### Dans les dossiers
 
-#### Doc
+#### **La documentation**
+
+se trouve dans le dossier "./doc" :
 * Backlog produit (format adoc et pdf)
 * diagramme de classes (format png et puml)
 * diagramme de séquence (format png et puml)
 * documentation utilisateur (format adoc)
 * documentation technique (format adoc)
 
-#### src
+####  **Src et autre dossiers**
 
-* Application de l'IRIT
+voir la documentation technique
 
 
 ### Dans les branches
