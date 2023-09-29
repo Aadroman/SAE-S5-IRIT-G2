@@ -1,6 +1,7 @@
 package fr.sae.algebraictree;
 
 import fr.irit.algebraictree.Transfer;
+import fr.irit.module3.TransformationTransferAlgebraicTree;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,9 @@ public class ETransfer extends ETreeNode {
     public ETransfer(Transfer node) {
         this.correspondingTransfer = node ;
         this.child = ETreeNode.createTree(node.getChild()) ;
+        String[] split = this.correspondingTransfer.toString().split(" -> ");
+        this.sourceDatabase = split[0];
+        this.targetDatabase = split[1];
     }
 
     @Override

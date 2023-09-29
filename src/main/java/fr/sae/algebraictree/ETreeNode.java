@@ -1,6 +1,7 @@
 package fr.sae.algebraictree;
 
 import fr.irit.algebraictree.*;
+import fr.irit.module3.TransformationTransferAlgebraicTree;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,8 @@ public class ETreeNode {
             return new ETable((Table) node);
         } else if(node instanceof Transfer) {
             return new ETransfer((Transfer) node);
+        } else if ( node instanceof Transformation){
+            return new ETransformation((Transformation) node);
         }
 
         return null;

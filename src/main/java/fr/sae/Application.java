@@ -19,12 +19,20 @@ public class Application {
                 "AND Customers.customer_id = Orders.customer_id ";
         Query queryParsed = QueryParserUtils.parse(query);
         GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
-        MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
-        TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat);
-
-        // Récupérer la racine de l'arbre généré et regénérer un arbre "miroir" avec nos classes
         TreeNode r = globalAlgebraicTree.getRootNode();
         ETreeNode re = ETreeNode.createTree(r);
+        re.print("");
+        MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
+
+
+        // Récupérer la racine de l'arbre généré et regénérer un arbre "miroir" avec nos classes
+        r = globalAlgebraicTree.getRootNode();
+        re = ETreeNode.createTree(r);
+        re.print("");
+
+       TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat);
+        r = globalAlgebraicTree.getRootNode();
+        re = ETreeNode.createTree(r);
         re.print("");
 
     }

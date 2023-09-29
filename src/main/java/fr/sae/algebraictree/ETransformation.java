@@ -1,5 +1,8 @@
 package fr.sae.algebraictree;
 
+import fr.irit.algebraictree.Transformation;
+import fr.irit.module3.TransformationTransferAlgebraicTree;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -8,9 +11,20 @@ public class ETransformation extends ETreeNode {
     private ETreeNode child;
     private String sourceDatabaseType;
     private String targetDatabaseType;
+
+    private Transformation correspondingTransformation ;
     public ETransformation(String sourceDatabase, String targetDatabase){
         this.sourceDatabaseType = sourceDatabase;
         this.targetDatabaseType = targetDatabase;
+    }
+
+    public ETransformation(Transformation node) {
+        this.correspondingTransformation = node;
+        String[] split = this.correspondingTransformation.toString().split(" -> ");
+        this.sourceDatabaseType = split[0];
+        this.targetDatabaseType = split[1];
+
+
     }
 
     @Override

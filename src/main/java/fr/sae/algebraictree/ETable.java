@@ -28,14 +28,10 @@ public class ETable extends ETreeNode {
     }
     private Table correspondingTable ;
 
-    /*
-    public EProjection (Projection p) {
-        this.correspondingProjection = p;
-        this.child = ETreeNode.createTree(p.getChild()) ;
-    }
-    */
     public ETable ( Table t){
         this.correspondingTable = t ;
+        this.label = t.getLabel();
+        this.store = t.getStore();
 
     }
 
