@@ -1,5 +1,6 @@
 package fr.sae.algebraictree;
 
+import fr.irit.algebraictree.DotNotation;
 import fr.irit.algebraictree.Projection;
 import org.apache.commons.collections4.ListUtils;
 
@@ -12,16 +13,17 @@ public class EProjection extends ETreeNode {
     /**
      * Attributes is null in case of wildcard (*)
      */
-    private List<EDotNotation> attributes;
+    private List<EDotNotation> attributes = new ArrayList<>();
     //endregion
     //region CONSTRUCTORS
     public EProjection() {}
-    public EProjection(List<EDotNotation> attributes) {
-        this.attributes = attributes;
-    }
+    public EProjection(List<EDotNotation> attributes) {this.attributes = attributes;}
 
     public EProjection (Projection p) {
         this.correspondingProjection = p;
+        for(DotNotation dt : p.getAttributes()){
+            this.attributes.add(new EDotNotation(dt));
+        }
         this.child = ETreeNode.createTree(p.getChild()) ;
     }
 
