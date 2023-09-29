@@ -19,21 +19,26 @@ public class Application {
                 "AND Customers.customer_id = Orders.customer_id ";
         Query queryParsed = QueryParserUtils.parse(query);
         GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
-        TreeNode r = globalAlgebraicTree.getRootNode();
-        ETreeNode re = ETreeNode.createTree(r);
-        re.print("");
+        System.out.println("Algebraic Tree : ");
+        TreeNode global = globalAlgebraicTree.getRootNode();
+        ETreeNode globalTree = ETreeNode.createTree(global);
+        globalTree.print("");
+
+
         MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
-
-
+        System.out.println("");
+        System.out.println("Algebraic Multi-stores Tree : ");
         // Récupérer la racine de l'arbre généré et regénérer un arbre "miroir" avec nos classes
-        r = globalAlgebraicTree.getRootNode();
-        re = ETreeNode.createTree(r);
-        re.print("");
+        TreeNode multi = mat.getMultistoreAlgebraicTree();
+        ETreeNode multiTree = ETreeNode.createTree(multi);
+        multiTree.print("");
 
        TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat);
-        r = globalAlgebraicTree.getRootNode();
-        re = ETreeNode.createTree(r);
-        re.print("");
+       System.out.println("");
+       System.out.println("Algebraic Multi-stores Tree With transformation: ");
+       TreeNode multiTransformation = ttat.getTransformationTransferAlgebraicTree();
+       ETreeNode multiTransformationTree = ETreeNode.createTree(multiTransformation);
+       multiTransformationTree.print("");
 
     }
 

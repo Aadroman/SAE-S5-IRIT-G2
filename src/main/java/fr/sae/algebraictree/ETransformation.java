@@ -3,6 +3,7 @@ package fr.sae.algebraictree;
 import fr.irit.algebraictree.Transformation;
 import fr.irit.module3.TransformationTransferAlgebraicTree;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +12,7 @@ public class ETransformation extends ETreeNode {
     private ETreeNode child;
     private String sourceDatabaseType;
     private String targetDatabaseType;
+    private List<String> list = new ArrayList<>();
 
     private Transformation correspondingTransformation ;
     public ETransformation(String sourceDatabase, String targetDatabase){
@@ -23,8 +25,8 @@ public class ETransformation extends ETreeNode {
         String[] split = this.correspondingTransformation.toString().split(" -> ");
         this.sourceDatabaseType = split[0];
         this.targetDatabaseType = split[1];
-
-
+        list = node.listIncludedTablesRecursive();
+        this.child = new ETreeNode().createTree(node.findLowestNodeContainingTables(list));
     }
 
     @Override
