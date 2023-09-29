@@ -1,0 +1,96 @@
+= Doc technique
+:incremental:
+:numbered:
+:TOC:
+:TOC-title: Sommaire
+
+## Application IRIT (du repository gitlab de l'IRIT)
+
+### Project Structure 
+[Bac_A_Sable](./Bac_A_Sable) : Previous module 1 version 
+
+[doc](./doc) : Folder containing uml diagrams (see [doc README](./doc/README.md))
+
+[Resources](./Resources) : Files containing database data (see [resources README](./Resources/README.md))
+
+[src](./src) : Java project (see [next section](#java-project))
+
+### Java project
+
+#### Folder structure
+
+You can choose between 2 main programs to run the app :
+- **fr.irit.PolyglotCli :** is a CLI version of the app where you can put query in parameter
+- **fr.irit.App :** is for development use, you have to put the query in the code and then run the app
+
+```txt
+└──src
+    ├── main
+    |   ├── antlr4
+    |   └── java
+    |       ├── fr.irit.App (Main)
+    |       ├── fr.irit.PolyglotCli (Main)
+    |       ├── fr.irit.algebraictree (Algebraic tree classes)
+    |       ├── fr.irit.commands (CLI commands classes)
+    |       ├── fr.irit.module1 (module 1 classes)
+    |       ├── fr.irit.module2 (module 2 classes)
+    |       └── fr.irit.module3 (modules 3 classes)
+    └── test
+```
+
+#### Tests
+Unit tests are execute using the JUnit framework under the folder [/src/test](./src/test)
+
+They are automatically run when you compile the app with maven (mvn install or mvn compile).
+
+#### Command Line Interface (CLI)
+
+Main file **fr.irit.PolyglotCli** allow launch the application as a command line interface.
+
+For create the CLI we use a tool named [Picocli](https://picocli.info/)
+
+All CLI commands are defined under the folder **fr.irit.commands**
+
+```
+Usage: java -jar polyglot.jar [-h] [COMMAND]
+Commands:
+- run (run a sql or mongo query)
+  ├── Usage: java -jar polyglot.jar run <query> [-gt] [-mt] [-tt] [--time] [--help]
+  ├── Parameters:
+  |   <query>               Database query (ex: SELECT * FROM Customers)
+  └── Options:
+      -gt, --globalTree     Print global tree
+      -h, --help            display this help message
+      -mt, --multistoreTree Print multi-store tree
+      --target-db-name=<TARGET_DB_NAME>
+                            Target database name (default : DB1)
+      --target-db-type=<TARGET_DB_TYPE>
+                            Target database type (default : RELATIONAL)
+      --time                Show execution time
+      -tt, --transferTree   Print transfer tree
+ 
+- unified-view (Display polystore unified view)
+  ├── Usage: java -jar polyglot.jar unified-view <dbType> [--help] [-pimpl]
+  ├── Parameters:
+  |   <dbType>              Database type (relational or document)
+  └── Options:
+      -h, --help   display this help message
+      -pimpl, --physical-implementation
+               show physical implementation in addition of unified view
+    
+```
+
+#### ANTLR
+[ANTLR](https://antlr.org) is a parser generator tool that we use for read and recognize DB Queries (sql for the moment)
+to translate it into a structured tree.
+
+<u>How to use it ?</u>
+
+Write a .g4 grammar file (lexer & parser rules) under [/src/main/antlr4](./src/main/antlr4)
+and generate parser with following cmd :
+```shell
+mvn generate-sources
+```
+Copy newly generated antlr folder (here : [./target/generated-sources/antlr4](./target/generated-sources/antlr4))
+to antlr4 folder in java folder
+(replace : [./src/main/java/fr/irit/module1/antlr4](./src/main/java/fr/irit/module1/antlr4))
