@@ -29,8 +29,11 @@ public class EProjection extends ETreeNode {
 
     //endregion
     //region GETTERS & SETTERS
-    public ETreeNode getChild() {
-        return child;
+    @Override
+    public ETreeNode[] getChild() {
+        ETreeNode[] childs = new ETreeNode[1];
+        childs[0] = child;
+        return childs;
     }
     public List<EDotNotation> getAttributes() { return attributes; }
     //endregion

@@ -1,14 +1,19 @@
 package com.main.irit;
 
-import fr.irit.algebraictree.Projection;
+import fr.irit.algebraictree.TreeNode;
 import fr.irit.module1.GlobalAlgebraicTree;
 import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
 import fr.irit.module2.MultistoreAlgebraicTree;
 import fr.irit.module3.TransformationTransferAlgebraicTree;
+import fr.sae.algebraictree.EJoin;
+import fr.sae.algebraictree.EProjection;
+import fr.sae.algebraictree.ESelection;
+import fr.sae.algebraictree.ETreeNode;
 import fxgraph.cells.JointureCell;
 import fxgraph.cells.LabelCell;
 import fxgraph.cells.ProjectionCell;
+import fxgraph.cells.SelectionCell;
 import fxgraph.edges.CorneredEdge;
 import fxgraph.edges.Edge;
 import fxgraph.graph.Graph;
@@ -98,15 +103,18 @@ public class iritMainController implements Initializable {
 
             Query queryParsed = QueryParserUtils.parse(query);
             GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
-
             System.out.println("Algebraic Tree : ");
-            globalAlgebraicTree.getRootNode().print("");
+            TreeNode global = globalAlgebraicTree.getRootNode();
+            ETreeNode globalTree = ETreeNode.createTree(global);
+            globalTree.print("");
 
-            Projection proj = (Projection) globalAlgebraicTree.getRootNode();
-
-            createGraph(proj);
+            createGraph(globalTree);
 
             MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
+            TreeNode multi = mat.getMultistoreAlgebraicTree();
+            ETreeNode multiTree = ETreeNode.createTree(multi);
+
+            createGraph(multiTree);
 
             System.out.println("");
             System.out.println("Algebraic Multi-stores Tree : ");
@@ -141,7 +149,7 @@ public class iritMainController implements Initializable {
     }
 
     //temp method to test the generation of a globalAlgebraicTree
-    private void createGraph(Projection proj){
+    private void createGraph(ETreeNode proj){
         Pane childPane;
         Graph graph = new Graph();
         // Add content to graph
@@ -149,14 +157,7 @@ public class iritMainController implements Initializable {
         final Model model = graph.getModel();
         graph.beginUpdate();
 
-        final ProjectionCell projectionGlobal = new ProjectionCell("π "+proj.toString());
-        String child = proj.getChild().toString();
-        final ICell labelGlobal = new LabelCell(child);
-
-        model.addCell(projectionGlobal);
-        model.addCell(labelGlobal);
-
-        model.addEdge(projectionGlobal, labelGlobal);
+        this.makeTree(proj, model, null);
 
         graph.endUpdate();
 
@@ -166,6 +167,49 @@ public class iritMainController implements Initializable {
         childPane = graph.getCanvas();
         paneGraph.setContent(childPane);
     }
+
+    public void makeTree(ETreeNode child, Model model, ICell lastCell) {
+        if (lastCell == null) {
+            ProjectionCell projection = new ProjectionCell("π "+ child.toString());
+
+            model.addCell(projection);
+
+            if(child.getChild().length>0) {
+                makeTree(child.getChild()[0], model, projection);
+            }
+
+        } else if (child.getClass().equals(EJoin.class)) {
+            JointureCell jointure = new JointureCell("⨝ "+child.toString());
+
+            model.addCell(jointure);
+            model.addEdge(lastCell, jointure);
+
+            makeTree(((EJoin) child).getLeftChild(), model, jointure);
+            makeTree(((EJoin) child).getRightChild(), model, jointure);
+
+        } else if (child.getClass().equals(ESelection.class)) {
+            SelectionCell selection = new SelectionCell("σ "+ child.toString());
+
+            model.addCell(selection);
+            model.addEdge(lastCell, selection);
+
+            if(child.getChild().length>0) {
+                makeTree(child.getChild()[0], model, selection);
+            }
+        }
+        else {
+            LabelCell label = new LabelCell(child.toString());
+
+            model.addCell(label);
+            model.addEdge(lastCell, label);
+
+            if(child.getChild().length>0) {
+                makeTree(child.getChild()[0], model, label);
+            }
+        }
+
+    }
+
 
     protected List<String> getAllTablesDB(){
         List<String> tablesNames = new ArrayList<>();

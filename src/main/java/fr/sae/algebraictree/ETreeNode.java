@@ -79,6 +79,10 @@ public class ETreeNode {
     public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
 
     }
+
+    public ETreeNode[] getChild() {
+        return new ETreeNode[0];
+    }
     //TODO rename table also ?
     //endregion
 }
