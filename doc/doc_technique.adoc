@@ -4,50 +4,75 @@
 :TOC:
 :TOC-title: Sommaire
 
-## Application IRIT (du repository gitlab de l'IRIT)
+Certaines parties proviennent directement du repository gitlab de l'IRIT
+Elles seront marquées par un "*"
 
-### Project Structure 
-[Bac_A_Sable](./Bac_A_Sable) : Previous module 1 version 
+## Structure du projet*
 
-[doc](./doc) : Folder containing uml diagrams (see [doc README](./doc/README.md))
+- ./Bac_A_Sable : Previous module 1 version 
 
-[Resources](./Resources) : Files containing database data (see [resources README](./Resources/README.md))
+- ./doc : Folder containing uml diagrams (see ./doc/README.md)
 
-[src](./src) : Java project (see [next section](#java-project))
+- ./Resources : Files containing database data (see ./Resources/README.md)
 
-### Java project
+- ./src : Java project (see [next section](#java-project))
 
-#### Folder structure
+## Projet Java*
 
-You can choose between 2 main programs to run the app :
+### Structure des dossiers
+
+Vous pouvez choisir 2 programmes pour démarrer l'application de l'IRIT :
+
 - **fr.irit.PolyglotCli :** is a CLI version of the app where you can put query in parameter
 - **fr.irit.App :** is for development use, you have to put the query in the code and then run the app
+
+Ou le programme pour démarrer l'application IHM
+
+- **com.main.irit.irit.main.iritMainApplication.java**
 
 ```txt
 └──src
     ├── main
     |   ├── antlr4
-    |   └── java
-    |       ├── fr.irit.App (Main)
-    |       ├── fr.irit.PolyglotCli (Main)
-    |       ├── fr.irit.algebraictree (Algebraic tree classes)
-    |       ├── fr.irit.commands (CLI commands classes)
-    |       ├── fr.irit.module1 (module 1 classes)
-    |       ├── fr.irit.module2 (module 2 classes)
-    |       └── fr.irit.module3 (modules 3 classes)
+    |   ├── java
+    |   |   ├── fr.irit.App (Main)
+    |   |   ├── fr.irit.PolyglotCli (Main)
+    |   |   ├── fr.irit.algebraictree (Algebraic tree classes)
+    |   |   ├── fr.irit.commands (CLI commands classes)
+    |   |   ├── fr.irit.module1 (module 1 classes)
+    |   |   ├── fr.irit.module2 (module 2 classes)
+    |   |   └── fr.irit.module3 (modules 3 classes)
+    |   └── moduleInterface
+    |       ├── fxgraph/ (librairie pour génerer l'arbre)
+    |       ├── com.main.irit.irit.main.view.fxm (FXML de l'app)
+    |       ├── com.main.irit.irit.main.iritMainApplication.java (Main)
+    |       └── com.main.irit.irit.main.iritMainController.java (Controller)
     └── test
 ```
 
-#### Tests
-Unit tests are execute using the JUnit framework under the folder [/src/test](./src/test)
+### Librairie FXGraph
+
+La librairie FXGraph est la librairie utilisée lors de la création de l'arbre algébrique. 
+Dans le cadre de la SAE, nous avons eu à modifier ou ajouter du code dans la librairie.
+
+```txt
+└──fxgraph
+    ├── cells (les cellules du graphe)
+    ├── edges (les liens entre les cellules)
+    ├── graph (gestion du graphe)
+    └── layout
+```
+
+### Tests (instructions du repository gitlab de l'IRIT)*
+Unit tests are execute using the JUnit framework under the folder ./src/test
 
 They are automatically run when you compile the app with maven (mvn install or mvn compile).
 
-#### Command Line Interface (CLI)
+### Command Line Interface (CLI) (instructions du repository gitlab de l'IRIT)*
 
 Main file **fr.irit.PolyglotCli** allow launch the application as a command line interface.
 
-For create the CLI we use a tool named [Picocli](https://picocli.info/)
+For create the CLI we use a tool named https://picocli.info/[Picocli]
 
 All CLI commands are defined under the folder **fr.irit.commands**
 
@@ -80,17 +105,19 @@ Commands:
     
 ```
 
-#### ANTLR
-[ANTLR](https://antlr.org) is a parser generator tool that we use for read and recognize DB Queries (sql for the moment)
+### ANTLR (instructions du repository gitlab de l'IRIT)*
+https://antlr.org[ANTLR] is a parser generator tool that we use for read and recognize DB Queries (sql for the moment)
 to translate it into a structured tree.
 
 <u>How to use it ?</u>
 
-Write a .g4 grammar file (lexer & parser rules) under [/src/main/antlr4](./src/main/antlr4)
+Write a .g4 grammar file (lexer & parser rules) under ./src/main/antlr4
 and generate parser with following cmd :
 ```shell
 mvn generate-sources
 ```
-Copy newly generated antlr folder (here : [./target/generated-sources/antlr4](./target/generated-sources/antlr4))
+Copy newly generated antlr folder (here : ./target/generated-sources/antlr4)
 to antlr4 folder in java folder
-(replace : [./src/main/java/fr/irit/module1/antlr4](./src/main/java/fr/irit/module1/antlr4))
+(replace : ./src/main/java/fr/irit/module1/antlr4)
+
+

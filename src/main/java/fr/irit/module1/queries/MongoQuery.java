@@ -26,7 +26,6 @@ public class MongoQuery extends Query<MongoQueryParser.QueryContext> {
 
     @Override
     public List<Selection> createSelectionNodes() {
-        System.out.println("TEST MONGO");
         List<Selection> selectionList = new ArrayList<Selection>();
         // Search OR conditions
         // We assume that a composedPredicates is only an $or

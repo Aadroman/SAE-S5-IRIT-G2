@@ -9,7 +9,7 @@ public abstract class TreeNode {
     //region ATTRIBUTES
     private TreeNode parent;
     //endregion
-    //region GETTERS & SETTERS
+    //region GETTERS & SETTERS oui
     public TreeNode getParent() { return this.parent; }
     public void setParent(TreeNode parent) { this.parent = parent; }
     //endregion

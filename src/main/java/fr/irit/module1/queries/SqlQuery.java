@@ -19,7 +19,6 @@ public class SqlQuery extends Query<SqlQueryParser.QueryContext> {
 
     @Override
     public List<String> getTablesNames() {
-        System.out.println("TEST SQL");
         List<String> tableNames = new ArrayList<String>();
         for(SqlQueryParser.FromItemContext fromItem : getParsedQuery().fromClause().fromItem()){
             tableNames.add(fromItem.IDENTIFIER().getText());

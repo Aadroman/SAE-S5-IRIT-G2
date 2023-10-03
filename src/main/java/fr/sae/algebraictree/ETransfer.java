@@ -1,16 +1,28 @@
-package fr.irit.algebraictree;
+package fr.sae.algebraictree;
+
+import fr.irit.algebraictree.Transfer;
+import fr.irit.module3.TransformationTransferAlgebraicTree;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Transfer extends TreeNode {
-    private TreeNode child;
+public class ETransfer extends ETreeNode {
+    private ETreeNode child;
+    private Transfer correspondingTransfer;
     private String sourceDatabase;
     private String targetDatabase;
-    public Transfer(String sourceDatabase, String targetDatabase){
+    public ETransfer(String sourceDatabase, String targetDatabase){
         this.sourceDatabase = sourceDatabase;
         this.targetDatabase = targetDatabase;
+    }
+
+    public ETransfer(Transfer node) {
+        this.correspondingTransfer = node ;
+        this.child = ETreeNode.createTree(node.getChild()) ;
+        String[] split = this.correspondingTransfer.toString().split(" -> ");
+        this.sourceDatabase = split[0];
+        this.targetDatabase = split[1];
     }
 
     @Override
@@ -22,7 +34,7 @@ public class Transfer extends TreeNode {
         return this.child.listIncludedTablesRecursive();
     }
     @Override
-    public TreeNode findLowestNodeContainingTables(List<String> tableList) {
+    public ETreeNode findLowestNodeContainingTables(List<String> tableList) {
         if(!this.listIncludedTablesRecursive().containsAll(tableList)){
             return null;
         } else {
@@ -30,11 +42,11 @@ public class Transfer extends TreeNode {
         }
     }
     @Override
-    public Set<DotNotation> listDistinctColumnsRecursive() {
+    public Set<EDotNotation> listDistinctColumnsRecursive() {
         return child.listDistinctColumnsRecursive();
     }
     @Override
-    public void addChildren(TreeNode... children) {
+    public void addChildren(ETreeNode... children) {
         if(children.length == 1){
             this.child = children[0];
             this.child.setParent(this);
@@ -44,7 +56,7 @@ public class Transfer extends TreeNode {
     }
     @Override
     public void print(String prefix) {
-        if(this.getParent() instanceof Join){
+        if(this.getParent() instanceof EJoin){
             System.out.print(prefix + "├── Transfer : " +this.toString() + "\n");
         } else {
             System.out.print(prefix + "└── Transfer : " +this.toString() + "\n");
@@ -52,11 +64,7 @@ public class Transfer extends TreeNode {
         this.child.print(prefix + "    ");
     }
     @Override
-    public void renameColumnsRecursive(Map<DotNotation, DotNotation> columnNamingMap) {
+    public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
         this.child.renameColumnsRecursive(columnNamingMap);
     }
-    public TreeNode getChild() {
-        return this.child;
-    }
-
 }
