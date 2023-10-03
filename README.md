@@ -33,11 +33,11 @@ GUINLE Loic
 #### **La documentation**
 
 se trouve dans le dossier "./doc" :
-* Backlog produit (format adoc et pdf)
-* diagramme de classes (format png et puml)
-* diagramme de séquence (format png et puml)
-* documentation utilisateur (format adoc)
-* documentation technique (format adoc)
+* Backlog produit (format [adoc](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/Backlog_produit_IRIT.adoc) et [pdf](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/Backlog_produit_IRIT.pdf))
+* Diagramme de classes (format [png](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/class/module1.png) et [puml](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/class/module1.puml))
+* Diagramme de séquence (format [png](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/sequence/overall_structure.png) et [puml](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/sequence/overall_structure.puml))
+* [Documentation utilisateur](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/doc_user.adoc) (format adoc)
+* [Documentation technique](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/doc_technique.adoc) (format adoc)
 
 ####  **Src et autre dossiers**
 
