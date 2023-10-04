@@ -7,7 +7,6 @@ import fr.irit.module1.queries.Query;
 import fr.irit.module2.MultistoreAlgebraicTree;
 import fr.irit.module3.TransformationTransferAlgebraicTree;
 import fr.sae.algebraictree.EJoin;
-import fr.sae.algebraictree.EProjection;
 import fr.sae.algebraictree.ESelection;
 import fr.sae.algebraictree.ETreeNode;
 import fxgraph.cells.JointureCell;
@@ -29,7 +28,6 @@ import javafx.stage.Stage;
 import org.abego.treelayout.Configuration;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +39,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class iritMainController implements Initializable {
-
-    private iritMainApplication app;
+    @SuppressWarnings("FieldCanBeLocal")
+    private  iritMainApplication app;
     private Stage primaryStage;
 
     @FXML
@@ -51,20 +49,17 @@ public class iritMainController implements Initializable {
     @FXML
     private TitledPane paneGraph;
 
-    @FXML
-    private Button requestOK;
-
-    @FXML
-    protected void onOkButtonClick() throws IOException {
+//    @FXML
+//    protected void onOkButtonClick() throws IOException {
 //        Graph graph = new Graph();
 //        // Add content to graph
 //        populateGraph(graph);
 //        // Layout nodes
 //        AbegoTreeLayout layout = new AbegoTreeLayout(200, 200, Configuration.Location.Bottom);
 //        graph.layout(layout);
-        paneGraph = updatePane(paneGraph);
+//        paneGraph = updatePane(paneGraph);
 //        this.app.graph();
-    }
+//    }
 
     public void initContext(Stage mainStage, iritMainApplication iritMainApplication) {
         this.primaryStage = mainStage;
@@ -101,6 +96,13 @@ public class iritMainController implements Initializable {
                 }
             }
 
+            Pane childPane;
+            Graph graph = new Graph();
+            // Add content to graph
+
+            final Model model = graph.getModel();
+            graph.beginUpdate();
+
             Query queryParsed = QueryParserUtils.parse(query);
             GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
             System.out.println("Algebraic Tree : ");
@@ -108,13 +110,14 @@ public class iritMainController implements Initializable {
             ETreeNode globalTree = ETreeNode.createTree(global);
             globalTree.print("");
 
-            createGraph(globalTree);
+            makeTree(globalTree, model, null);
 
             MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
             TreeNode multi = mat.getMultistoreAlgebraicTree();
             ETreeNode multiTree = ETreeNode.createTree(multi);
 
-            createGraph(multiTree);
+            makeTree(multiTree, model, null);
+
 
             System.out.println("");
             System.out.println("Algebraic Multi-stores Tree : ");
@@ -124,6 +127,15 @@ public class iritMainController implements Initializable {
             System.out.println("");
             System.out.println("Algebraic Multi-stores Tree : ");
             ttat.getTransformationTransferAlgebraicTree().print("");
+
+            graph.endUpdate();
+
+            // Layout nodes
+            AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
+            graph.layout(layout);
+            childPane = graph.getCanvas();
+            paneGraph.setContent(childPane);
+
         } catch (Exception e) {
             if (welcomeText.getText().isEmpty()) {
                 Alert warning = new Alert(Alert.AlertType.WARNING);
@@ -131,7 +143,7 @@ public class iritMainController implements Initializable {
                 warning.setHeaderText("Votre requête est vide !");
                 warning.setContentText(e.toString());
                 warning.showAndWait();
-            } else if (allTablesFound==false) {
+            } else if (!allTablesFound) {
                 Alert warning = new Alert(Alert.AlertType.WARNING);
                 warning.setTitle("Erreur requête");
                 warning.setHeaderText("Mettez une majuscule à votre table");
@@ -148,41 +160,24 @@ public class iritMainController implements Initializable {
 
     }
 
-    //temp method to test the generation of a globalAlgebraicTree
-    private void createGraph(ETreeNode proj){
-        Pane childPane;
-        Graph graph = new Graph();
-        // Add content to graph
-
-        final Model model = graph.getModel();
-        graph.beginUpdate();
-
-        this.makeTree(proj, model, null);
-
-        graph.endUpdate();
-
-        // Layout nodes
-        AbegoTreeLayout layout = new AbegoTreeLayout(100, 500, Configuration.Location.Bottom);
-        graph.layout(layout);
-        childPane = graph.getCanvas();
-        paneGraph.setContent(childPane);
-    }
-
     public void makeTree(ETreeNode child, Model model, ICell lastCell) {
+        //On crée la base de l'arbre si le treeNode n'a pas de parent
         if (lastCell == null) {
             ProjectionCell projection = new ProjectionCell("π "+ child.toString());
 
+            //On l'ajoute au model deja crée précédemment
             model.addCell(projection);
 
+            //On verifie si il a des enfants et on réexecute la methode
             if(child.getChild().length>0) {
                 makeTree(child.getChild()[0], model, projection);
             }
-
         } else if (child.getClass().equals(EJoin.class)) {
+
             JointureCell jointure = new JointureCell("⨝ "+child.toString());
 
             model.addCell(jointure);
-            model.addEdge(lastCell, jointure);
+            model.addEdge(jointure, lastCell);
 
             makeTree(((EJoin) child).getLeftChild(), model, jointure);
             makeTree(((EJoin) child).getRightChild(), model, jointure);
@@ -191,7 +186,7 @@ public class iritMainController implements Initializable {
             SelectionCell selection = new SelectionCell("σ "+ child.toString());
 
             model.addCell(selection);
-            model.addEdge(lastCell, selection);
+            model.addEdge(selection, lastCell);
 
             if(child.getChild().length>0) {
                 makeTree(child.getChild()[0], model, selection);
@@ -201,7 +196,7 @@ public class iritMainController implements Initializable {
             LabelCell label = new LabelCell(child.toString());
 
             model.addCell(label);
-            model.addEdge(lastCell, label);
+            model.addEdge(label, lastCell);
 
             if(child.getChild().length>0) {
                 makeTree(child.getChild()[0], model, label);
@@ -211,6 +206,9 @@ public class iritMainController implements Initializable {
     }
 
 
+    /***
+     * Return le nom de toutes les tables dans une List de Nom
+     * */
     protected List<String> getAllTablesDB(){
         List<String> tablesNames = new ArrayList<>();
         // Specify the path to your JSON file
@@ -229,8 +227,6 @@ public class iritMainController implements Initializable {
             JsonNode documentUVTablesNode = documentNode.get("uvTables");
             JsonNode relationalUVTablesNode = relationalNode.get("uvTables");
 
-            // Create a List to store the "label" values
-            List<String> labelList = new ArrayList<>();
 
             // Iterate through the JSON array and extract "label" values
             for (JsonNode node : documentUVTablesNode) {
@@ -249,18 +245,18 @@ public class iritMainController implements Initializable {
         return tablesNames;
     }
 
-    private TitledPane updatePane(TitledPane pane) {
-        Pane childPane;
-        Graph graph = new Graph();
-        // Add content to graph
-        populateGraph(graph);
-        // Layout nodes
-        AbegoTreeLayout layout = new AbegoTreeLayout(100, 500, Configuration.Location.Bottom);
-        graph.layout(layout);
-        childPane = graph.getCanvas();
-        pane.setContent(childPane);
-        return pane;
-    }
+//    private TitledPane updatePane(TitledPane pane) {
+//        Pane childPane;
+//        Graph graph = new Graph();
+//        // Add content to graph
+//        populateGraph(graph);
+//        // Layout nodes
+//        AbegoTreeLayout layout = new AbegoTreeLayout(100, 500, Configuration.Location.Bottom);
+//        graph.layout(layout);
+//        childPane = graph.getCanvas();
+//        pane.setContent(childPane);
+//        return pane;
+//    }
 
     private void populateGraph(Graph graph) {
         final Model model = graph.getModel();
