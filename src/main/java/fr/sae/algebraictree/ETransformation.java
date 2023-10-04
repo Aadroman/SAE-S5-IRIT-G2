@@ -30,6 +30,13 @@ public class ETransformation extends ETreeNode {
     }
 
     @Override
+    public ETreeNode[] getChild() {
+        ETreeNode[] childs = new ETreeNode[1];
+        childs[0] = child;
+        return childs;
+    }
+
+    @Override
     public String toString() {
         return this.sourceDatabaseType + " -> " + this.targetDatabaseType;
     }

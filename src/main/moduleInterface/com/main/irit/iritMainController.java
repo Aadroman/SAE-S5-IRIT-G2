@@ -6,13 +6,8 @@ import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
 import fr.irit.module2.MultistoreAlgebraicTree;
 import fr.irit.module3.TransformationTransferAlgebraicTree;
-import fr.sae.algebraictree.EJoin;
-import fr.sae.algebraictree.ESelection;
-import fr.sae.algebraictree.ETreeNode;
-import fxgraph.cells.JointureCell;
-import fxgraph.cells.LabelCell;
-import fxgraph.cells.ProjectionCell;
-import fxgraph.cells.SelectionCell;
+import fr.sae.algebraictree.*;
+import fxgraph.cells.*;
 import fxgraph.edges.CorneredEdge;
 import fxgraph.edges.Edge;
 import fxgraph.graph.Graph;
@@ -37,6 +32,7 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.antlr.v4.runtime.tree.Tree;
 
 public class iritMainController implements Initializable {
     @SuppressWarnings("FieldCanBeLocal")
@@ -115,15 +111,17 @@ public class iritMainController implements Initializable {
             MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
             TreeNode multi = mat.getMultistoreAlgebraicTree();
             ETreeNode multiTree = ETreeNode.createTree(multi);
-
             makeTree(multiTree, model, null);
-
 
             System.out.println("");
             System.out.println("Algebraic Multi-stores Tree : ");
             mat.getMultistoreAlgebraicTree().print("");
 
             TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat);
+            TreeNode transform = ttat.getTransformationTransferAlgebraicTree();
+            ETreeNode transformTree = ETreeNode.createTree(transform);
+            makeTree(transformTree, model, null);
+
             System.out.println("");
             System.out.println("Algebraic Multi-stores Tree : ");
             ttat.getTransformationTransferAlgebraicTree().print("");
@@ -191,8 +189,25 @@ public class iritMainController implements Initializable {
             if(child.getChild().length>0) {
                 makeTree(child.getChild()[0], model, selection);
             }
-        }
-        else {
+        } else if (child.getClass().equals(ETransfer.class)) {
+            TransferCell transfer = new TransferCell(child.toString());
+
+            model.addCell(transfer);
+            model.addEdge(transfer, lastCell);
+
+            if(child.getChild().length>0){
+                makeTree(child.getChild()[0],model,transfer);
+            }
+        } else if (child.getClass().equals(ETransformation.class)) {
+            LabelCell transform = new LabelCell(child.toString());
+
+            model.addCell(transform);
+            model.addEdge(transform, lastCell);
+
+            if(child.getChild().length>0){
+                makeTree(child.getChild()[0],model,transform);
+            }
+        } else {
             LabelCell label = new LabelCell(child.toString());
 
             model.addCell(label);

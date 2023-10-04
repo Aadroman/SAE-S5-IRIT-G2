@@ -26,6 +26,13 @@ public class ETransfer extends ETreeNode {
     }
 
     @Override
+    public ETreeNode[] getChild() {
+        ETreeNode[] childs = new ETreeNode[1];
+        childs[0] = child;
+        return childs;
+    }
+
+    @Override
     public String toString() {
         return this.sourceDatabase + " -> " + this.targetDatabase;
     }
