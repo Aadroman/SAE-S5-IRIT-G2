@@ -96,6 +96,13 @@ public class iritMainController implements Initializable {
                 }
             }
 
+            Pane childPane;
+            Graph graph = new Graph();
+            // Add content to graph
+
+            final Model model = graph.getModel();
+            graph.beginUpdate();
+
             Query queryParsed = QueryParserUtils.parse(query);
             GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
             System.out.println("Algebraic Tree : ");
@@ -103,13 +110,14 @@ public class iritMainController implements Initializable {
             ETreeNode globalTree = ETreeNode.createTree(global);
             globalTree.print("");
 
-            createGraph(globalTree);
+            makeTree(globalTree, model, null);
 
             MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
             TreeNode multi = mat.getMultistoreAlgebraicTree();
             ETreeNode multiTree = ETreeNode.createTree(multi);
 
-            createGraph(multiTree);
+            makeTree(multiTree, model, null);
+
 
             System.out.println("");
             System.out.println("Algebraic Multi-stores Tree : ");
@@ -119,6 +127,16 @@ public class iritMainController implements Initializable {
             System.out.println("");
             System.out.println("Algebraic Multi-stores Tree : ");
             ttat.getTransformationTransferAlgebraicTree().print("");
+
+            graph.endUpdate();
+
+            // Layout nodes
+            AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Bottom);
+            graph.layout(layout);
+            childPane = graph.getCanvas();
+            paneGraph.setContent(childPane);
+
+
         } catch (Exception e) {
             if (welcomeText.getText().isEmpty()) {
                 Alert warning = new Alert(Alert.AlertType.WARNING);
@@ -143,29 +161,6 @@ public class iritMainController implements Initializable {
 
     }
 
-    //temp method to test the generation of a globalAlgebraicTree
-    private void createGraph(ETreeNode proj){
-        Pane childPane;
-        Graph graph = new Graph();
-        // Add content to graph
-
-        final Model model = graph.getModel();
-        graph.beginUpdate();
-
-        this.makeTree(proj, model, null);
-
-        graph.endUpdate();
-
-        // Layout nodes
-        AbegoTreeLayout layout = new AbegoTreeLayout(100, 500, Configuration.Location.Bottom);
-        graph.layout(layout);
-        childPane = graph.getCanvas();
-        paneGraph.setContent(childPane);
-    }
-
-    /**
-     *  Création de l'arbre et ajout au model en fonction d'une projection
-     * */
     public void makeTree(ETreeNode child, Model model, ICell lastCell) {
         //On crée la base de l'arbre si le treeNode n'a pas de parent
         if (lastCell == null) {
