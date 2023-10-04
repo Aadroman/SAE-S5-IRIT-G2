@@ -7,7 +7,6 @@ import fr.irit.module1.queries.Query;
 import fr.irit.module2.MultistoreAlgebraicTree;
 import fr.irit.module3.TransformationTransferAlgebraicTree;
 import fr.sae.algebraictree.EJoin;
-import fr.sae.algebraictree.EProjection;
 import fr.sae.algebraictree.ESelection;
 import fr.sae.algebraictree.ETreeNode;
 import fxgraph.cells.JointureCell;
@@ -29,7 +28,6 @@ import javafx.stage.Stage;
 import org.abego.treelayout.Configuration;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +39,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class iritMainController implements Initializable {
-
-    private iritMainApplication app;
+    @SuppressWarnings("FieldCanBeLocal")
+    private  iritMainApplication app;
     private Stage primaryStage;
 
     @FXML
@@ -51,20 +49,17 @@ public class iritMainController implements Initializable {
     @FXML
     private TitledPane paneGraph;
 
-    @FXML
-    private Button requestOK;
-
-    @FXML
-    protected void onOkButtonClick() throws IOException {
+//    @FXML
+//    protected void onOkButtonClick() throws IOException {
 //        Graph graph = new Graph();
 //        // Add content to graph
 //        populateGraph(graph);
 //        // Layout nodes
 //        AbegoTreeLayout layout = new AbegoTreeLayout(200, 200, Configuration.Location.Bottom);
 //        graph.layout(layout);
-        paneGraph = updatePane(paneGraph);
+//        paneGraph = updatePane(paneGraph);
 //        this.app.graph();
-    }
+//    }
 
     public void initContext(Stage mainStage, iritMainApplication iritMainApplication) {
         this.primaryStage = mainStage;
@@ -131,7 +126,7 @@ public class iritMainController implements Initializable {
                 warning.setHeaderText("Votre requête est vide !");
                 warning.setContentText(e.toString());
                 warning.showAndWait();
-            } else if (allTablesFound==false) {
+            } else if (!allTablesFound) {
                 Alert warning = new Alert(Alert.AlertType.WARNING);
                 warning.setTitle("Erreur requête");
                 warning.setHeaderText("Mettez une majuscule à votre table");
@@ -238,8 +233,6 @@ public class iritMainController implements Initializable {
             JsonNode documentUVTablesNode = documentNode.get("uvTables");
             JsonNode relationalUVTablesNode = relationalNode.get("uvTables");
 
-            // Create a List to store the "label" values
-            List<String> labelList = new ArrayList<>();
 
             // Iterate through the JSON array and extract "label" values
             for (JsonNode node : documentUVTablesNode) {
@@ -258,18 +251,18 @@ public class iritMainController implements Initializable {
         return tablesNames;
     }
 
-    private TitledPane updatePane(TitledPane pane) {
-        Pane childPane;
-        Graph graph = new Graph();
-        // Add content to graph
-        populateGraph(graph);
-        // Layout nodes
-        AbegoTreeLayout layout = new AbegoTreeLayout(100, 500, Configuration.Location.Bottom);
-        graph.layout(layout);
-        childPane = graph.getCanvas();
-        pane.setContent(childPane);
-        return pane;
-    }
+//    private TitledPane updatePane(TitledPane pane) {
+//        Pane childPane;
+//        Graph graph = new Graph();
+//        // Add content to graph
+//        populateGraph(graph);
+//        // Layout nodes
+//        AbegoTreeLayout layout = new AbegoTreeLayout(100, 500, Configuration.Location.Bottom);
+//        graph.layout(layout);
+//        childPane = graph.getCanvas();
+//        pane.setContent(childPane);
+//        return pane;
+//    }
 
     private void populateGraph(Graph graph) {
         final Model model = graph.getModel();
