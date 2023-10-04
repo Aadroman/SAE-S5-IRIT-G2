@@ -79,7 +79,7 @@ Les exigences sont presque les mêmes que pour l'application de l'IRIT, c'est à
 
 Pour démarrer l'application, il suffit, dans l'IDE, d'ouvrir le fichier `src/main/moduleInterface/com/main/irit/iritMainApplication.java`, et de lancer `iritMainApplication`.
 
-TIP: Pensez à ajouter le fichier aux sources du projet si vous n'arrivez pas exécuter le fichier.
+TIP: Pensez à ajouter le fichier aux sources du projet si vous n'arrivez pas exécuter le fichier. https://www.jetbrains.com/help/idea/content-roots.html[Lien pour Intellij]
 
 === Utilisation de l'application 
 
