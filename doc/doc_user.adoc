@@ -3,6 +3,7 @@
 :numbered:
 :TOC:
 :TOC-title: Sommaire
+:tip-caption: 💡
 
 == Application de l'IRIT (instructions du repository gitlab de l'IRIT)
 
@@ -65,18 +66,20 @@ java -jar .\target\polyglot.jar --help
 
 == Application IHM
 
-=== exigences 
+=== Exigences 
 
-Les exigences sont presques les mêmes que pour l'application de l'IRIT, c'est à dire :
+Les exigences sont presque les mêmes que pour l'application de l'IRIT, c'est à dire :
 
 * Java
 * un IDE tel que 
-** éclipse
-** IntelliJ
+** https://www.jetbrains.com/fr-fr/idea/[Intellij]
+** https://www.eclipse.org/downloads/[Eclipse]
 
 === Lancement de l'application
 
-Pour démarrer l'application, il suffit, dans l'IDE, d'ouvrir le fichier src/main/moduleInterface/com/main/irit/iritMainApplication.java, et de lancer iritMainApplication
+Pour démarrer l'application, il suffit, dans l'IDE, d'ouvrir le fichier `src/main/moduleInterface/com/main/irit/iritMainApplication.java`, et de lancer `iritMainApplication`.
+
+TIP: Pensez à ajouter le fichier aux sources du projet si vous n'arrivez pas exécuter le fichier. https://www.jetbrains.com/help/idea/content-roots.html[Lien pour Intellij]
 
 === Utilisation de l'application 
 
@@ -86,4 +89,7 @@ L'application est divisée en trois parties :
 * l'affichage de l'arbre (à gauche)
 * présentation de l'arbre en forme de répertoire (à droite)
 
-Il suffit d'entrer une requete (ex : "select * from Orders") et de clicker sur le bouton "ok" pour pouvoir faire afficher l'arbre algébrique correspondant à la reqête
+==== Saisir une requête et consulter l'arbre algébrique correspondant.
+
+Il suffit d'entrer une requete (ex : `Select * from Orders`) et de cliquer sur le bouton `OK` pour afficher l'arbre algébrique correspondant à la requête.
+Vous pouvez naviguer dans l'abre avec votre souris et déplacer les éléments de ce dernier. Vous pouvez également zoomer.

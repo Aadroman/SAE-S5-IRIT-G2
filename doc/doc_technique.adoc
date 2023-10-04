@@ -11,11 +11,11 @@ Elles seront marquées par un "*"
 
 - ./Bac_A_Sable : Previous module 1 version 
 
-- ./doc : Folder containing uml diagrams (see ./doc/README.md)
+- ./doc : Folder containing uml diagrams (voir https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/[ici])
 
-- ./Resources : Files containing database data (see ./Resources/README.md)
+- ./Resources : Files containing database data (voir https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/Resources/[ici])
 
-- ./src : Java project (see [next section](#java-project))
+- ./src : Java project (voir prochaine section)
 
 ## Projet Java*
 
@@ -23,12 +23,12 @@ Elles seront marquées par un "*"
 
 Vous pouvez choisir 2 programmes pour démarrer l'application de l'IRIT :
 
-- **fr.irit.PolyglotCli :** is a CLI version of the app where you can put query in parameter
-- **fr.irit.App :** is for development use, you have to put the query in the code and then run the app
+- `fr.irit.PolyglotCli` is a CLI version of the app where you can put query in parameter
+- `fr.irit.App` is for development use, you have to put the query in the code and then run the app
 
 Ou le programme pour démarrer l'application IHM
 
-- **com.main.irit.irit.main.iritMainApplication.java**
+- `com.main.irit.irit.main.iritMainApplication.java`
 
 ```txt
 └──src
