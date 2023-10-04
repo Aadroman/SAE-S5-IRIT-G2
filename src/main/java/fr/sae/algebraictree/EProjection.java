@@ -7,34 +7,51 @@ import org.apache.commons.collections4.ListUtils;
 import java.util.*;
 
 public class EProjection extends ETreeNode {
+
     //region ATTRIBUTES
     private ETreeNode child;
-    private Projection correspondingProjection ;
+
     /**
      * Attributes is null in case of wildcard (*)
      */
     private List<EDotNotation> attributes = new ArrayList<>();
     //endregion
+
     //region CONSTRUCTORS
-    public EProjection() {}
+    /**
+     * @param attributes
+     */
     public EProjection(List<EDotNotation> attributes) {this.attributes = attributes;}
 
-    public EProjection (Projection p) {
-        this.correspondingProjection = p;
-        for(DotNotation dt : p.getAttributes()){
+    /**
+     * @param projection
+     */
+    public EProjection (Projection projection) {
+        for(DotNotation dt : projection.getAttributes()){
             this.attributes.add(new EDotNotation(dt));
         }
-        this.child = ETreeNode.createTree(p.getChild()) ;
+        this.child = ETreeNode.createTree(projection.getChild()) ;
     }
-
     //endregion
+
+    /**
+     * @return child
+     */
     //region GETTERS & SETTERS
     public ETreeNode getChild() {
         return child;
     }
+
+    /**
+     * @return attribute
+     */
     public List<EDotNotation> getAttributes() { return attributes; }
     //endregion
+
     //region METHODS
+    /**
+     * @param children zero or more
+     */
     @Override
     public void addChildren(ETreeNode... children) {
         if(children.length == 1){
@@ -45,12 +62,18 @@ public class EProjection extends ETreeNode {
         }
     }
 
+    /**
+     * @param prefix
+     */
     @Override
     public void print(String prefix) {
-        System.out.print("π " + this.toString() + "\n");
+        System.out.print("π " + this + "\n");
         this.child.print(prefix);
     }
 
+    /**
+     * @param columnNamingMap
+     */
     @Override
     public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
         if(this.attributes != null){
@@ -63,6 +86,9 @@ public class EProjection extends ETreeNode {
         this.child.renameColumnsRecursive(columnNamingMap);
     }
 
+    /**
+     * @return
+     */
     @Override
     public String toString() {
         if(attributes == null) {
@@ -71,6 +97,9 @@ public class EProjection extends ETreeNode {
         return attributes.toString().replace("[", ""). replace("]", "");
     }
 
+    /**
+     * @return
+     */
     @Override
     public List<String> listIncludedTablesRecursive() {
         return this.child.listIncludedTablesRecursive();
@@ -78,23 +107,26 @@ public class EProjection extends ETreeNode {
 
     /**
      * A Projection node cannot be the lowest node which contain 1 or n tables.
+     *
+     * @param tableList List of table names searched
      * @return null or result of the same method on its child
      */
     @Override
     public ETreeNode findLowestNodeContainingTables(List<String> tableList) {
-        if(!this.listIncludedTablesRecursive().containsAll(tableList)){
+        if(!new HashSet<>(this.listIncludedTablesRecursive()).containsAll(tableList)){
             return null;
         } else {
             return this.child.findLowestNodeContainingTables(tableList);
         }
     }
 
+    /**
+     * @return
+     */
     @Override
     public Set<EDotNotation> listDistinctColumnsRecursive() {
-        Set<EDotNotation> includedColumns = new HashSet<EDotNotation>();
-        for(EDotNotation attribute : ListUtils.emptyIfNull(attributes)){
-            includedColumns.add(attribute);
-        }
+        Set<EDotNotation> includedColumns = new HashSet<>();
+        includedColumns.addAll(ListUtils.emptyIfNull(attributes));
         includedColumns.addAll(child.listDistinctColumnsRecursive());
         return includedColumns;
     }
