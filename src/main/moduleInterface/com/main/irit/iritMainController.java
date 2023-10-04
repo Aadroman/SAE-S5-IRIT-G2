@@ -168,17 +168,23 @@ public class iritMainController implements Initializable {
         paneGraph.setContent(childPane);
     }
 
+    /**
+     *  Création de l'arbre et ajout au model en fonction d'une projection
+     * */
     public void makeTree(ETreeNode child, Model model, ICell lastCell) {
+        //On crée la base de l'arbre si le treeNode n'a pas de parent
         if (lastCell == null) {
             ProjectionCell projection = new ProjectionCell("π "+ child.toString());
 
+            //On l'ajoute au model deja crée précédemment
             model.addCell(projection);
 
+            //On verifie si il a des enfants et on réexecute la methode
             if(child.getChild().length>0) {
                 makeTree(child.getChild()[0], model, projection);
             }
-
         } else if (child.getClass().equals(EJoin.class)) {
+
             JointureCell jointure = new JointureCell("⨝ "+child.toString());
 
             model.addCell(jointure);
@@ -211,6 +217,9 @@ public class iritMainController implements Initializable {
     }
 
 
+    /***
+     * Return le nom de toutes les tables dans une List de Nom
+     * */
     protected List<String> getAllTablesDB(){
         List<String> tablesNames = new ArrayList<>();
         // Specify the path to your JSON file
