@@ -20,9 +20,13 @@ public class EProjection extends ETreeNode {
     public EProjection(List<EDotNotation> attributes) {this.attributes = attributes;}
 
     public EProjection (Projection p) {
-        this.correspondingProjection = p;
-        for(DotNotation dt : p.getAttributes()){
-            this.attributes.add(new EDotNotation(dt));
+        if(p.getAttributes()==null){
+            this.correspondingProjection = new Projection();
+        }else{
+            this.correspondingProjection = p;
+            for(DotNotation dt : p.getAttributes()){
+                this.attributes.add(new EDotNotation(dt));
+            }
         }
         this.child = ETreeNode.createTree(p.getChild()) ;
     }

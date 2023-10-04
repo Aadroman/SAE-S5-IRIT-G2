@@ -15,7 +15,7 @@ SANCHEZ-PORRO Aurélien (alternant présent avant l'heure)
 
 BROUXEL Enzo 
 
-COURREJOU Mattieux
+COURREJOU Matthieu
 
 ESTIVAL Ludovic
 
