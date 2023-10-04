@@ -131,11 +131,10 @@ public class iritMainController implements Initializable {
             graph.endUpdate();
 
             // Layout nodes
-            AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Bottom);
+            AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
             graph.layout(layout);
             childPane = graph.getCanvas();
             paneGraph.setContent(childPane);
-
 
         } catch (Exception e) {
             if (welcomeText.getText().isEmpty()) {
@@ -178,7 +177,7 @@ public class iritMainController implements Initializable {
             JointureCell jointure = new JointureCell("⨝ "+child.toString());
 
             model.addCell(jointure);
-            model.addEdge(lastCell, jointure);
+            model.addEdge(jointure, lastCell);
 
             makeTree(((EJoin) child).getLeftChild(), model, jointure);
             makeTree(((EJoin) child).getRightChild(), model, jointure);
@@ -187,7 +186,7 @@ public class iritMainController implements Initializable {
             SelectionCell selection = new SelectionCell("σ "+ child.toString());
 
             model.addCell(selection);
-            model.addEdge(lastCell, selection);
+            model.addEdge(selection, lastCell);
 
             if(child.getChild().length>0) {
                 makeTree(child.getChild()[0], model, selection);
@@ -197,7 +196,7 @@ public class iritMainController implements Initializable {
             LabelCell label = new LabelCell(child.toString());
 
             model.addCell(label);
-            model.addEdge(lastCell, label);
+            model.addEdge(label, lastCell);
 
             if(child.getChild().length>0) {
                 makeTree(child.getChild()[0], model, label);
