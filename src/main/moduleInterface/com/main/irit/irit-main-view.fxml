@@ -1,26 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="750.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.irit.iritMainController">
-    <top>
-        <Pane pickOnBounds="false" prefHeight="131.0" prefWidth="976.0" BorderPane.alignment="CENTER">
-            <children>
-                <TextField fx:id="welcomeText" layoutX="148.0" layoutY="60.0" prefHeight="31.0" prefWidth="535.0" />
-                <Button fx:id="requestOK" layoutX="704.0" layoutY="60.0" mnemonicParsing="false" onAction="#interactWithPolystore" prefHeight="31.0" prefWidth="48.0" text="OK" />
-            </children>
-        </Pane>
-    </top>
-    <right>
-        <ListView pickOnBounds="false" prefHeight="619.0" prefWidth="209.0" BorderPane.alignment="CENTER" />
-    </right>
-    <center>
-        <TitledPane fx:id="paneGraph" prefHeight="628.0" prefWidth="756.0" BorderPane.alignment="CENTER" />
-    </center>
-
-</BorderPane>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.irit.iritMainController">
+   <children>
+      <ImageView fitHeight="77.0" fitWidth="76.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+         <image>
+            <Image url="@../../../../../assets/images.png" />
+         </image></ImageView>
+      <TextField fx:id="welcomeText" layoutX="118.0" layoutY="48.0" prefHeight="31.0" prefWidth="320.0" />
+      <Label layoutX="118.0" layoutY="31.0" text="Requête : " />
+      <Button layoutX="448.0" layoutY="51.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="82.0" onAction="#interactWithPolystore" style="-fx-background-color: FF5608;" text="Valider" textFill="WHITE" />
+      <TabPane layoutX="14.0" layoutY="87.0" prefHeight="302.0" prefWidth="423.0" style="-fx-background-color: white;" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Arbre global">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+          <Tab text="Multi-store">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+            <Tab text="Transfers">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+      <TreeView fx:id="tvNode" layoutX="448.0" layoutY="113.0" prefHeight="262.0" prefWidth="136.0" />
+   </children>
+</AnchorPane>

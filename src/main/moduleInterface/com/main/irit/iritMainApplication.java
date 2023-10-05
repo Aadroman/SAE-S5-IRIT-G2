@@ -17,11 +17,12 @@ public class iritMainApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         mainStage = stage;
-        FXMLLoader loader =new FXMLLoader(iritMainController.class.getResource("irit-main-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(iritMainController.class.getResource("/fxml/irit-main-view.fxml"));
         Pane root = loader.load();
         Scene sceneRoot = new Scene(root);
+
         stage.setScene(sceneRoot);
-        this.mainController =loader.getController();
+        this.mainController = loader.getController();
         this.mainController.initContext(mainStage, this);
         this.mainController.displayDialog();
     }

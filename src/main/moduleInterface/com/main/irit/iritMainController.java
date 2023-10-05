@@ -19,7 +19,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.abego.treelayout.Configuration;
 
@@ -38,37 +41,49 @@ import fr.sae.Application;
 
 public class iritMainController implements Initializable {
     @SuppressWarnings("FieldCanBeLocal")
-    private  iritMainApplication app;
+    private iritMainApplication app;
     private Stage primaryStage;
 
     @FXML
-    private TextField welcomeText;
+    private TextField requestTextField;
 
     @FXML
-    private TitledPane paneGraph;
+    private Pane globalPane;
 
-//    @FXML
-//    protected void onOkButtonClick() throws IOException {
-//        Graph graph = new Graph();
-//        // Add content to graph
-//        populateGraph(graph);
-//        // Layout nodes
-//        AbegoTreeLayout layout = new AbegoTreeLayout(200, 200, Configuration.Location.Bottom);
-//        graph.layout(layout);
-//        paneGraph = updatePane(paneGraph);
-//        this.app.graph();
-//    }
-
+    @FXML
+    private TreeView tvNode;
     public void initContext(Stage mainStage, iritMainApplication iritMainApplication) {
         this.primaryStage = mainStage;
         this.app = iritMainApplication;
     }
 
-    public void displayDialog() {this.primaryStage.show();}
+    public void displayDialog() {
+        this.primaryStage.show();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         getAllTablesDB();
+    }
+
+    /**
+     * Function that gets the text field SQL query, and returns all tables found within it.
+     *
+     * @return A list of tables names
+     */
+    private List<String> getFoundTablesFromInput(String queryString) {
+        // Define a regex pattern to match table names in the SQL query
+        Pattern pattern = Pattern.compile("from\\s+(\\w+)", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(queryString);
+
+        List<String> foundTables = new ArrayList<>();
+
+        // Find and collect all table names mentioned in the SQL query
+        while (matcher.find()) {
+            foundTables.add(matcher.group(1));
+        }
+
+        return foundTables;
     }
 
     @FXML
@@ -76,21 +91,18 @@ public class iritMainController implements Initializable {
         List<String> tablesnames = getAllTablesDB();
         boolean allTablesFound = false;
         try {
-            //faire verif que textfiel est jamais vide + alerte quand texte est vide
-            String query = this.welcomeText.getText();
-            // Define a regex pattern to match table names in the SQL query
-            Pattern pattern = Pattern.compile("from\\s+(\\w+)", Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(query);
-            List<String> foundTables = new ArrayList<>();
-            // Find and collect all table names mentioned in the SQL query
-            while (matcher.find()) {
-                foundTables.add(matcher.group(1));
-            }
+            // Get value from requestTextField
+            String queryString = this.requestTextField.getText();
+
+            List<String> foundTables = this.getFoundTablesFromInput(queryString);
+
             // Check if the found tables are in the predefined table names list
             allTablesFound = true;
             for (String tableName : foundTables) {
                 if (!tablesnames.contains(tableName)) {
                     allTablesFound = false;
+                    // Ends loop if condition is met, for performance
+                    break;
                 }
             }
 
@@ -101,11 +113,21 @@ public class iritMainController implements Initializable {
             final Model model = graph.getModel();
             graph.beginUpdate();
 
+
             Query queryParsed = QueryParserUtils.parse(query);
 
             ETreeNode[] array = Application.getTreeFromQuery(queryParsed);
             for(int i=0; i< array.length; i++){
                 array[i].print("");
+              if(i=2) {
+                 //Creation du root du TreeView qui va servir de racine à l'arbo
+                TreeItem<String> rootTree = new TreeItem<>(transferTree.toString());
+                this.createTreeView(transferTree, rootTree);
+
+                // On ajoute l'arbo crée au composants tree view
+                this.tvNode.setRoot(rootTree);
+                this.tvNode.autosize();
+              }
                 makeTree(array[i], model, null);
             }
 
@@ -115,10 +137,12 @@ public class iritMainController implements Initializable {
             AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
             graph.layout(layout);
             childPane = graph.getCanvas();
-            paneGraph.setContent(childPane);
+
+            // Adds generated graphs to pane
+            globalPane.getChildren().add(childPane);
 
         } catch (Exception e) {
-            if (welcomeText.getText().isEmpty()) {
+            if (requestTextField.getText().isEmpty()) {
                 Alert warning = new Alert(Alert.AlertType.WARNING);
                 warning.setTitle("Requête vide");
                 warning.setHeaderText("Votre requête est vide !");
@@ -138,7 +162,38 @@ public class iritMainController implements Initializable {
                 warning.showAndWait();
             }
         }
+    }
 
+    /**
+     * Création d'une treeView avec comme paramètre node ainsi que la TreeItem parente
+     * @param node noeud de l'arbre a partir duquel est crée un TreeItem
+     * @param treeParent TreeItem parent sur lequel on va add les enfants
+     */
+    public void createTreeView(ETreeNode node, TreeItem<String> treeParent) {
+        if(node.getClass().equals(EProjection.class)){
+            //Boucle sur le nombre d'enfant de la projection initial
+            int nbChild = node.getChild().length;
+            for(int i = 0 ; i < nbChild ; i++){
+                TreeItem<String> child = new TreeItem<>(node.getChild()[i].toString());
+                treeParent.getChildren().add((child));
+                this.createTreeView(node.getChild()[i],child);
+            }
+        }else if (node.getClass().equals(EJoin.class)) {
+            // Si le node est de type EJoin il a un left et un right child qu'on va créer en tant que TreeItem et ajouter au parent
+            TreeItem<String> childLeft = new TreeItem<>(((EJoin) node).getLeftChild().toString());
+            TreeItem<String> childRight = new TreeItem<>(((EJoin) node).getRightChild().toString());
+            treeParent.getChildren().addAll(childLeft, childRight);
+
+            createTreeView(((EJoin) node).getRightChild(),childRight);
+            createTreeView(((EJoin) node).getLeftChild(), childLeft);
+        }else if (node.getClass().equals((ESelection.class))) {
+            // Si le node est de type ESelection il n'aura qu'un enfant
+            TreeItem<String> child = new TreeItem<>(node.getChild()[0].toString());
+
+            treeParent.getChildren().add(child);
+
+            createTreeView(node.getChild()[0], child);
+        }
     }
 
     /**
@@ -161,7 +216,6 @@ public class iritMainController implements Initializable {
                 makeTree(current.getChild()[0], model, projection);
             }
         } else if (current.getClass().equals(EJoin.class)) {
-
             JointureCell jointure = new JointureCell("⨝ "+current.toString());
 
             model.addCell(jointure);
@@ -169,13 +223,12 @@ public class iritMainController implements Initializable {
 
             makeTree(((EJoin) current).getLeftChild(), model, jointure);
             makeTree(((EJoin) current).getRightChild(), model, jointure);
-
         } else if (current.getClass().equals(ESelection.class)) {
             SelectionCell selection = new SelectionCell("σ "+ current.toString());
 
             model.addCell(selection);
             model.addEdge(selection, lastCell);
-
+          
             if(current.getChild().length>0) {
                 makeTree(current.getChild()[0], model, selection);
             }
@@ -208,7 +261,6 @@ public class iritMainController implements Initializable {
 
             model.addCell(label);
             model.addEdge(label, lastCell);
-
             if(current.getChild().length>0) {
                 makeTree(current.getChild()[0], model, label);
             }
@@ -220,13 +272,13 @@ public class iritMainController implements Initializable {
     /***
      * Return le nom de toutes les tables dans une List de Nom
      * */
-    protected List<String> getAllTablesDB(){
+    protected List<String> getAllTablesDB() {
         List<String> tablesNames = new ArrayList<>();
         // Specify the path to your JSON file
         String documentJSON = "src/main/java/fr/irit/module2/UnifiedView/documentUnifiedView.json";
         String relationalJSON = "src/main/java/fr/irit/module2/UnifiedView/relationalUnifiedView.json";
 
-        try{
+        try {
             // Initialize the ObjectMapper (Jackson library)
             ObjectMapper objectMapper = new ObjectMapper();
 
@@ -242,15 +294,13 @@ public class iritMainController implements Initializable {
             // Iterate through the JSON array and extract "label" values
             for (JsonNode node : documentUVTablesNode) {
                 String label = node.get("label").asText();
-                if (!tablesNames.contains(label))
-                    tablesNames.add(label);
+                if (!tablesNames.contains(label)) tablesNames.add(label);
             }
             for (JsonNode node : relationalUVTablesNode) {
                 String label = node.get("label").asText();
-                if (!tablesNames.contains(label))
-                    tablesNames.add(label);
+                if (!tablesNames.contains(label)) tablesNames.add(label);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return tablesNames;
@@ -274,8 +324,8 @@ public class iritMainController implements Initializable {
         graph.beginUpdate();
 
 
-        //les cellules en commentaires sont remplacées par des cellules de projection, selection ou jointure
-        //elles sont mises de coté pour l'implementation de différents types de cells autre que des labelCell
+        // Les cellules en commentaires sont remplacées par des cellules de projection, selection ou jointure,
+        // elles sont mises de coté pour l'implementation de différents types de cells autre que des labelCell
 
         //final ICell cellA = new LabelCell("π *");
         final ProjectionCell cellA = new ProjectionCell("π *");

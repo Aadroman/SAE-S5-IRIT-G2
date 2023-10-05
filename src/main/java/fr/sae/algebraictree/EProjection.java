@@ -60,7 +60,7 @@ public class EProjection extends ETreeNode {
 
     @Override
     public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
-        if(this.attributes != null){
+        if (this.attributes != null) {
             List<EDotNotation> attributeListRenamed = new ArrayList<>();
             for(EDotNotation attribute : this.attributes){
                 attributeListRenamed.add(columnNamingMap.get(attribute));
