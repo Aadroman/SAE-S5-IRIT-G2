@@ -42,22 +42,24 @@ public class Application {
 
     }
 
+    /**
+     * Renvoie les trois arbres correspondants à une requête SQL.
+     * Utilisée dans le contrôleur pour créer et afficher les arbres.
+     * @param q : requête SQL déjà parsed
+     * @return tableau contenant les trois ETreeNode
+     */
     public static ETreeNode[] getTreeFromQuery(Query q){
-        // Query déjà parsed pour l'instant
         GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(q);
         TreeNode global = globalAlgebraicTree.getRootNode();
         ETreeNode globalTree = ETreeNode.createTree(global);
-        //globalTree.print("");
 
         MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
         TreeNode multi = mat.getMultistoreAlgebraicTree();
         ETreeNode multiTree = ETreeNode.createTree(multi);
-        //multiTree.print("");
 
         TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat);
         TreeNode multiTransformation = ttat.getTransformationTransferAlgebraicTree();
         ETreeNode multiTransformationTree = ETreeNode.createTree(multiTransformation);
-        //multiTransformationTree.print("");
 
         ETreeNode[] treeArray = new ETreeNode[3];
         treeArray[0] = globalTree;

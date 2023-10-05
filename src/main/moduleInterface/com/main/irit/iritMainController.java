@@ -108,7 +108,7 @@ public class iritMainController implements Initializable {
                 array[i].print("");
                 makeTree(array[i], model, null);
             }
-            
+
             graph.endUpdate();
 
             // Layout nodes
