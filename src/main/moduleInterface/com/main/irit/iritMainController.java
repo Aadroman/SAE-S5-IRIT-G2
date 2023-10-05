@@ -41,11 +41,11 @@ public class iritMainController implements Initializable {
     @FXML
     private TextField requestTextField;
     @FXML
-    private Pane globalTreePane;
+    private AnchorPane globalTreePane;
     @FXML
-    private Pane multiStoreTreePane;
+    private AnchorPane multiStoreTreePane;
     @FXML
-    private Pane transferTreePane;
+    private AnchorPane transferTreePane;
 
     public void initContext(Stage mainStage, iritMainApplication iritMainApplication) {
         this.primaryStage = mainStage;
@@ -96,6 +96,23 @@ public class iritMainController implements Initializable {
     }
 
     /**
+     * Crée le layout d'un tree sur un graph
+     * @param TreeGraph
+     */
+    private void renderTree(Graph TreeGraph ,AbegoTreeLayout layout, AnchorPane treePane){
+        // Create tree layout based on fxGraph
+        TreeGraph.layout(layout);
+
+        // Initialize a childpane to add globalTreeGraph to
+        Pane childPane;
+        childPane = TreeGraph.getCanvas();
+
+        treePane.getChildren().clear();
+        // Adds generated graphs to pane
+        treePane.getChildren().add(childPane);
+    }
+
+    /**
      * Function to
      */
     private GlobalAlgebraicTree createAndDisplayGlobalTreeGraph(Query query) {
@@ -117,19 +134,8 @@ public class iritMainController implements Initializable {
 
         globalTreeGraph.endUpdate();
 
-        // Create tree layout based on fxGraph
         AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
-        globalTreeGraph.layout(layout);
-
-        // Initialize a childpane to add globalTreeGraph to
-        Pane childPane;
-        childPane = globalTreeGraph.getCanvas();
-
-        double scale = globalTreeGraph.getScale();
-
-        this.globalTreePane.getChildren().clear();
-        // Adds generated graphs to pane
-        this.globalTreePane.getChildren().add(childPane);
+        this.renderTree(globalTreeGraph, layout,this.globalTreePane);
 
         return globalAlgebraicTree;
     }
@@ -153,18 +159,8 @@ public class iritMainController implements Initializable {
 
         multiStoreTreeGraph.endUpdate();
 
-        // Create tree layout based on fxGraph
         AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
-        multiStoreTreeGraph.layout(layout);
-
-        // Initialize a childpane to add globalTreeGraph to
-        Pane childPane;
-        childPane = multiStoreTreeGraph.getCanvas();
-        childPane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-
-        this.multiStoreTreePane.getChildren().clear();
-        // Adds generated graphs to pane
-        this.multiStoreTreePane.getChildren().add(childPane);
+        this.renderTree(multiStoreTreeGraph,layout,this.multiStoreTreePane);
 
         return mat;
     }
@@ -187,15 +183,7 @@ public class iritMainController implements Initializable {
 
         // Create tree layout based on fxGraph
         AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
-        transferTreeGraph.layout(layout);
-
-        // Initialize a childpane to add globalTreeGraph to
-        Pane childPane;
-        childPane = transferTreeGraph.getCanvas();
-
-        this.transferTreePane.getChildren().clear();
-        // Adds generated graphs to pane
-        this.transferTreePane.getChildren().add(childPane);
+        this.renderTree(transferTreeGraph,layout,this.transferTreePane);
 
         return ttat;
     }
