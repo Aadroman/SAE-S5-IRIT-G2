@@ -4,33 +4,38 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="396.0" prefWidth="582.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.irit.iritMainController">
+<AnchorPane prefHeight="400.0" prefWidth="719.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.irit.iritMainController">
    <children>
-      <BorderPane layoutY="90.0" style="-fx-background-color: red; -fx-border-color: yellow;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0">
+      <BorderPane layoutY="90.0" prefHeight="310.0" prefWidth="719.0" style="-fx-background-color: red; -fx-border-color: yellow;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0">
          <center>
-            <TabPane prefHeight="312.0" prefWidth="600.0" style="-fx-background-color: white;" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMaxWidth="100.0" BorderPane.alignment="CENTER">
-              <tabs>
-                <Tab text="Arbre global">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <Pane fx:id="globalPane" layoutX="-1.0" layoutY="-1.0" prefHeight="171.0" prefWidth="548.0" />
-                           </children>
-                    </AnchorPane>
-                  </content>
-                </Tab>
-                <Tab text="Multi-store">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                  </content>
-                </Tab>
-                  <Tab text="Transfers">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                    </content>
-                  </Tab>
-              </tabs>
-            </TabPane>
+            <SplitPane dividerPositions="0.6217877094972066" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+              <items>
+                  <TabPane prefHeight="306.0" prefWidth="322.0" style="-fx-background-color: white;" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMaxWidth="100.0">
+                    <tabs>
+                      <Tab text="Arbre global">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="279.0" prefWidth="534.0">
+                                 <children>
+                                    <Pane fx:id="globalPane" layoutX="-1.0" layoutY="-1.0" prefHeight="171.0" prefWidth="526.0" />
+                                 </children>
+                          </AnchorPane>
+                        </content>
+                      </Tab>
+                      <Tab text="Multi-store">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                        <Tab text="Transfers">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                          </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+                  <TreeView fx:id="tvNode" prefHeight="306.0" prefWidth="317.0" />
+              </items>
+            </SplitPane>
          </center>
       </BorderPane>
       <ImageView fitHeight="77.0" fitWidth="76.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" smooth="false">

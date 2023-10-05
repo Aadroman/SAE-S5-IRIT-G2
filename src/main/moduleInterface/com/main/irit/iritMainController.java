@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class iritMainController implements Initializable {
     @SuppressWarnings("FieldCanBeLocal")
-    private  iritMainApplication app;
+    private iritMainApplication app;
     private Stage primaryStage;
 
     @FXML
@@ -47,12 +47,16 @@ public class iritMainController implements Initializable {
     @FXML
     private Pane globalPane;
 
+    @FXML
+    private TreeView tvNode;
     public void initContext(Stage mainStage, iritMainApplication iritMainApplication) {
         this.primaryStage = mainStage;
         this.app = iritMainApplication;
     }
 
-    public void displayDialog() { this.primaryStage.show(); }
+    public void displayDialog() {
+        this.primaryStage.show();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -116,6 +120,7 @@ public class iritMainController implements Initializable {
 
             makeTree(globalTree, model, null);
 
+
             MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
             TreeNode multi = mat.getMultistoreAlgebraicTree();
             ETreeNode multiTree = ETreeNode.createTree(multi);
@@ -129,6 +134,17 @@ public class iritMainController implements Initializable {
             TreeNode transform = ttat.getTransformationTransferAlgebraicTree();
             ETreeNode transformTree = ETreeNode.createTree(transform);
             makeTree(transformTree, model, null);
+
+            TreeNode transfer = ttat.getTransformationTransferAlgebraicTree();
+            ETreeNode transferTree = ETreeNode.createTree(transfer);
+
+            //Creation du root du TreeView qui va servir de racine à l'arbo
+            TreeItem<String> rootTree = new TreeItem<>(transferTree.toString());
+            this.createTreeView(transferTree, rootTree);
+
+            // On ajoute l'arbo crée au composants tree view
+            this.tvNode.setRoot(rootTree);
+            this.tvNode.autosize();
 
             System.out.println("");
             System.out.println("Algebraic Multi-stores Tree : ");
@@ -167,21 +183,53 @@ public class iritMainController implements Initializable {
         }
     }
 
+    /**
+     * Création d'une treeView avec comme paramètre node ainsi que la TreeItem parente
+     * @param node noeud de l'arbre a partir duquel est crée un TreeItem
+     * @param treeParent TreeItem parent sur lequel on va add les enfants
+     */
+    public void createTreeView(ETreeNode node, TreeItem<String> treeParent) {
+        if(node.getClass().equals(EProjection.class)){
+            //Boucle sur le nombre d'enfant de la projection initial
+            int nbChild = node.getChild().length;
+            for(int i = 0 ; i < nbChild ; i++){
+                TreeItem<String> child = new TreeItem<>(node.getChild()[i].toString());
+                treeParent.getChildren().add((child));
+                this.createTreeView(node.getChild()[i],child);
+            }
+        }else if (node.getClass().equals(EJoin.class)) {
+            // Si le node est de type EJoin il a un left et un right child qu'on va créer en tant que TreeItem et ajouter au parent
+            TreeItem<String> childLeft = new TreeItem<>(((EJoin) node).getLeftChild().toString());
+            TreeItem<String> childRight = new TreeItem<>(((EJoin) node).getRightChild().toString());
+            treeParent.getChildren().addAll(childLeft, childRight);
+
+            createTreeView(((EJoin) node).getRightChild(),childRight);
+            createTreeView(((EJoin) node).getLeftChild(), childLeft);
+        }else if (node.getClass().equals((ESelection.class))) {
+            // Si le node est de type ESelection il n'aura qu'un enfant
+            TreeItem<String> child = new TreeItem<>(node.getChild()[0].toString());
+
+            treeParent.getChildren().add(child);
+
+            createTreeView(node.getChild()[0], child);
+        }
+    }
+
     public void makeTree(ETreeNode child, Model model, ICell lastCell) {
         //On crée la base de l'arbre si le treeNode n'a pas de parent
         if (lastCell == null) {
-            ProjectionCell projection = new ProjectionCell("π "+ child.toString());
+            ProjectionCell projection = new ProjectionCell("π " + child.toString());
 
             //On l'ajoute au model deja crée précédemment
             model.addCell(projection);
 
             //On verifie si il a des enfants et on réexecute la methode
-            if(child.getChild().length>0) {
+            if (child.getChild().length > 0) {
                 makeTree(child.getChild()[0], model, projection);
             }
         } else if (child.getClass().equals(EJoin.class)) {
 
-            JointureCell jointure = new JointureCell("⨝ "+child.toString());
+            JointureCell jointure = new JointureCell("⨝ " + child.toString());
 
             model.addCell(jointure);
             model.addEdge(jointure, lastCell);
@@ -190,12 +238,12 @@ public class iritMainController implements Initializable {
             makeTree(((EJoin) child).getRightChild(), model, jointure);
 
         } else if (child.getClass().equals(ESelection.class)) {
-            SelectionCell selection = new SelectionCell("σ "+ child.toString());
+            SelectionCell selection = new SelectionCell("σ " + child.toString());
 
             model.addCell(selection);
             model.addEdge(selection, lastCell);
 
-            if(child.getChild().length>0) {
+            if (child.getChild().length > 0) {
                 makeTree(child.getChild()[0], model, selection);
             }
         } else if (child.getClass().equals(ETransfer.class)) {
@@ -222,7 +270,7 @@ public class iritMainController implements Initializable {
             model.addCell(label);
             model.addEdge(label, lastCell);
 
-            if(child.getChild().length>0) {
+            if (child.getChild().length > 0) {
                 makeTree(child.getChild()[0], model, label);
             }
         }
@@ -233,7 +281,7 @@ public class iritMainController implements Initializable {
     /***
      * Return le nom de toutes les tables dans une List de Nom
      * */
-    protected List<String> getAllTablesDB(){
+    protected List<String> getAllTablesDB() {
         List<String> tablesNames = new ArrayList<>();
         // Specify the path to your JSON file
         String documentJSON = "src/main/java/fr/irit/module2/UnifiedView/documentUnifiedView.json";
@@ -255,13 +303,11 @@ public class iritMainController implements Initializable {
             // Iterate through the JSON array and extract "label" values
             for (JsonNode node : documentUVTablesNode) {
                 String label = node.get("label").asText();
-                if (!tablesNames.contains(label))
-                    tablesNames.add(label);
+                if (!tablesNames.contains(label)) tablesNames.add(label);
             }
             for (JsonNode node : relationalUVTablesNode) {
                 String label = node.get("label").asText();
-                if (!tablesNames.contains(label))
-                    tablesNames.add(label);
+                if (!tablesNames.contains(label)) tablesNames.add(label);
             }
         } catch (Exception e) {
             e.printStackTrace();
