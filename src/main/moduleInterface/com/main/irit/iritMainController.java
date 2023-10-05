@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.antlr.v4.runtime.tree.Tree;
 
 public class iritMainController implements Initializable {
     @SuppressWarnings("FieldCanBeLocal")
@@ -40,33 +39,41 @@ public class iritMainController implements Initializable {
     private Stage primaryStage;
 
     @FXML
-    private TextField welcomeText;
+    private TextField requestTextField;
 
     @FXML
-    private TitledPane paneGraph;
-
-//    @FXML
-//    protected void onOkButtonClick() throws IOException {
-//        Graph graph = new Graph();
-//        // Add content to graph
-//        populateGraph(graph);
-//        // Layout nodes
-//        AbegoTreeLayout layout = new AbegoTreeLayout(200, 200, Configuration.Location.Bottom);
-//        graph.layout(layout);
-//        paneGraph = updatePane(paneGraph);
-//        this.app.graph();
-//    }
+    private Pane globalPane;
 
     public void initContext(Stage mainStage, iritMainApplication iritMainApplication) {
         this.primaryStage = mainStage;
         this.app = iritMainApplication;
     }
 
-    public void displayDialog() {this.primaryStage.show();}
+    public void displayDialog() { this.primaryStage.show(); }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         getAllTablesDB();
+    }
+
+    /**
+     * Function that gets the text field SQL query, and returns all tables found within it.
+     *
+     * @return A list of tables names
+     */
+    private List<String> getFoundTablesFromInput(String queryString) {
+        // Define a regex pattern to match table names in the SQL query
+        Pattern pattern = Pattern.compile("from\\s+(\\w+)", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(queryString);
+
+        List<String> foundTables = new ArrayList<>();
+
+        // Find and collect all table names mentioned in the SQL query
+        while (matcher.find()) {
+            foundTables.add(matcher.group(1));
+        }
+
+        return foundTables;
     }
 
     @FXML
@@ -74,21 +81,18 @@ public class iritMainController implements Initializable {
         List<String> tablesnames = getAllTablesDB();
         boolean allTablesFound = false;
         try {
-            //faire verif que textfiel est jamais vide + alerte quand texte est vide
-            String query = this.welcomeText.getText();
-            // Define a regex pattern to match table names in the SQL query
-            Pattern pattern = Pattern.compile("from\\s+(\\w+)", Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(query);
-            List<String> foundTables = new ArrayList<>();
-            // Find and collect all table names mentioned in the SQL query
-            while (matcher.find()) {
-                foundTables.add(matcher.group(1));
-            }
+            // Get value from requestTextField
+            String queryString = this.requestTextField.getText();
+
+            List<String> foundTables = this.getFoundTablesFromInput(queryString);
+
             // Check if the found tables are in the predefined table names list
             allTablesFound = true;
             for (String tableName : foundTables) {
                 if (!tablesnames.contains(tableName)) {
                     allTablesFound = false;
+                    // Ends loop if condition is met, for performance
+                    break;
                 }
             }
 
@@ -99,7 +103,8 @@ public class iritMainController implements Initializable {
             final Model model = graph.getModel();
             graph.beginUpdate();
 
-            Query queryParsed = QueryParserUtils.parse(query);
+            Query queryParsed = QueryParserUtils.parse(queryString);
+
             GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
             System.out.println("Algebraic Tree : ");
             TreeNode global = globalAlgebraicTree.getRootNode();
@@ -132,10 +137,12 @@ public class iritMainController implements Initializable {
             AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
             graph.layout(layout);
             childPane = graph.getCanvas();
-            paneGraph.setContent(childPane);
+
+            // Adds generated graphs to pane
+            globalPane.getChildren().add(childPane);
 
         } catch (Exception e) {
-            if (welcomeText.getText().isEmpty()) {
+            if (requestTextField.getText().isEmpty()) {
                 Alert warning = new Alert(Alert.AlertType.WARNING);
                 warning.setTitle("Requête vide");
                 warning.setHeaderText("Votre requête est vide !");
@@ -155,7 +162,6 @@ public class iritMainController implements Initializable {
                 warning.showAndWait();
             }
         }
-
     }
 
     public void makeTree(ETreeNode child, Model model, ICell lastCell) {
@@ -230,7 +236,7 @@ public class iritMainController implements Initializable {
         String documentJSON = "src/main/java/fr/irit/module2/UnifiedView/documentUnifiedView.json";
         String relationalJSON = "src/main/java/fr/irit/module2/UnifiedView/relationalUnifiedView.json";
 
-        try{
+        try {
             // Initialize the ObjectMapper (Jackson library)
             ObjectMapper objectMapper = new ObjectMapper();
 
@@ -254,7 +260,7 @@ public class iritMainController implements Initializable {
                 if (!tablesNames.contains(label))
                     tablesNames.add(label);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return tablesNames;
@@ -278,8 +284,8 @@ public class iritMainController implements Initializable {
         graph.beginUpdate();
 
 
-        //les cellules en commentaires sont remplacées par des cellules de projection, selection ou jointure
-        //elles sont mises de coté pour l'implementation de différents types de cells autre que des labelCell
+        // Les cellules en commentaires sont remplacées par des cellules de projection, selection ou jointure,
+        // elles sont mises de coté pour l'implementation de différents types de cells autre que des labelCell
 
         //final ICell cellA = new LabelCell("π *");
         final ProjectionCell cellA = new ProjectionCell("π *");

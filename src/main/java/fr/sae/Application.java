@@ -24,7 +24,6 @@ public class Application {
         ETreeNode globalTree = ETreeNode.createTree(global);
         globalTree.print("");
 
-
         MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
         System.out.println("");
         System.out.println("Algebraic Multi-stores Tree : ");
