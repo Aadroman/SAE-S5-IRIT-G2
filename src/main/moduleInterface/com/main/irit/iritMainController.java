@@ -199,7 +199,7 @@ public class iritMainController implements Initializable {
                 makeTree(child.getChild()[0],model,transfer);
             }
         } else if (child.getClass().equals(ETransformation.class)) {
-            LabelCell transform = new LabelCell(child.toString());
+            TransformCell transform = new TransformCell(child.toString());
 
             model.addCell(transform);
             model.addEdge(transform, lastCell);
