@@ -21,12 +21,12 @@ import static java.lang.Math.abs;
 
 public class ProjectionCell extends AbstractCell {
 
-    Label iconLabel = new Label();
+    Label projectionLabel = new Label();
 
-    Polygon iconPolygon = new Polygon();
+    StackPane projectionGraph = new StackPane();
 
     public ProjectionCell(String text) {
-        this.iconLabel.setText(text);
+        this.projectionLabel.setText(text);
     }
 
     /**
@@ -39,48 +39,46 @@ public class ProjectionCell extends AbstractCell {
     public Region getGraphic(Graph graph) {
         try {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/tree_icons/projection.fxml")));
-            iconPolygon = (Polygon) root.lookup("#projectionIcon");
+            Polygon projectionPolygon = (Polygon) root.lookup("#projectionPolygon");
 
-            ObservableList<Double> polygonePoints = iconPolygon.getPoints();
-            double iconPolygoneWidth = polygonePoints.get(polygonePoints.size()-2) - polygonePoints.get(0);
-            double textWidth = new Text(this.iconLabel.getText()).getLayoutBounds().getWidth();
-            double widthDelta = iconPolygoneWidth - textWidth ;
-            double iconLabelWidth;
+            ObservableList<Double> projectionPolygonPoints = projectionPolygon.getPoints();
+            double projectionPolygoneWidth = projectionPolygonPoints.get(projectionPolygonPoints.size()-2) - projectionPolygonPoints.get(0);
+            double projectionTextWidth = new Text(this.projectionLabel.getText()).getLayoutBounds().getWidth();
+            double widthDelta = projectionPolygoneWidth - projectionTextWidth ;
+            double projectionLabelWidth;
 
             if (widthDelta < 0) {
                 // Max iconPolygon and iconLabel width
                 if (widthDelta < -100) {
                     widthDelta = -100;
+                    final Tooltip tooltip = new Tooltip();
+                    tooltip.setText(this.projectionLabel.getText());
+                    tooltip.setShowDelay(Duration.seconds(0.5));
+                    this.projectionLabel.setTooltip(tooltip);
                 }
-                iconLabelWidth = abs(widthDelta) + iconPolygoneWidth;
+                projectionLabelWidth = abs(widthDelta) + projectionPolygoneWidth;
                 double finalWidthDelta = widthDelta;
-                // Increase iconPolygon width to fit with text
+                // Increase projectionPolygon width to fit with text
                 IntStream.range(0, 4).forEachOrdered(index -> {
                     if (index % 2 == 0) {
-                        polygonePoints.set(index, polygonePoints.get(index) + finalWidthDelta);
+                        projectionPolygonPoints.set(index, projectionPolygonPoints.get(index) + finalWidthDelta);
                     }
                 });
             } else {
-                iconLabelWidth = iconPolygoneWidth;
+                projectionLabelWidth = projectionPolygoneWidth;
             }
 
-            this.iconLabel.setMaxWidth(iconLabelWidth);
-            this.iconLabel.setAlignment(Pos.CENTER);
+            this.projectionLabel.setMaxWidth(projectionLabelWidth);
+            this.projectionLabel.setAlignment(Pos.CENTER);
             String styles =
                 "-fx-font-weight: 700;" +
-                "-fx-text-fill: white;" ;
-            this.iconLabel.setStyle(styles);
+                "-fx-text-fill: black;" ;
+            this.projectionLabel.setStyle(styles);
 
-            final Tooltip tooltip = new Tooltip();
-            tooltip.setText(this.iconLabel.getText());
-            tooltip.setShowDelay(Duration.seconds(0.5));
-            this.iconLabel.setTooltip(tooltip);
+            this.projectionGraph.getChildren().add(projectionPolygon);
+            this.projectionGraph.getChildren().add(this.projectionLabel);
 
-            final StackPane pane = new StackPane();
-            pane.getChildren().add(this.iconPolygon);
-            pane.getChildren().add(this.iconLabel);
-
-            return pane;
+            return this.projectionGraph;
 
         } catch (IOException e) {
             throw new RuntimeException(e);
