@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.antlr.v4.runtime.tree.Tree;
+import fr.sae.Application;
 
 public class iritMainController implements Initializable {
     @SuppressWarnings("FieldCanBeLocal")
@@ -101,32 +102,13 @@ public class iritMainController implements Initializable {
             graph.beginUpdate();
 
             Query queryParsed = QueryParserUtils.parse(query);
-            GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
-            System.out.println("Algebraic Tree : ");
-            TreeNode global = globalAlgebraicTree.getRootNode();
-            ETreeNode globalTree = ETreeNode.createTree(global);
-            globalTree.print("");
 
-            makeTree(globalTree, model, null);
-
-            MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
-            TreeNode multi = mat.getMultistoreAlgebraicTree();
-            ETreeNode multiTree = ETreeNode.createTree(multi);
-            makeTree(multiTree, model, null);
-
-            System.out.println("");
-            System.out.println("Algebraic Multi-stores Tree : ");
-            mat.getMultistoreAlgebraicTree().print("");
-
-            TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat);
-            TreeNode transform = ttat.getTransformationTransferAlgebraicTree();
-            ETreeNode transformTree = ETreeNode.createTree(transform);
-            makeTree(transformTree, model, null);
-
-            System.out.println("");
-            System.out.println("Algebraic Multi-stores Tree : ");
-            ttat.getTransformationTransferAlgebraicTree().print("");
-
+            ETreeNode[] array = Application.getTreeFromQuery(queryParsed);
+            for(int i=0; i< array.length; i++){
+                array[i].print("");
+                makeTree(array[i], model, null);
+            }
+            
             graph.endUpdate();
 
             // Layout nodes
