@@ -1,6 +1,7 @@
 package fr.sae.algebraictree;
 
 import fr.irit.algebraictree.*;
+import fr.irit.module2.UnifiedView.Store;
 import fr.irit.module3.TransformationTransferAlgebraicTree;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Set;
 
 public class ETreeNode {
 
+    public Store getStore() {return null;}
     //region ATTRIBUTES
     private ETreeNode parent;
 

@@ -1,5 +1,6 @@
 package com.main.irit;
 
+import fr.irit.algebraictree.Table;
 import fr.irit.algebraictree.TreeNode;
 import fr.irit.module1.GlobalAlgebraicTree;
 import fr.irit.module1.QueryParserUtils;
@@ -35,6 +36,8 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.antlr.v4.runtime.tree.Tree;
+import fr.sae.Application;
 
 public class iritMainController implements Initializable {
     @SuppressWarnings("FieldCanBeLocal")
@@ -110,45 +113,23 @@ public class iritMainController implements Initializable {
             final Model model = graph.getModel();
             graph.beginUpdate();
 
-            Query queryParsed = QueryParserUtils.parse(queryString);
 
-            GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
-            System.out.println("Algebraic Tree : ");
-            TreeNode global = globalAlgebraicTree.getRootNode();
-            ETreeNode globalTree = ETreeNode.createTree(global);
-            globalTree.print("");
+            Query queryParsed = QueryParserUtils.parse(query);
 
-            makeTree(globalTree, model, null);
+            ETreeNode[] array = Application.getTreeFromQuery(queryParsed);
+            for(int i=0; i< array.length; i++){
+                array[i].print("");
+              if(i=2) {
+                 //Creation du root du TreeView qui va servir de racine à l'arbo
+                TreeItem<String> rootTree = new TreeItem<>(transferTree.toString());
+                this.createTreeView(transferTree, rootTree);
 
-
-            MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
-            TreeNode multi = mat.getMultistoreAlgebraicTree();
-            ETreeNode multiTree = ETreeNode.createTree(multi);
-            makeTree(multiTree, model, null);
-
-            System.out.println("");
-            System.out.println("Algebraic Multi-stores Tree : ");
-            mat.getMultistoreAlgebraicTree().print("");
-
-            TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat);
-            TreeNode transform = ttat.getTransformationTransferAlgebraicTree();
-            ETreeNode transformTree = ETreeNode.createTree(transform);
-            makeTree(transformTree, model, null);
-
-            TreeNode transfer = ttat.getTransformationTransferAlgebraicTree();
-            ETreeNode transferTree = ETreeNode.createTree(transfer);
-
-            //Creation du root du TreeView qui va servir de racine à l'arbo
-            TreeItem<String> rootTree = new TreeItem<>(transferTree.toString());
-            this.createTreeView(transferTree, rootTree);
-
-            // On ajoute l'arbo crée au composants tree view
-            this.tvNode.setRoot(rootTree);
-            this.tvNode.autosize();
-
-            System.out.println("");
-            System.out.println("Algebraic Multi-stores Tree : ");
-            ttat.getTransformationTransferAlgebraicTree().print("");
+                // On ajoute l'arbo crée au composants tree view
+                this.tvNode.setRoot(rootTree);
+                this.tvNode.autosize();
+              }
+                makeTree(array[i], model, null);
+            }
 
             graph.endUpdate();
 
@@ -215,63 +196,73 @@ public class iritMainController implements Initializable {
         }
     }
 
-    public void makeTree(ETreeNode child, Model model, ICell lastCell) {
+    /**
+     * Fonction récursive permettant de générer l'arbre
+     * @param current la Node actuelle
+     * @param model le model ou est ajouté chaque noeud de l'arbre
+     * @param lastCell la cellule générée à partir du parent de current, afin de créer un lien
+     *                 entre cette cellule et celle générée par current
+     */
+    public void makeTree(ETreeNode current, Model model, ICell lastCell) {
         //On crée la base de l'arbre si le treeNode n'a pas de parent
         if (lastCell == null) {
-            ProjectionCell projection = new ProjectionCell("π " + child.toString());
+            ProjectionCell projection = new ProjectionCell("π "+ current.toString());
 
             //On l'ajoute au model deja crée précédemment
             model.addCell(projection);
 
             //On verifie si il a des enfants et on réexecute la methode
-            if (child.getChild().length > 0) {
-                makeTree(child.getChild()[0], model, projection);
+            if(current.getChild().length>0) {
+                makeTree(current.getChild()[0], model, projection);
             }
-        } else if (child.getClass().equals(EJoin.class)) {
-
-            JointureCell jointure = new JointureCell("⨝ " + child.toString());
+        } else if (current.getClass().equals(EJoin.class)) {
+            JointureCell jointure = new JointureCell("⨝ "+current.toString());
 
             model.addCell(jointure);
             model.addEdge(jointure, lastCell);
 
-            makeTree(((EJoin) child).getLeftChild(), model, jointure);
-            makeTree(((EJoin) child).getRightChild(), model, jointure);
-
-        } else if (child.getClass().equals(ESelection.class)) {
-            SelectionCell selection = new SelectionCell("σ " + child.toString());
+            makeTree(((EJoin) current).getLeftChild(), model, jointure);
+            makeTree(((EJoin) current).getRightChild(), model, jointure);
+        } else if (current.getClass().equals(ESelection.class)) {
+            SelectionCell selection = new SelectionCell("σ "+ current.toString());
 
             model.addCell(selection);
             model.addEdge(selection, lastCell);
-
-            if (child.getChild().length > 0) {
-                makeTree(child.getChild()[0], model, selection);
+          
+            if(current.getChild().length>0) {
+                makeTree(current.getChild()[0], model, selection);
             }
-        } else if (child.getClass().equals(ETransfer.class)) {
-            TransferCell transfer = new TransferCell(child.toString());
+        } else if (current.getClass().equals(ETransfer.class)) {
+            TransferCell transfer = new TransferCell(current.toString());
 
             model.addCell(transfer);
             model.addEdge(transfer, lastCell);
 
-            if(child.getChild().length>0){
-                makeTree(child.getChild()[0],model,transfer);
+            if(current.getChild().length>0){
+                makeTree(current.getChild()[0],model,transfer);
             }
-        } else if (child.getClass().equals(ETransformation.class)) {
-            LabelCell transform = new LabelCell(child.toString());
+        } else if (current.getClass().equals(ETransformation.class)) {
+            TransformCell transform = new TransformCell(current.toString());
 
             model.addCell(transform);
             model.addEdge(transform, lastCell);
 
-            if(child.getChild().length>0){
-                makeTree(child.getChild()[0],model,transform);
+            if(current.getChild().length>0){
+                makeTree(current.getChild()[0],model,transform);
             }
         } else {
-            LabelCell label = new LabelCell(child.toString());
+            LabelCell label = null;
+            if(current.getStore() != null) {
+                label = new LabelCell(current.toString()+"\n"+ current.getStore().toString());
+            }
+            else {
+                label = new LabelCell(current.toString());
+            }
 
             model.addCell(label);
             model.addEdge(label, lastCell);
-
-            if (child.getChild().length > 0) {
-                makeTree(child.getChild()[0], model, label);
+            if(current.getChild().length>0) {
+                makeTree(current.getChild()[0], model, label);
             }
         }
 
