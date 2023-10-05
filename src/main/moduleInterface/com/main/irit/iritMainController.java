@@ -221,7 +221,7 @@ public class iritMainController implements Initializable {
     public void makeTree(ETreeNode child, Model model, ICell lastCell) {
         //On crée la base de l'arbre si le treeNode n'a pas de parent
         if (lastCell == null) {
-            ProjectionCell projection = new ProjectionCell("π " + child.toString());
+            ProjectionCell projection = new ProjectionCell(child.toString());
 
             //On l'ajoute au model deja crée précédemment
             model.addCell(projection);
@@ -232,7 +232,7 @@ public class iritMainController implements Initializable {
             }
         } else if (child.getClass().equals(EJoin.class)) {
 
-            JointureCell jointure = new JointureCell("⨝ " + child);
+            JointureCell jointure = new JointureCell(child.toString());
 
             model.addCell(jointure);
             model.addEdge(jointure, lastCell);
