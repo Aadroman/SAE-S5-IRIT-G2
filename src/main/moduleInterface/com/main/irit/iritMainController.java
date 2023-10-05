@@ -1,5 +1,6 @@
 package com.main.irit;
 
+import fr.irit.algebraictree.Table;
 import fr.irit.algebraictree.TreeNode;
 import fr.irit.module1.GlobalAlgebraicTree;
 import fr.irit.module1.QueryParserUtils;
@@ -208,7 +209,13 @@ public class iritMainController implements Initializable {
                 makeTree(child.getChild()[0],model,transform);
             }
         } else {
-            LabelCell label = new LabelCell(child.toString());
+            LabelCell label = null;
+            if(child.getStore() != null) {
+                label = new LabelCell(child.toString()+"\n"+ child.getStore().toString());
+            }
+            else {
+                label = new LabelCell(child.toString());
+            }
 
             model.addCell(label);
             model.addEdge(label, lastCell);
