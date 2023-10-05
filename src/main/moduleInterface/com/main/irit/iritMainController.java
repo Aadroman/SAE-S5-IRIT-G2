@@ -1,5 +1,7 @@
 package com.main.irit;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.irit.algebraictree.TreeNode;
 import fr.irit.module1.GlobalAlgebraicTree;
 import fr.irit.module1.QueryParserUtils;
@@ -17,39 +19,42 @@ import fxgraph.layout.AbegoTreeLayout;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
-import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.abego.treelayout.Configuration;
 
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
-
 public class iritMainController implements Initializable {
-    @SuppressWarnings("FieldCanBeLocal")
-    private  iritMainApplication app;
+    private iritMainApplication app;
     private Stage primaryStage;
-
     @FXML
     private TextField requestTextField;
-
     @FXML
-    private Pane globalPane;
+    private Pane globalTreePane;
+    @FXML
+    private Pane multiStoreTreePane;
+    @FXML
+    private Pane transferTreePane;
 
     public void initContext(Stage mainStage, iritMainApplication iritMainApplication) {
         this.primaryStage = mainStage;
         this.app = iritMainApplication;
     }
 
-    public void displayDialog() { this.primaryStage.show(); }
+    public void displayDialog() {
+        this.primaryStage.show();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -76,90 +81,151 @@ public class iritMainController implements Initializable {
         return foundTables;
     }
 
+    /**
+     * Display a warning dialog with a custom message.
+     * Also logs exception message for debugging purpose.
+     */
+    private void displayWarningDialog(String description, Exception exception) {
+        Alert warning = new Alert(Alert.AlertType.WARNING);
+        warning.setTitle("Requête incorrecte");
+        warning.setContentText(description);
+
+        // Log error message for debugging purpose
+        System.out.println(exception.toString());
+        warning.showAndWait();
+    }
+
+    /**
+     * Function to
+     */
+    private GlobalAlgebraicTree createAndDisplayGlobalTreeGraph(Query query) {
+        Graph globalTreeGraph = new Graph();
+        // Add content to graph
+
+        final Model model = globalTreeGraph.getModel();
+        globalTreeGraph.beginUpdate();
+
+        GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(query);
+        System.out.println("Algebraic Tree : ");
+        TreeNode global = globalAlgebraicTree.getRootNode();
+        ETreeNode globalTree = ETreeNode.createTree(global);
+
+        assert globalTree != null;
+        globalTree.print("");
+
+        makeTree(globalTree, model, null);
+
+        globalTreeGraph.endUpdate();
+
+        // Create tree layout based on fxGraph
+        AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
+        globalTreeGraph.layout(layout);
+
+        // Initialize a childpane to add globalTreeGraph to
+        Pane childPane;
+        childPane = globalTreeGraph.getCanvas();
+
+        double scale = globalTreeGraph.getScale();
+
+        this.globalTreePane.getChildren().clear();
+        // Adds generated graphs to pane
+        this.globalTreePane.getChildren().add(childPane);
+
+        return globalAlgebraicTree;
+    }
+
+    private MultistoreAlgebraicTree createAndDisplayMultistoreAlgebraicTree(
+            GlobalAlgebraicTree globalAlgebraicTree
+    ) {
+        Graph multiStoreTreeGraph = new Graph();
+
+        final Model model = multiStoreTreeGraph.getModel();
+
+        multiStoreTreeGraph.beginUpdate();
+
+        MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
+        TreeNode multi = mat.getMultistoreAlgebraicTree();
+        ETreeNode multiTree = ETreeNode.createTree(multi);
+        makeTree(multiTree, model, null);
+        System.out.println();
+        System.out.println("Algebraic Multi-stores Tree : ");
+        mat.getMultistoreAlgebraicTree().print("");
+
+        multiStoreTreeGraph.endUpdate();
+
+        // Create tree layout based on fxGraph
+        AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
+        multiStoreTreeGraph.layout(layout);
+
+        // Initialize a childpane to add globalTreeGraph to
+        Pane childPane;
+        childPane = multiStoreTreeGraph.getCanvas();
+        childPane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+
+        this.multiStoreTreePane.getChildren().clear();
+        // Adds generated graphs to pane
+        this.multiStoreTreePane.getChildren().add(childPane);
+
+        return mat;
+    }
+
+    private TransformationTransferAlgebraicTree createAndDisplayTTATreeGraph(MultistoreAlgebraicTree mat) {
+        Graph transferTreeGraph = new Graph();
+
+        final Model model = transferTreeGraph.getModel();
+        transferTreeGraph.beginUpdate();
+        TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat);
+        TreeNode transform = ttat.getTransformationTransferAlgebraicTree();
+        ETreeNode transformTree = ETreeNode.createTree(transform);
+        makeTree(transformTree, model, null);
+
+        System.out.println();
+        System.out.println("Algebraic Multi-stores Transfer Tree : ");
+        ttat.getTransformationTransferAlgebraicTree().print("");
+
+        transferTreeGraph.endUpdate();
+
+        // Create tree layout based on fxGraph
+        AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
+        transferTreeGraph.layout(layout);
+
+        // Initialize a childpane to add globalTreeGraph to
+        Pane childPane;
+        childPane = transferTreeGraph.getCanvas();
+
+        this.transferTreePane.getChildren().clear();
+        // Adds generated graphs to pane
+        this.transferTreePane.getChildren().add(childPane);
+
+        return ttat;
+    }
+
     @FXML
     private void interactWithPolystore() {
         List<String> tablesnames = getAllTablesDB();
         boolean allTablesFound = false;
+
         try {
             // Get value from requestTextField
             String queryString = this.requestTextField.getText();
 
             List<String> foundTables = this.getFoundTablesFromInput(queryString);
 
-            // Check if the found tables are in the predefined table names list
-            allTablesFound = true;
-            for (String tableName : foundTables) {
-                if (!tablesnames.contains(tableName)) {
-                    allTablesFound = false;
-                    // Ends loop if condition is met, for performance
-                    break;
-                }
-            }
-
-            Pane childPane;
-            Graph graph = new Graph();
-            // Add content to graph
-
-            final Model model = graph.getModel();
-            graph.beginUpdate();
+            // Check if the found tables are in the predefined table names list (HashSet is to improver performance)
+            allTablesFound = new HashSet<>(tablesnames).containsAll(foundTables);
 
             Query queryParsed = QueryParserUtils.parse(queryString);
 
-            GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
-            System.out.println("Algebraic Tree : ");
-            TreeNode global = globalAlgebraicTree.getRootNode();
-            ETreeNode globalTree = ETreeNode.createTree(global);
-            globalTree.print("");
-
-            makeTree(globalTree, model, null);
-
-            MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
-            TreeNode multi = mat.getMultistoreAlgebraicTree();
-            ETreeNode multiTree = ETreeNode.createTree(multi);
-            makeTree(multiTree, model, null);
-
-            System.out.println("");
-            System.out.println("Algebraic Multi-stores Tree : ");
-            mat.getMultistoreAlgebraicTree().print("");
-
-            TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat);
-            TreeNode transform = ttat.getTransformationTransferAlgebraicTree();
-            ETreeNode transformTree = ETreeNode.createTree(transform);
-            makeTree(transformTree, model, null);
-
-            System.out.println("");
-            System.out.println("Algebraic Multi-stores Tree : ");
-            ttat.getTransformationTransferAlgebraicTree().print("");
-
-            graph.endUpdate();
-
-            // Layout nodes
-            AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
-            graph.layout(layout);
-            childPane = graph.getCanvas();
-
-            // Adds generated graphs to pane
-            globalPane.getChildren().add(childPane);
-
+            GlobalAlgebraicTree globalAlgebraicTree = this.createAndDisplayGlobalTreeGraph(queryParsed);
+            MultistoreAlgebraicTree mat = this.createAndDisplayMultistoreAlgebraicTree(globalAlgebraicTree);
+            TransformationTransferAlgebraicTree ttat = this.createAndDisplayTTATreeGraph(mat);
         } catch (Exception e) {
             if (requestTextField.getText().isEmpty()) {
-                Alert warning = new Alert(Alert.AlertType.WARNING);
-                warning.setTitle("Requête vide");
-                warning.setHeaderText("Votre requête est vide !");
-                warning.setContentText(e.toString());
-                warning.showAndWait();
+                this.displayWarningDialog("Votre requête est vide !", e);
             } else if (!allTablesFound) {
-                Alert warning = new Alert(Alert.AlertType.WARNING);
-                warning.setTitle("Erreur requête");
-                warning.setHeaderText("Mettez une majuscule à votre table");
-                warning.setContentText(e.toString());
-                warning.showAndWait();
+                this.displayWarningDialog("Mettez une majuscule à votre table", e);
             } else {
-                Alert warning = new Alert(Alert.AlertType.WARNING);
-                warning.setTitle("Erreur requête");
-                warning.setHeaderText("Votre requête est incorrecte");
-                warning.setContentText(e.toString());
-                warning.showAndWait();
+                this.displayWarningDialog("Votre requête est incorrecte", e);
             }
         }
     }
@@ -167,18 +233,18 @@ public class iritMainController implements Initializable {
     public void makeTree(ETreeNode child, Model model, ICell lastCell) {
         //On crée la base de l'arbre si le treeNode n'a pas de parent
         if (lastCell == null) {
-            ProjectionCell projection = new ProjectionCell("π "+ child.toString());
+            ProjectionCell projection = new ProjectionCell("π " + child.toString());
 
             //On l'ajoute au model deja crée précédemment
             model.addCell(projection);
 
             //On verifie si il a des enfants et on réexecute la methode
-            if(child.getChild().length>0) {
+            if (child.getChild().length > 0) {
                 makeTree(child.getChild()[0], model, projection);
             }
         } else if (child.getClass().equals(EJoin.class)) {
 
-            JointureCell jointure = new JointureCell("⨝ "+child.toString());
+            JointureCell jointure = new JointureCell("⨝ " + child);
 
             model.addCell(jointure);
             model.addEdge(jointure, lastCell);
@@ -187,12 +253,12 @@ public class iritMainController implements Initializable {
             makeTree(((EJoin) child).getRightChild(), model, jointure);
 
         } else if (child.getClass().equals(ESelection.class)) {
-            SelectionCell selection = new SelectionCell("σ "+ child.toString());
+            SelectionCell selection = new SelectionCell("σ " + child);
 
             model.addCell(selection);
             model.addEdge(selection, lastCell);
 
-            if(child.getChild().length>0) {
+            if (child.getChild().length > 0) {
                 makeTree(child.getChild()[0], model, selection);
             }
         } else if (child.getClass().equals(ETransfer.class)) {
@@ -201,8 +267,8 @@ public class iritMainController implements Initializable {
             model.addCell(transfer);
             model.addEdge(transfer, lastCell);
 
-            if(child.getChild().length>0){
-                makeTree(child.getChild()[0],model,transfer);
+            if (child.getChild().length > 0) {
+                makeTree(child.getChild()[0], model, transfer);
             }
         } else if (child.getClass().equals(ETransformation.class)) {
             LabelCell transform = new LabelCell(child.toString());
@@ -210,8 +276,8 @@ public class iritMainController implements Initializable {
             model.addCell(transform);
             model.addEdge(transform, lastCell);
 
-            if(child.getChild().length>0){
-                makeTree(child.getChild()[0],model,transform);
+            if (child.getChild().length > 0) {
+                makeTree(child.getChild()[0], model, transform);
             }
         } else {
             LabelCell label = new LabelCell(child.toString());
@@ -219,7 +285,7 @@ public class iritMainController implements Initializable {
             model.addCell(label);
             model.addEdge(label, lastCell);
 
-            if(child.getChild().length>0) {
+            if (child.getChild().length > 0) {
                 makeTree(child.getChild()[0], model, label);
             }
         }
@@ -230,7 +296,7 @@ public class iritMainController implements Initializable {
     /***
      * Return le nom de toutes les tables dans une List de Nom
      * */
-    protected List<String> getAllTablesDB(){
+    protected List<String> getAllTablesDB() {
         List<String> tablesNames = new ArrayList<>();
         // Specify the path to your JSON file
         String documentJSON = "src/main/java/fr/irit/module2/UnifiedView/documentUnifiedView.json";
@@ -252,13 +318,11 @@ public class iritMainController implements Initializable {
             // Iterate through the JSON array and extract "label" values
             for (JsonNode node : documentUVTablesNode) {
                 String label = node.get("label").asText();
-                if (!tablesNames.contains(label))
-                    tablesNames.add(label);
+                if (!tablesNames.contains(label)) tablesNames.add(label);
             }
             for (JsonNode node : relationalUVTablesNode) {
                 String label = node.get("label").asText();
-                if (!tablesNames.contains(label))
-                    tablesNames.add(label);
+                if (!tablesNames.contains(label)) tablesNames.add(label);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -351,5 +415,13 @@ public class iritMainController implements Initializable {
         model.addEdge(edgeMultiStoresWTransferAndTransformationDataType2);
 
         graph.endUpdate();
+    }
+
+    public iritMainApplication getApp() {
+        return app;
+    }
+
+    public void setApp(iritMainApplication app) {
+        this.app = app;
     }
 }
