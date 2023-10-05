@@ -159,69 +159,76 @@ public class iritMainController implements Initializable {
 
     }
 
-    public void makeTree(ETreeNode child, Model model, ICell lastCell) {
+    /**
+     * Fonction récursive permettant de générer l'arbre
+     * @param current la Node actuelle
+     * @param model le model ou est ajouté chaque noeud de l'arbre
+     * @param lastCell la cellule générée à partir du parent de current, afin de créer un lien
+     *                 entre cette cellule et celle générée par current
+     */
+    public void makeTree(ETreeNode current, Model model, ICell lastCell) {
         //On crée la base de l'arbre si le treeNode n'a pas de parent
         if (lastCell == null) {
-            ProjectionCell projection = new ProjectionCell("π "+ child.toString());
+            ProjectionCell projection = new ProjectionCell("π "+ current.toString());
 
             //On l'ajoute au model deja crée précédemment
             model.addCell(projection);
 
             //On verifie si il a des enfants et on réexecute la methode
-            if(child.getChild().length>0) {
-                makeTree(child.getChild()[0], model, projection);
+            if(current.getChild().length>0) {
+                makeTree(current.getChild()[0], model, projection);
             }
-        } else if (child.getClass().equals(EJoin.class)) {
+        } else if (current.getClass().equals(EJoin.class)) {
 
-            JointureCell jointure = new JointureCell("⨝ "+child.toString());
+            JointureCell jointure = new JointureCell("⨝ "+current.toString());
 
             model.addCell(jointure);
             model.addEdge(jointure, lastCell);
 
-            makeTree(((EJoin) child).getLeftChild(), model, jointure);
-            makeTree(((EJoin) child).getRightChild(), model, jointure);
+            makeTree(((EJoin) current).getLeftChild(), model, jointure);
+            makeTree(((EJoin) current).getRightChild(), model, jointure);
 
-        } else if (child.getClass().equals(ESelection.class)) {
-            SelectionCell selection = new SelectionCell("σ "+ child.toString());
+        } else if (current.getClass().equals(ESelection.class)) {
+            SelectionCell selection = new SelectionCell("σ "+ current.toString());
 
             model.addCell(selection);
             model.addEdge(selection, lastCell);
 
-            if(child.getChild().length>0) {
-                makeTree(child.getChild()[0], model, selection);
+            if(current.getChild().length>0) {
+                makeTree(current.getChild()[0], model, selection);
             }
-        } else if (child.getClass().equals(ETransfer.class)) {
-            TransferCell transfer = new TransferCell(child.toString());
+        } else if (current.getClass().equals(ETransfer.class)) {
+            TransferCell transfer = new TransferCell(current.toString());
 
             model.addCell(transfer);
             model.addEdge(transfer, lastCell);
 
-            if(child.getChild().length>0){
-                makeTree(child.getChild()[0],model,transfer);
+            if(current.getChild().length>0){
+                makeTree(current.getChild()[0],model,transfer);
             }
-        } else if (child.getClass().equals(ETransformation.class)) {
-            TransformCell transform = new TransformCell(child.toString());
+        } else if (current.getClass().equals(ETransformation.class)) {
+            TransformCell transform = new TransformCell(current.toString());
 
             model.addCell(transform);
             model.addEdge(transform, lastCell);
 
-            if(child.getChild().length>0){
-                makeTree(child.getChild()[0],model,transform);
+            if(current.getChild().length>0){
+                makeTree(current.getChild()[0],model,transform);
             }
         } else {
             LabelCell label = null;
-            if(child.getStore() != null) {
-                label = new LabelCell(child.toString()+"\n"+ child.getStore().toString());
+            if(current.getStore() != null) {
+                label = new LabelCell(current.toString()+"\n"+ current.getStore().toString());
             }
             else {
-                label = new LabelCell(child.toString());
+                label = new LabelCell(current.toString());
             }
 
             model.addCell(label);
             model.addEdge(label, lastCell);
 
-            if(child.getChild().length>0) {
-                makeTree(child.getChild()[0], model, label);
+            if(current.getChild().length>0) {
+                makeTree(current.getChild()[0], model, label);
             }
         }
 
