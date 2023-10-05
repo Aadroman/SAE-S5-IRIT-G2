@@ -21,7 +21,6 @@ public class JointureCell extends AbstractCell {
     StackPane jointureGraph = new StackPane();
 
     public JointureCell(String text) {
-        System.out.println(text);
         String[] separated = text.split("=");
         this.leftJointureText = separated[0];
         this.rightJointureText = separated[1];
