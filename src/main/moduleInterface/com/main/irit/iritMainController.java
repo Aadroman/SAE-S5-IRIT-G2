@@ -114,20 +114,20 @@ public class iritMainController implements Initializable {
             graph.beginUpdate();
 
 
-            Query queryParsed = QueryParserUtils.parse(query);
+            Query queryParsed = QueryParserUtils.parse(queryString);
 
             ETreeNode[] array = Application.getTreeFromQuery(queryParsed);
             for(int i=0; i< array.length; i++){
                 array[i].print("");
-              if(i=2) {
-                 //Creation du root du TreeView qui va servir de racine à l'arbo
-                TreeItem<String> rootTree = new TreeItem<>(transferTree.toString());
-                this.createTreeView(transferTree, rootTree);
+                if(i==2) {
+                    //Creation du root du TreeView qui va servir de racine à l'arbo
+                    TreeItem<String> rootTree = new TreeItem<>(array[i].toString());
+                    this.createTreeView(array[i], rootTree);
 
-                // On ajoute l'arbo crée au composants tree view
-                this.tvNode.setRoot(rootTree);
-                this.tvNode.autosize();
-              }
+                    // On ajoute l'arbo crée au composants tree view
+                    this.tvNode.setRoot(rootTree);
+                    this.tvNode.autosize();
+                }
                 makeTree(array[i], model, null);
             }
 
@@ -228,7 +228,7 @@ public class iritMainController implements Initializable {
 
             model.addCell(selection);
             model.addEdge(selection, lastCell);
-          
+
             if(current.getChild().length>0) {
                 makeTree(current.getChild()[0], model, selection);
             }
