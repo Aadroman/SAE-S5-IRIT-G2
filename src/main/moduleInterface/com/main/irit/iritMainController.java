@@ -2,13 +2,12 @@ package com.main.irit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.irit.algebraictree.TreeNode;
-import fr.irit.module1.GlobalAlgebraicTree;
 import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
-import fr.irit.module2.MultistoreAlgebraicTree;
-import fr.irit.module3.TransformationTransferAlgebraicTree;
+import fr.sae.Application;
 import fr.sae.algebraictree.EJoin;
+import fr.sae.algebraictree.EProjection;
+import fr.sae.algebraictree.ESelection;
 import fr.sae.algebraictree.ETreeNode;
 import fxgraph.cells.*;
 import fxgraph.graph.Graph;
@@ -17,10 +16,10 @@ import fxgraph.graph.Model;
 import fxgraph.layout.AbegoTreeLayout;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.abego.treelayout.Configuration;
 
@@ -39,11 +38,9 @@ public class iritMainController implements Initializable {
     @FXML
     private TextField requestTextField;
     @FXML
-    private HBox globalTreePane;
+    private TabPane tabPane;
     @FXML
-    private HBox multiStoreTreePane;
-    @FXML
-    private HBox transferTreePane;
+    private TreeView tvNode;
 
     public void initContext(Stage mainStage, iritMainApplication iritMainApplication) {
         this.primaryStage = mainStage;
@@ -102,105 +99,53 @@ public class iritMainController implements Initializable {
     }
 
     /**
-     * Function to
+     * Crée le layout d'un tree sur un graph
      */
-    private GlobalAlgebraicTree createAndDisplayGlobalTreeGraph(Query query) {
-        Graph globalTreeGraph = new Graph();
-        // Add content to graph
-
-        final Model model = globalTreeGraph.getModel();
-        globalTreeGraph.beginUpdate();
-
-        GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(query);
-        System.out.println("Algebraic Tree : ");
-        TreeNode global = globalAlgebraicTree.getRootNode();
-        ETreeNode globalTree = ETreeNode.createTree(global);
-
-        assert globalTree != null;
-        globalTree.print("");
-
-        makeTree(globalTree, model, null);
-
-        globalTreeGraph.endUpdate();
-
-        // Create tree layout based on fxGraph
+    private void renderTree(Graph treeGraph, HBox treePane) {
         AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
-        globalTreeGraph.layout(layout);
+        // Create tree layout based on fxGraph
+        treeGraph.layout(layout);
 
         // Initialize a childpane to add globalTreeGraph to
         Pane childPane;
-        childPane = globalTreeGraph.getCanvas();
+        childPane = treeGraph.getCanvas();
 
-        this.globalTreePane.getChildren().clear();
-
+        treePane.getChildren().clear();
         // Adds generated graphs to pane
-        this.globalTreePane.getChildren().add(childPane);
-
-        return globalAlgebraicTree;
+        treePane.getChildren().add(childPane);
     }
 
-    private MultistoreAlgebraicTree createAndDisplayMultistoreAlgebraicTree(
-            GlobalAlgebraicTree globalAlgebraicTree
-    ) {
-        Graph multiStoreTreeGraph = new Graph();
+    /**
+     * Création d'une treeView avec comme paramètre node ainsi que la TreeItem parente
+     *
+     * @param node       noeud de l'arbre a partir duquel est crée un TreeItem
+     * @param treeParent TreeItem parent sur lequel on va add les enfants
+     */
+    private void createTreeView(ETreeNode node, TreeItem<String> treeParent) {
+        if (node.getClass().equals(EProjection.class)) {
+            //Boucle sur le nombre d'enfant de la projection initial
+            int nbChild = node.getChild().length;
+            for (int i = 0; i < nbChild; i++) {
+                TreeItem<String> child = new TreeItem<>(node.getChild()[i].toString());
+                treeParent.getChildren().add((child));
+                this.createTreeView(node.getChild()[i], child);
+            }
+        } else if (node.getClass().equals(EJoin.class)) {
+            // Si le node est de type EJoin il a un left et un right child qu'on va créer en tant que TreeItem et ajouter au parent
+            TreeItem<String> childLeft = new TreeItem<>(((EJoin) node).getLeftChild().toString());
+            TreeItem<String> childRight = new TreeItem<>(((EJoin) node).getRightChild().toString());
+            treeParent.getChildren().addAll(childLeft, childRight);
 
-        final Model model = multiStoreTreeGraph.getModel();
+            createTreeView(((EJoin) node).getRightChild(), childRight);
+            createTreeView(((EJoin) node).getLeftChild(), childLeft);
+        } else if (node.getClass().equals((ESelection.class))) {
+            // Si le node est de type ESelection il n'aura qu'un enfant
+            TreeItem<String> child = new TreeItem<>(node.getChild()[0].toString());
 
-        multiStoreTreeGraph.beginUpdate();
+            treeParent.getChildren().add(child);
 
-        MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
-        TreeNode multi = mat.getMultistoreAlgebraicTree();
-        ETreeNode multiTree = ETreeNode.createTree(multi);
-        makeTree(multiTree, model, null);
-        System.out.println();
-        System.out.println("Algebraic Multi-stores Tree : ");
-        mat.getMultistoreAlgebraicTree().print("");
-
-        multiStoreTreeGraph.endUpdate();
-
-        // Create tree layout based on fxGraph
-        AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
-        multiStoreTreeGraph.layout(layout);
-
-        // Initialize a childpane to add globalTreeGraph to
-        Pane childPane;
-        childPane = multiStoreTreeGraph.getCanvas();
-
-        this.multiStoreTreePane.getChildren().clear();
-        // Adds generated graphs to pane
-        this.multiStoreTreePane.getChildren().add(childPane);
-
-        return mat;
-    }
-
-    private TransformationTransferAlgebraicTree createAndDisplayTTATreeGraph(MultistoreAlgebraicTree mat) {
-        Graph transferTreeGraph = new Graph();
-
-        final Model model = transferTreeGraph.getModel();
-        transferTreeGraph.beginUpdate();
-        TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat);
-        TreeNode transform = ttat.getTransformationTransferAlgebraicTree();
-        ETreeNode transformTree = ETreeNode.createTree(transform);
-        makeTree(transformTree, model, null);
-
-        System.out.println();
-        System.out.println("Algebraic Multi-stores Transfer Tree : ");
-        ttat.getTransformationTransferAlgebraicTree().print("");
-
-        transferTreeGraph.endUpdate();
-
-        // Create tree layout based on fxGraph
-        AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
-        transferTreeGraph.layout(layout);
-
-        // Initialize a childpane to add globalTreeGraph to
-        Pane childPane;
-        childPane = transferTreeGraph.getCanvas();
-        this.transferTreePane.getChildren().clear();
-        // Adds generated graphs to pane
-        this.transferTreePane.getChildren().add(childPane);
-
-        return ttat;
+            createTreeView(node.getChild()[0], child);
+        }
     }
 
     /**
@@ -222,10 +167,37 @@ public class iritMainController implements Initializable {
 
             Query queryParsed = QueryParserUtils.parse(queryString);
 
-            // Generation and rendering of all algebraic trees
-            GlobalAlgebraicTree globalAlgebraicTree = this.createAndDisplayGlobalTreeGraph(queryParsed);
-            MultistoreAlgebraicTree mat = this.createAndDisplayMultistoreAlgebraicTree(globalAlgebraicTree);
-            TransformationTransferAlgebraicTree ttat = this.createAndDisplayTTATreeGraph(mat);
+            ETreeNode[] array = Application.getTreeFromQuery(queryParsed);
+
+            for (int i = 0; i < array.length; i++) {
+                Graph graph = new Graph();
+                // Add content to graph
+
+                Model model = graph.getModel();
+                graph.beginUpdate();
+
+                this.makeTree(array[i], model, null);
+
+                if (i == 2) {
+                    //Creation du root du TreeView qui va servir de racine à l'arbo
+                    TreeItem<String> rootTree = new TreeItem<>(array[i].toString());
+                    this.createTreeView(array[i], rootTree);
+
+                    // On ajoute l'arbo crée au composants tree view
+                    this.tvNode.setRoot(rootTree);
+                    this.tvNode.autosize();
+                }
+
+                graph.endUpdate();
+
+                if (tabPane.getTabs().get(i).getContent() instanceof VBox) {
+                    this.renderTree(
+                            graph,
+                            (HBox) ((VBox) tabPane.getTabs().get(i).getContent()).getChildren().get(0)
+                    );
+                }
+
+            }
         } catch (Exception e) {
             if (requestTextField.getText().isEmpty()) {
                 this.displayWarningDialog("Votre requête est vide !", e);

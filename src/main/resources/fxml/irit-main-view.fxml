@@ -11,33 +11,39 @@
         <BorderPane layoutY="90.0" style="-fx-background-color: red;" AnchorPane.bottomAnchor="0.0"
                     AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0">
             <center>
-                <TabPane prefHeight="312.0" prefWidth="600.0" style="-fx-background-color: white;"
-                         tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMaxWidth="100.0"
-                         BorderPane.alignment="CENTER">
-                    <tabs>
-                        <Tab text="Arbre global">
-                            <content>
-                                <VBox alignment="CENTER">
-                                    <HBox fx:id="globalTreePane" alignment="CENTER"/>
-                                </VBox>
-                            </content>
-                        </Tab>
-                        <Tab text="Multi-store">
-                            <content>
-                                <VBox alignment="CENTER">
-                                    <HBox fx:id="multiStoreTreePane" alignment="CENTER"/>
-                                </VBox>
-                            </content>
-                        </Tab>
-                        <Tab text="Transfers">
-                            <content>
-                                <VBox alignment="CENTER">
-                                    <HBox fx:id="transferTreePane" alignment="CENTER"/>
-                                </VBox>
-                            </content>
-                        </Tab>
-                    </tabs>
-                </TabPane>
+                <SplitPane dividerPositions="0.6217877094972066" prefHeight="160.0" prefWidth="200.0"
+                           BorderPane.alignment="CENTER">
+                    <items>
+                        <TabPane fx:id="tabPane" prefHeight="312.0" prefWidth="600.0"
+                                 style="-fx-background-color: white;" tabClosingPolicy="UNAVAILABLE"
+                                 tabMaxHeight="100.0" tabMaxWidth="100.0" BorderPane.alignment="CENTER">
+                            <tabs>
+                                <Tab text="Arbre global">
+                                    <content>
+                                        <VBox alignment="CENTER">
+                                            <HBox fx:id="globalTreePane" alignment="CENTER"/>
+                                        </VBox>
+                                    </content>
+                                </Tab>
+                                <Tab text="Multi-store">
+                                    <content>
+                                        <VBox alignment="CENTER">
+                                            <HBox fx:id="multiStoreTreePane" alignment="CENTER"/>
+                                        </VBox>
+                                    </content>
+                                </Tab>
+                                <Tab text="Transfers">
+                                    <content>
+                                        <VBox alignment="CENTER">
+                                            <HBox fx:id="transferTreePane" alignment="CENTER"/>
+                                        </VBox>
+                                    </content>
+                                </Tab>
+                            </tabs>
+                        </TabPane>
+                        <TreeView fx:id="tvNode" prefHeight="306.0" prefWidth="317.0"/>
+                    </items>
+                </SplitPane>
             </center>
         </BorderPane>
         <ImageView fitHeight="77.0" fitWidth="76.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true"

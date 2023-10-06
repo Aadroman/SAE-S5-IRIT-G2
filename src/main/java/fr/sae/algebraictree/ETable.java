@@ -23,6 +23,7 @@ public class ETable extends ETreeNode {
     public void setStore(Store store) {
         this.store = store;
     }
+    @Override
     public Store getStore(){
         return store;
     }
