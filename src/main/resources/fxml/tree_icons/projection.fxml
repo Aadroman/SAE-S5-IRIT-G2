@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <Polygon fx:id="projectionPolygon" fill="#ff5608" layoutX="280.0" layoutY="190.0" points="-10.0, 10.0, -30.0, 40.0, 80.0, 40.0, 60.0, 10.0" stroke="BLACK" strokeType="INSIDE" />
+</AnchorPane>
