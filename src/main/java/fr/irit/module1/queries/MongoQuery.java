@@ -2,7 +2,6 @@ package fr.irit.module1.queries;
 
 import fr.irit.algebraictree.*;
 import fr.irit.module1.antlr4.MongoQueryParser;
-import fr.irit.module1.antlr4.SqlQueryParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +11,13 @@ public class MongoQuery extends Query<MongoQueryParser.QueryContext> {
     public MongoQuery(MongoQueryParser.QueryContext mongoParsedQuery) {
         setParsedQuery(mongoParsedQuery);
     }
+
     @Override
     public List<String> getTablesNames() {
         List<String> tableNames = new ArrayList<String>();
         tableNames.add(getParsedQuery().collection.getText());
-        if(this.hasCondition()){
-            for (MongoQueryParser.LookupStageContext lookup : getParsedQuery().lookupStage()){
+        if (this.hasCondition()) {
+            for (MongoQueryParser.LookupStageContext lookup : getParsedQuery().lookupStage()) {
                 tableNames.add(lookup.from().collection.getText());
             }
         }
@@ -30,7 +30,7 @@ public class MongoQuery extends Query<MongoQueryParser.QueryContext> {
         // Search OR conditions
         // We assume that a composedPredicates is only an $or
         List<MongoQueryParser.ComposedPredicateContext> composedPredicates = getParsedQuery().matchStage().composedPredicate();
-        if(!composedPredicates.isEmpty()) {
+        if (!composedPredicates.isEmpty()) {
             for (MongoQueryParser.ComposedPredicateContext composedPredicate : composedPredicates) {
                 List<Predicate> predicateList = new ArrayList<Predicate>();
                 for (MongoQueryParser.PredicateContext predicate : composedPredicate.predicate()) {
@@ -44,8 +44,8 @@ public class MongoQuery extends Query<MongoQueryParser.QueryContext> {
         }
         List<MongoQueryParser.PredicateContext> predicates = getParsedQuery().matchStage().predicate();
         // Search AND conditions
-        if(!predicates.isEmpty()){
-            for(MongoQueryParser.PredicateContext predicate : predicates){
+        if (!predicates.isEmpty()) {
+            for (MongoQueryParser.PredicateContext predicate : predicates) {
                 //TODO Actually getParsedQuery().collection works because we not handle JOIN / lookup
                 DotNotation d = new DotNotation(getParsedQuery().collection.getText(), predicate.field().getText());
                 Predicate p = new Predicate(d, this.comparisonOperatorToString(predicate.comparisonOperator()), predicate.value().raw.getText());
@@ -66,12 +66,12 @@ public class MongoQuery extends Query<MongoQueryParser.QueryContext> {
     public Projection createProjectionNode() {
         List<DotNotation> attributesList = new ArrayList<DotNotation>();
         // Handle sql wildcard (*) case
-        if(getParsedQuery().projectStage() == null) {
+        if (getParsedQuery().projectStage() == null) {
             return new Projection();
         }
-        for (MongoQueryParser.FieldContext field : getParsedQuery().projectStage().fieldsProjection().field()){
+        for (MongoQueryParser.FieldContext field : getParsedQuery().projectStage().fieldsProjection().field()) {
             //TODO Actually getParsedQuery().collection works because we not handle JOIN / lookup
-            attributesList.add(new DotNotation(getParsedQuery().collection.getText(),field.getText()));
+            attributesList.add(new DotNotation(getParsedQuery().collection.getText(), field.getText()));
         }
         return new Projection(attributesList);
     }
@@ -81,11 +81,11 @@ public class MongoQuery extends Query<MongoQueryParser.QueryContext> {
         return getParsedQuery().matchStage() != null && getParsedQuery().lookupStage() != null;
     }
 
-    private String comparisonOperatorToString(MongoQueryParser.ComparisonOperatorContext comparisonOperator){
-        if(comparisonOperator == null){
+    private String comparisonOperatorToString(MongoQueryParser.ComparisonOperatorContext comparisonOperator) {
+        if (comparisonOperator == null) {
             return "=";
         }
-        switch(comparisonOperator.getText()){
+        switch (comparisonOperator.getText()) {
             case "$eq":
                 return "=";
             case "$ne":

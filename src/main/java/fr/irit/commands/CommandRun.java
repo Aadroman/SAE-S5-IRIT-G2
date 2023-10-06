@@ -1,8 +1,8 @@
 package fr.irit.commands;
 
 import fr.irit.module1.GlobalAlgebraicTree;
-import fr.irit.module1.queries.Query;
 import fr.irit.module1.QueryParserUtils;
+import fr.irit.module1.queries.Query;
 import fr.irit.module2.MultistoreAlgebraicTree;
 import fr.irit.module3.TransformationTransferAlgebraicTree;
 import picocli.CommandLine;
@@ -23,14 +23,14 @@ import picocli.CommandLine;
         parameterListHeading = "%nParameters:%n",
         optionListHeading = "%nOptions:%n"
 )
-public class CommandRun implements Runnable{
+public class CommandRun implements Runnable {
     @CommandLine.Parameters(index = "0", description = "Database query (ex: SELECT * FROM Customers)")
     private String query;
 
     @CommandLine.Option(names = {"--target-db-name"}, defaultValue = "DB1", description = "Target database name (default : ${DEFAULT-VALUE})")
     public static String TARGET_DB_NAME;
 
-    @CommandLine.Option(names = {"--target-db-type"}, defaultValue = "RELATIONAL" ,description = "Target database type (default : ${DEFAULT-VALUE})")
+    @CommandLine.Option(names = {"--target-db-type"}, defaultValue = "RELATIONAL", description = "Target database type (default : ${DEFAULT-VALUE})")
     public static String TARGET_DB_TYPE;
 
     @CommandLine.Option(names = {"-gt", "--globalTree"}, description = "Print global tree")
@@ -58,23 +58,23 @@ public class CommandRun implements Runnable{
         long startTime = System.nanoTime();
         Query queryParsed = QueryParserUtils.parse(query);
         GlobalAlgebraicTree globalAlgebraicTree = new GlobalAlgebraicTree(queryParsed);
-        if(printGlobalTree){
+        if (printGlobalTree) {
             System.out.println("\nAlgebraic Tree : \n");
             globalAlgebraicTree.getRootNode().print("");
         }
         MultistoreAlgebraicTree mat = new MultistoreAlgebraicTree(globalAlgebraicTree);
-        if(printMultistoreTree){
+        if (printMultistoreTree) {
             System.out.println("\nAlgebraic Multi-stores Tree : \n");
             mat.getMultistoreAlgebraicTree().print("");
         }
         TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat, TARGET_DB_NAME, TARGET_DB_TYPE);
-        if(printTransferTree){
+        if (printTransferTree) {
             System.out.println("\nAlgebraic Multi-stores Tree : \n");
             ttat.getTransformationTransferAlgebraicTree().print("");
         }
         long endTime = System.nanoTime();
-        if(time){
-            long duration = (endTime - startTime)/1000000;
+        if (time) {
+            long duration = (endTime - startTime) / 1000000;
             System.out.println("\nExecution time : " + duration + " ms");
         }
     }

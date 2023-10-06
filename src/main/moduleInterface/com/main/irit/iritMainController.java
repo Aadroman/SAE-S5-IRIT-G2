@@ -8,21 +8,19 @@ import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
 import fr.irit.module2.MultistoreAlgebraicTree;
 import fr.irit.module3.TransformationTransferAlgebraicTree;
-import fr.sae.algebraictree.*;
+import fr.sae.algebraictree.EJoin;
+import fr.sae.algebraictree.ETreeNode;
 import fxgraph.cells.*;
-import fxgraph.edges.CorneredEdge;
-import fxgraph.edges.Edge;
 import fxgraph.graph.Graph;
 import fxgraph.graph.ICell;
 import fxgraph.graph.Model;
 import fxgraph.layout.AbegoTreeLayout;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Orientation;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.abego.treelayout.Configuration;
 
@@ -41,11 +39,11 @@ public class iritMainController implements Initializable {
     @FXML
     private TextField requestTextField;
     @FXML
-    private Pane globalTreePane;
+    private HBox globalTreePane;
     @FXML
-    private Pane multiStoreTreePane;
+    private HBox multiStoreTreePane;
     @FXML
-    private Pane transferTreePane;
+    private HBox transferTreePane;
 
     public void initContext(Stage mainStage, iritMainApplication iritMainApplication) {
         this.primaryStage = mainStage;
@@ -59,6 +57,14 @@ public class iritMainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         getAllTablesDB();
+    }
+
+    public iritMainApplication getApp() {
+        return app;
+    }
+
+    public void setApp(iritMainApplication app) {
+        this.app = app;
     }
 
     /**
@@ -125,9 +131,8 @@ public class iritMainController implements Initializable {
         Pane childPane;
         childPane = globalTreeGraph.getCanvas();
 
-        double scale = globalTreeGraph.getScale();
-
         this.globalTreePane.getChildren().clear();
+
         // Adds generated graphs to pane
         this.globalTreePane.getChildren().add(childPane);
 
@@ -160,7 +165,6 @@ public class iritMainController implements Initializable {
         // Initialize a childpane to add globalTreeGraph to
         Pane childPane;
         childPane = multiStoreTreeGraph.getCanvas();
-        childPane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
         this.multiStoreTreePane.getChildren().clear();
         // Adds generated graphs to pane
@@ -192,7 +196,6 @@ public class iritMainController implements Initializable {
         // Initialize a childpane to add globalTreeGraph to
         Pane childPane;
         childPane = transferTreeGraph.getCanvas();
-
         this.transferTreePane.getChildren().clear();
         // Adds generated graphs to pane
         this.transferTreePane.getChildren().add(childPane);
@@ -200,6 +203,9 @@ public class iritMainController implements Initializable {
         return ttat;
     }
 
+    /**
+     *
+     */
     @FXML
     private void interactWithPolystore() {
         List<String> tablesnames = getAllTablesDB();
@@ -211,11 +217,12 @@ public class iritMainController implements Initializable {
 
             List<String> foundTables = this.getFoundTablesFromInput(queryString);
 
-            // Check if the found tables are in the predefined table names list (HashSet is to improver performance)
+            // Check if the found tables are in the predefined table names list (HashSet is to improve performance)
             allTablesFound = new HashSet<>(tablesnames).containsAll(foundTables);
 
             Query queryParsed = QueryParserUtils.parse(queryString);
 
+            // Generation and rendering of all algebraic trees
             GlobalAlgebraicTree globalAlgebraicTree = this.createAndDisplayGlobalTreeGraph(queryParsed);
             MultistoreAlgebraicTree mat = this.createAndDisplayMultistoreAlgebraicTree(globalAlgebraicTree);
             TransformationTransferAlgebraicTree ttat = this.createAndDisplayTTATreeGraph(mat);
@@ -230,73 +237,64 @@ public class iritMainController implements Initializable {
         }
     }
 
-    public void makeTree(ETreeNode child, Model model, ICell lastCell) {
-        //On crée la base de l'arbre si le treeNode n'a pas de parent
-        if (lastCell == null) {
+    /**
+     * Function that recursively creates and populates a fx-graph representing the given algebraic tree.
+     *
+     * @param child        The current tree node
+     * @param model        The graph model to add cells and edges to
+     * @param previousCell The previously treated cell (e.g: the parent node's cell)
+     */
+    private void makeTree(ETreeNode child, Model model, ICell previousCell) {
+        if (previousCell == null) {
             ProjectionCell projection = new ProjectionCell("π " + child.toString());
-
-            //On l'ajoute au model deja crée précédemment
+            // On l'ajoute au model deja crée précédemment
             model.addCell(projection);
-
-            //On verifie si il a des enfants et on réexecute la methode
+            // On verifie si il a des enfants et on réexecute la methode
             if (child.getChild().length > 0) {
                 makeTree(child.getChild()[0], model, projection);
             }
-        } else if (child.getClass().equals(EJoin.class)) {
-
-            JointureCell jointure = new JointureCell("⨝ " + child);
-
-            model.addCell(jointure);
-            model.addEdge(jointure, lastCell);
-
-            makeTree(((EJoin) child).getLeftChild(), model, jointure);
-            makeTree(((EJoin) child).getRightChild(), model, jointure);
-
-        } else if (child.getClass().equals(ESelection.class)) {
-            SelectionCell selection = new SelectionCell("σ " + child);
-
-            model.addCell(selection);
-            model.addEdge(selection, lastCell);
-
-            if (child.getChild().length > 0) {
-                makeTree(child.getChild()[0], model, selection);
-            }
-        } else if (child.getClass().equals(ETransfer.class)) {
-            TransferCell transfer = new TransferCell(child.toString());
-
-            model.addCell(transfer);
-            model.addEdge(transfer, lastCell);
-
-            if (child.getChild().length > 0) {
-                makeTree(child.getChild()[0], model, transfer);
-            }
-        } else if (child.getClass().equals(ETransformation.class)) {
-            LabelCell transform = new LabelCell(child.toString());
-
-            model.addCell(transform);
-            model.addEdge(transform, lastCell);
-
-            if (child.getChild().length > 0) {
-                makeTree(child.getChild()[0], model, transform);
-            }
         } else {
-            LabelCell label = new LabelCell(child.toString());
-
-            model.addCell(label);
-            model.addEdge(label, lastCell);
-
-            if (child.getChild().length > 0) {
-                makeTree(child.getChild()[0], model, label);
+            switch (child.getClass().getSimpleName()) {
+                case "EJoin":
+                    JointureCell jointure = new JointureCell("⨝ " + child);
+                    addCellAndEdge(model, jointure, previousCell);
+                    makeTree(((EJoin) child).getLeftChild(), model, jointure);
+                    makeTree(((EJoin) child).getRightChild(), model, jointure);
+                    break;
+                case "ESelection":
+                    SelectionCell selection = new SelectionCell("σ " + child);
+                    addCellAndEdge(model, selection, previousCell);
+                    if (child.getChild().length > 0) {
+                        makeTree(child.getChild()[0], model, selection);
+                    }
+                    break;
+                case "ETransfer":
+                    TransferCell transfer = new TransferCell(child.toString());
+                    addCellAndEdge(model, transfer, previousCell);
+                    if (child.getChild().length > 0) {
+                        makeTree(child.getChild()[0], model, transfer);
+                    }
+                    break;
+                default:
+                    LabelCell label = new LabelCell(child.toString());
+                    addCellAndEdge(model, label, previousCell);
+                    if (child.getChild().length > 0) {
+                        makeTree(child.getChild()[0], model, label);
+                    }
+                    break;
             }
         }
-
     }
 
+    private void addCellAndEdge(Model model, ICell cell, ICell previousCell) {
+        model.addCell(cell);
+        model.addEdge(cell, previousCell);
+    }
 
     /***
      * Return le nom de toutes les tables dans une List de Nom
      * */
-    protected List<String> getAllTablesDB() {
+    private List<String> getAllTablesDB() {
         List<String> tablesNames = new ArrayList<>();
         // Specify the path to your JSON file
         String documentJSON = "src/main/java/fr/irit/module2/UnifiedView/documentUnifiedView.json";
@@ -328,100 +326,5 @@ public class iritMainController implements Initializable {
             e.printStackTrace();
         }
         return tablesNames;
-    }
-
-//    private TitledPane updatePane(TitledPane pane) {
-//        Pane childPane;
-//        Graph graph = new Graph();
-//        // Add content to graph
-//        populateGraph(graph);
-//        // Layout nodes
-//        AbegoTreeLayout layout = new AbegoTreeLayout(100, 500, Configuration.Location.Bottom);
-//        graph.layout(layout);
-//        childPane = graph.getCanvas();
-//        pane.setContent(childPane);
-//        return pane;
-//    }
-
-    private void populateGraph(Graph graph) {
-        final Model model = graph.getModel();
-        graph.beginUpdate();
-
-
-        // Les cellules en commentaires sont remplacées par des cellules de projection, selection ou jointure,
-        // elles sont mises de coté pour l'implementation de différents types de cells autre que des labelCell
-
-        //final ICell cellA = new LabelCell("π *");
-        final ProjectionCell cellA = new ProjectionCell("π *");
-        final ICell cellB = new LabelCell(" Orders");
-        //final ICell cellC = new LabelCell("π *");
-        final ProjectionCell cellC = new ProjectionCell("π *");
-        //final ICell cellD = new LabelCell("⨝ Orders.order_id = Orders.order_id");
-        final JointureCell cellD = new JointureCell("⨝ Orders.order_id = Orders.order_id");
-        final ICell cellE = new LabelCell("Orders : DB3-DOCUMENT \n [Orders.order_id <-> Orders.order_id, Orders.total_price <-> Orders.total_price]");
-        final ICell cellF = new LabelCell("Orders : DB2-RELATIONAL \n [Orders.order_id <-> Orders.order_id, Orders.customer_id <-> Orders.customer_id]");
-        //final ICell cellG = new LabelCell("π *");
-        final ProjectionCell cellG = new ProjectionCell("π *");
-        //final ICell cellH = new LabelCell("⨝ Orders.order_id = Orders.order_id");
-        final JointureCell cellH = new JointureCell("⨝ Orders.order_id = Orders.order_id");
-        final ICell cellI = new LabelCell("Transfer : DB3 -> DB1");
-        final ICell cellJ = new LabelCell("Transfer : DB2 -> DB1");
-        final ICell cellK = new LabelCell("Transformation : DOCUMENT -> RELATIONAL");
-        final ICell cellL = new LabelCell("Orders : DB3-DOCUMENT [Orders.order_id <-> Orders.order_id, Orders.total_price <-> Orders.total_price]");
-        final ICell cellM = new LabelCell("Orders : DB2-RELATIONAL [Orders.order_id <-> Orders.order_id, Orders.customer_id <-> Orders.customer_id]");
-
-        model.addCell(cellA);
-        model.addCell(cellB);
-        model.addCell(cellC);
-        model.addCell(cellD);
-        model.addCell(cellE);
-        model.addCell(cellF);
-        model.addCell(cellG);
-        model.addCell(cellH);
-        model.addCell(cellI);
-        model.addCell(cellJ);
-        model.addCell(cellK);
-        model.addCell(cellL);
-        model.addCell(cellM);
-
-        //algebric tree
-        final CorneredEdge edgeAlgebricTreeProjection = new CorneredEdge(cellA, cellB, Orientation.VERTICAL);
-        model.addEdge(edgeAlgebricTreeProjection);
-
-        //algebric multi stores tree
-        final CorneredEdge edgeAlgebricMultiStoresTreeProjection = new CorneredEdge(cellC, cellD, Orientation.VERTICAL);
-        model.addEdge(edgeAlgebricMultiStoresTreeProjection);
-
-        final CorneredEdge edgeMultiStoreDataType1 = new CorneredEdge(cellD, cellE, Orientation.VERTICAL);
-        model.addEdge(edgeMultiStoreDataType1);
-        final CorneredEdge edgeMultiStoreDataType2 = new CorneredEdge(cellD, cellF, Orientation.VERTICAL);
-        model.addEdge(edgeMultiStoreDataType2);
-
-        //algebric multi stores tree with transformation
-        final Edge edgeAlgebricMultiStoresWTransferAndTransformationTreeProjection = new Edge(cellH, cellG);
-        model.addEdge(edgeAlgebricMultiStoresWTransferAndTransformationTreeProjection);
-
-        final CorneredEdge edgeMultiStoreTransfer1 = new CorneredEdge(cellI, cellH, Orientation.HORIZONTAL);
-        model.addEdge(edgeMultiStoreTransfer1);
-        final CorneredEdge edgeMultiStoreTransfer2 = new CorneredEdge(cellJ, cellH, Orientation.HORIZONTAL);
-        model.addEdge(edgeMultiStoreTransfer2);
-
-        final CorneredEdge edgeMultiStoreTransformation1 = new CorneredEdge(cellK, cellI, Orientation.HORIZONTAL);
-        model.addEdge(edgeMultiStoreTransformation1);
-
-        final CorneredEdge edgeMultiStoresWTransferAndTransformationDataType1 = new CorneredEdge(cellL, cellK, Orientation.HORIZONTAL);
-        model.addEdge(edgeMultiStoresWTransferAndTransformationDataType1);
-        final CorneredEdge edgeMultiStoresWTransferAndTransformationDataType2 = new CorneredEdge(cellM, cellJ, Orientation.HORIZONTAL);
-        model.addEdge(edgeMultiStoresWTransferAndTransformationDataType2);
-
-        graph.endUpdate();
-    }
-
-    public iritMainApplication getApp() {
-        return app;
-    }
-
-    public void setApp(iritMainApplication app) {
-        this.app = app;
     }
 }

@@ -4,7 +4,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="396.0" prefWidth="582.0" style="-fx-background-color: white;"
+<AnchorPane prefHeight="720.0" prefWidth="1200.0" style="-fx-background-color: white;"
             xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.main.irit.iritMainController">
     <children>
@@ -17,20 +17,23 @@
                     <tabs>
                         <Tab text="Arbre global">
                             <content>
-                                <AnchorPane fx:id="globalTreePane" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                            prefWidth="200.0"/>
+                                <VBox alignment="CENTER">
+                                    <HBox fx:id="globalTreePane" alignment="CENTER"/>
+                                </VBox>
                             </content>
                         </Tab>
                         <Tab text="Multi-store">
                             <content>
-                                <AnchorPane fx:id="multiStoreTreePane" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                            prefWidth="200.0"/>
+                                <VBox alignment="CENTER">
+                                    <HBox fx:id="multiStoreTreePane" alignment="CENTER"/>
+                                </VBox>
                             </content>
                         </Tab>
                         <Tab text="Transfers">
                             <content>
-                                <AnchorPane fx:id="transferTreePane" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                            prefWidth="200.0"/>
+                                <VBox alignment="CENTER">
+                                    <HBox fx:id="transferTreePane" alignment="CENTER"/>
+                                </VBox>
                             </content>
                         </Tab>
                     </tabs>

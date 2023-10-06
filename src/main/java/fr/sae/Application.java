@@ -1,15 +1,15 @@
 package fr.sae;
 
-import fr.irit.algebraictree.*;
+import fr.irit.algebraictree.TreeNode;
 import fr.irit.module1.GlobalAlgebraicTree;
 import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
 import fr.irit.module2.MultistoreAlgebraicTree;
 import fr.irit.module3.TransformationTransferAlgebraicTree;
-import fr.sae.algebraictree.*;
+import fr.sae.algebraictree.ETreeNode;
 
 public class Application {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         String query = "SELECT Customers.customer_id, Orders.order_id, Orders.total_price, Products.brand " +
                 "FROM Reviews, Orders, Products, Customers " +
                 "WHERE (Orders.total_price > 10000 OR Customers.zipcode = 31000) " +
@@ -32,12 +32,12 @@ public class Application {
         ETreeNode multiTree = ETreeNode.createTree(multi);
         multiTree.print("");
 
-       TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat);
-       System.out.println("");
-       System.out.println("Algebraic Multi-stores Tree With transformation: ");
-       TreeNode multiTransformation = ttat.getTransformationTransferAlgebraicTree();
-       ETreeNode multiTransformationTree = ETreeNode.createTree(multiTransformation);
-       multiTransformationTree.print("");
+        TransformationTransferAlgebraicTree ttat = new TransformationTransferAlgebraicTree(mat);
+        System.out.println("");
+        System.out.println("Algebraic Multi-stores Tree With transformation: ");
+        TreeNode multiTransformation = ttat.getTransformationTransferAlgebraicTree();
+        ETreeNode multiTransformationTree = ETreeNode.createTree(multiTransformation);
+        multiTransformationTree.print("");
 
     }
 

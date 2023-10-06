@@ -1,7 +1,6 @@
 package fr.sae.algebraictree;
 
 import fr.irit.algebraictree.Transfer;
-import fr.irit.module3.TransformationTransferAlgebraicTree;
 
 import java.util.List;
 import java.util.Map;
@@ -12,14 +11,15 @@ public class ETransfer extends ETreeNode {
     private Transfer correspondingTransfer;
     private String sourceDatabase;
     private String targetDatabase;
-    public ETransfer(String sourceDatabase, String targetDatabase){
+
+    public ETransfer(String sourceDatabase, String targetDatabase) {
         this.sourceDatabase = sourceDatabase;
         this.targetDatabase = targetDatabase;
     }
 
     public ETransfer(Transfer node) {
-        this.correspondingTransfer = node ;
-        this.child = ETreeNode.createTree(node.getChild()) ;
+        this.correspondingTransfer = node;
+        this.child = ETreeNode.createTree(node.getChild());
         String[] split = this.correspondingTransfer.toString().split(" -> ");
         this.sourceDatabase = split[0];
         this.targetDatabase = split[1];
@@ -36,40 +36,46 @@ public class ETransfer extends ETreeNode {
     public String toString() {
         return this.sourceDatabase + " -> " + this.targetDatabase;
     }
+
     @Override
     public List<String> listIncludedTablesRecursive() {
         return this.child.listIncludedTablesRecursive();
     }
+
     @Override
     public ETreeNode findLowestNodeContainingTables(List<String> tableList) {
-        if(!this.listIncludedTablesRecursive().containsAll(tableList)){
+        if (!this.listIncludedTablesRecursive().containsAll(tableList)) {
             return null;
         } else {
             return this.child.findLowestNodeContainingTables(tableList);
         }
     }
+
     @Override
     public Set<EDotNotation> listDistinctColumnsRecursive() {
         return child.listDistinctColumnsRecursive();
     }
+
     @Override
     public void addChildren(ETreeNode... children) {
-        if(children.length == 1){
+        if (children.length == 1) {
             this.child = children[0];
             this.child.setParent(this);
         } else {
             throw new UnsupportedOperationException("A Transfer node can only have 1 child");
         }
     }
+
     @Override
     public void print(String prefix) {
-        if(this.getParent() instanceof EJoin){
-            System.out.print(prefix + "├── Transfer : " +this.toString() + "\n");
+        if (this.getParent() instanceof EJoin) {
+            System.out.print(prefix + "├── Transfer : " + this.toString() + "\n");
         } else {
-            System.out.print(prefix + "└── Transfer : " +this.toString() + "\n");
+            System.out.print(prefix + "└── Transfer : " + this.toString() + "\n");
         }
         this.child.print(prefix + "    ");
     }
+
     @Override
     public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
         this.child.renameColumnsRecursive(columnNamingMap);
