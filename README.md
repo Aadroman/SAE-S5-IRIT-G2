@@ -1,7 +1,24 @@
 # SAE-S5
-Répertoire Github de la SAE S5
 
-## Participants : 
+<table>
+<tr>
+    <td> :bulb: </td>
+    <td> Ce dépôt présente le projet développé dans le cadre de la SAE du semestre 5 du BUT 3 Informatique à l'IUT de Blagnac </td>
+</tr>
+</table>
+
+:memo: **Note:** développement en cours
+
+- Version courante: [0.8](https://github.com/AurelienSP/SAE-S5-IRIT-G2/releases/tag/0.8)
+- User Stories: [ici](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+label%3A%22User+Story%22), reste (4/6)
+- Product Backlog et Sprint Backlog: [ici](https://github.com/users/AurelienSP/projects/1)
+
+## Table des matières:
+1. [Equipe](#equipe)
+2. [Documentation](#documentation)
+3. [Branches](#branches)
+
+## Equipe
 
 DRUELLE Julien
 
@@ -15,36 +32,22 @@ SANCHEZ-PORRO Aurélien (alternant présent avant l'heure)
 
 BROUXEL Enzo 
 
-COURREJOU Mattieux
+COURREJOU Matthieu
 
 ESTIVAL Ludovic
 
 GUINLE Loic
 
+## Documentation
 
+- `Backlog Produit` => (format [adoc](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/Backlog_produit_IRIT.adoc) et [pdf](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/Backlog_produit_IRIT.pdf))
+- `Backlog Produit + Sprint` => [issues](https://github.com/users/AurelienSP/projects/1)
+- `Diagramme de classes` => (format [png](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/class/module1.png) et [puml](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/class/module1.puml))
+- `Diagramme de séquence` => (format [png](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/sequence/overall_structure.png) et [puml](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/sequence/overall_structure.puml))
+- `Documentation utilisateur` => [ici](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/doc_user.adoc)
+- `Documentation technique` => [ici](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/doc_technique.adoc)
 
-
-
-
-## Repartition
-
-### Dans les dossiers
-
-#### **La documentation**
-
-se trouve dans le dossier "./doc" :
-* Backlog produit (format [adoc](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/Backlog_produit_IRIT.adoc) et [pdf](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/Backlog_produit_IRIT.pdf))
-* Diagramme de classes (format [png](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/class/module1.png) et [puml](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/class/module1.puml))
-* Diagramme de séquence (format [png](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/sequence/overall_structure.png) et [puml](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/sequence/overall_structure.puml))
-* [Documentation utilisateur](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/doc_user.adoc) (format adoc)
-* [Documentation technique](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/doc_technique.adoc) (format adoc)
-
-####  **Src et autre dossiers**
-
-voir la documentation technique
-
-
-### Dans les branches
+## Branches
 
 * [Main](https://github.com/AurelienSP/SAE-S5-IRIT-G2) : la branche principale
 * integration_interface (branche de résultats) : la branche utilisée pour l'intégration de l'application IHM à l'application de l'IRIT (voir [src/main/moduleInterface](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/integration_interface/src/main/moduleInterface))
