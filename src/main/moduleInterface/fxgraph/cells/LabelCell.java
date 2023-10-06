@@ -29,6 +29,26 @@ public class LabelCell extends AbstractCell{
         return pane;
     }
 
+    @Override
+    public double getSourceEdgeXPosition() {
+        return 0;
+    }
+
+    @Override
+    public double getSourceEdgeYPosition() {
+        return 0;
+    }
+
+    @Override
+    public double getTargetEdgeXPosition() {
+        return 0;
+    }
+
+    @Override
+    public double getTargetEdgeYPosition() {
+        return 0;
+    }
+
 
     @Override
     public DoubleBinding getXAnchor(Graph graph, IEdge edge) {

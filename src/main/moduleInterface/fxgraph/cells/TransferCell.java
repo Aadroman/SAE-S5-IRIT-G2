@@ -49,6 +49,26 @@ public class TransferCell extends AbstractCell {
     }
 
     @Override
+    public double getSourceEdgeXPosition() {
+        return 0;
+    }
+
+    @Override
+    public double getSourceEdgeYPosition() {
+        return 0;
+    }
+
+    @Override
+    public double getTargetEdgeXPosition() {
+        return 0;
+    }
+
+    @Override
+    public double getTargetEdgeYPosition() {
+        return 0;
+    }
+
+    @Override
     public void setSelected(boolean select) {
         // TODO Auto-generated method stub
 

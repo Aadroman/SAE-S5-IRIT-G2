@@ -49,4 +49,12 @@ public abstract class AbstractCell implements ICell {
 	}
 
     public abstract Region getGraphic(Graph graph);
+
+	public abstract double getSourceEdgeXPosition();
+
+	public abstract double getSourceEdgeYPosition();
+
+	public abstract double getTargetEdgeXPosition();
+
+	public abstract double getTargetEdgeYPosition();
 }

@@ -22,7 +22,6 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.abego.treelayout.Configuration;
 
@@ -32,8 +31,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 public class iritMainController implements Initializable {
     private iritMainApplication app;
@@ -241,7 +242,16 @@ public class iritMainController implements Initializable {
             makeTree(((EJoin) child).getRightChild(), model, jointure);
 
         } else if (child.getClass().equals(ESelection.class)) {
-            SelectionCell selection = new SelectionCell("σ " + child);
+            char[] charArray = child.toString().toCharArray();
+            AtomicReference<String> text = new AtomicReference<>("");
+            if (charArray[0] == '(' && charArray[charArray.length-1] == ')'){
+                IntStream.range(1, charArray.length-1).forEachOrdered(index -> {
+                    text.updateAndGet(v -> v + charArray[index]);
+                });
+            } else {
+                text.updateAndGet(v -> child.toString());
+            }
+            SelectionCell selection = new SelectionCell(String.valueOf(text));
 
             model.addCell(selection);
             model.addEdge(selection, lastCell);

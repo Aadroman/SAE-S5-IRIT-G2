@@ -30,6 +30,26 @@ public class Model implements Serializable {
 			public Region getGraphic(Graph graph) {
 				return null;
 			}
+
+			@Override
+			public double getSourceEdgeXPosition() {
+				return 0;
+			}
+
+			@Override
+			public double getSourceEdgeYPosition() {
+				return 0;
+			}
+
+			@Override
+			public double getTargetEdgeXPosition() {
+				return 0;
+			}
+
+			@Override
+			public double getTargetEdgeYPosition() {
+				return 0;
+			}
 		};
 		// clear model, create lists
 		clear();
