@@ -26,7 +26,7 @@ public class JointureCell extends AbstractCell {
 
     boolean firstCall = true;
 
-    double sourceEdgeXPosition, sourceEdgeYPosition, targetEdgeYPosition,rightTargetEdgeXPosition, leftTargetEdgeXPosition;
+    double sourceEdgeXPosition, sourceEdgeYPosition, targetEdgeYPosition, rightTargetEdgeXPosition, leftTargetEdgeXPosition;
 
     public JointureCell(String text) {
         try {
