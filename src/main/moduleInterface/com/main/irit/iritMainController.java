@@ -278,7 +278,7 @@ public class iritMainController implements Initializable {
                 makeTree(child.getChild()[0], model, transform);
             }
         } else {
-            LabelCell label = new LabelCell(child.toString());
+            LabelCell label = new LabelCell(child.toString().toUpperCase());
 
             model.addCell(label);
             model.addEdge(label, lastCell);

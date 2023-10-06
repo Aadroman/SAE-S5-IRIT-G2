@@ -1,62 +1,54 @@
 package fxgraph.cells;
 
 import fxgraph.graph.Graph;
-import fxgraph.graph.IEdge;
-import javafx.beans.binding.DoubleBinding;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import org.w3c.dom.*;
+import javafx.scene.text.Text;
 
 public class LabelCell extends AbstractCell{
-    String labelview;
-    public LabelCell(String cellId) {
-//        super(cellId);
-        labelview = cellId;
-//        setView(view);
+
+    Pane labelPane = new Pane();
+
+    double sourceEdgeXPosition, sourceEdgeYPosition, targetEdgeXPosition, targetEdgeYPosition;
+
+    public LabelCell(String text) {
+        Label labelView = new Label(text);
+        double sourceEdgeXPosition = new Text(text).getLayoutBounds().getWidth();
+
+        this.sourceEdgeXPosition = sourceEdgeXPosition/2;
+        this.targetEdgeXPosition = this.sourceEdgeXPosition;
+        this.targetEdgeYPosition = 19;
+
+        String styles =
+            "-fx-font-weight: 700;" +
+            "-fx-text-fill: black;" ;
+        labelView.setStyle(styles);
+        this.labelPane.getChildren().add(labelView);
     }
 
     @Override
     public Region getGraphic(Graph graph) {
-        final Label view = new Label(labelview);
-
-        final Pane pane = new Pane(view);
-        pane.setPrefSize(view.getWidth(),view.getHeight());
-
-//        CellGestures.makeResizable(pane);
-
-        return pane;
+        return this.labelPane;
     }
 
     @Override
     public double getSourceEdgeXPosition() {
-        return 0;
+        return this.sourceEdgeXPosition;
     }
 
     @Override
     public double getSourceEdgeYPosition() {
-        return 0;
+        return this.sourceEdgeYPosition;
     }
 
     @Override
     public double getTargetEdgeXPosition() {
-        return 0;
+        return this.targetEdgeXPosition;
     }
 
     @Override
     public double getTargetEdgeYPosition() {
-        return 0;
-    }
-
-
-    @Override
-    public DoubleBinding getXAnchor(Graph graph, IEdge edge) {
-        return super.getXAnchor(graph, edge);
-    }
-
-    @Override
-    public DoubleBinding getYAnchor(Graph graph, IEdge edge) {
-        return super.getYAnchor(graph, edge);
+        return this.targetEdgeYPosition;
     }
 }
