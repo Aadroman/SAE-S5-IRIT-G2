@@ -306,7 +306,7 @@ public class iritMainController implements Initializable {
                     }
                     break;
                 case "ETransformation":
-                    LabelCell transform = new LabelCell(child.toString());
+                    TransformCell transform = new TransformCell(child.toString());
 
                     model.addCell(transform);
                     model.addEdge(transform, previousCell);
