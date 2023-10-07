@@ -1,61 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="720.0" prefWidth="1200.0" style="-fx-background-color: white;"
-            xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.main.irit.iritMainController">
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: white;" stylesheets="@../css/irit-main-view.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.irit.iritMainController">
     <children>
-        <BorderPane layoutY="90.0" style="-fx-background-color: red;" AnchorPane.bottomAnchor="0.0"
-                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0">
+        <BorderPane layoutY="-2.0" prefHeight="722.0" prefWidth="1280.0" style="-fx-border-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
             <center>
-                <SplitPane dividerPositions="0.6217877094972066" prefHeight="160.0" prefWidth="200.0"
-                           BorderPane.alignment="CENTER">
-                    <items>
-                        <TabPane fx:id="tabPane" prefHeight="312.0" prefWidth="600.0"
-                                 style="-fx-background-color: white;" tabClosingPolicy="UNAVAILABLE"
-                                 tabMaxHeight="100.0" tabMaxWidth="100.0" BorderPane.alignment="CENTER">
-                            <tabs>
-                                <Tab text="Arbre global">
-                                    <content>
-                                        <VBox alignment="CENTER">
-                                            <HBox fx:id="globalTreePane" alignment="CENTER"/>
-                                        </VBox>
-                                    </content>
-                                </Tab>
-                                <Tab text="Multi-store">
-                                    <content>
-                                        <VBox alignment="CENTER">
-                                            <HBox fx:id="multiStoreTreePane" alignment="CENTER"/>
-                                        </VBox>
-                                    </content>
-                                </Tab>
-                                <Tab text="Transfers">
-                                    <content>
-                                        <VBox alignment="CENTER">
-                                            <HBox fx:id="transferTreePane" alignment="CENTER"/>
-                                        </VBox>
-                                    </content>
-                                </Tab>
-                            </tabs>
-                        </TabPane>
-                        <TreeView fx:id="tvNode" prefHeight="306.0" prefWidth="317.0"/>
-                    </items>
+                <SplitPane dividerPositions="0.6217877094972066" prefHeight="594.0" prefWidth="1280.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+                    <TabPane fx:id="tabPane" prefHeight="562.0" prefWidth="791.0" style="-fx-background-color: white; -fx-border-color: white;" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMaxWidth="100.0" BorderPane.alignment="CENTER">
+                        <tabs>
+                            <Tab fx:id="globalTreeTab" text="Arbre global">
+                                    <VBox alignment="CENTER">
+                                        <HBox alignment="CENTER" />
+                                    </VBox>
+                            </Tab>
+                            <Tab fx:id="multiStoreTreeTab" text="Multi-store">
+                                <VBox alignment="CENTER">
+                                    <HBox alignment="CENTER" />
+                                </VBox>
+                            </Tab>
+                            <Tab fx:id="transferTreeTab" text="Transfers">
+                                <VBox alignment="CENTER">
+                                    <HBox alignment="CENTER" />
+                                </VBox>
+                            </Tab>
+                        </tabs>
+                    </TabPane>
+                    <TreeView fx:id="tvNode" prefHeight="538.0" prefWidth="479.0">
+                  <padding>
+                     <Insets top="24.0" />
+                  </padding></TreeView>
                 </SplitPane>
             </center>
+         <top>
+            <AnchorPane prefHeight="136.0" prefWidth="1278.0" BorderPane.alignment="CENTER">
+               <children>
+                  <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <left>
+                          <ImageView fitHeight="77.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true" smooth="false" BorderPane.alignment="CENTER">
+                              <image>
+                                  <Image url="@../img/images.png" />
+                              </image>
+                          </ImageView>
+                     </left>
+                     <center>
+                          <VBox prefHeight="68.0" prefWidth="620.0" BorderPane.alignment="CENTER">
+                              <children>
+                                  <Label text="Requête : " />
+                              <TextArea fx:id="requestTextField" prefHeight="200.0" prefWidth="200.0" wrapText="true" />
+                              <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                      <Button mnemonicParsing="false" onAction="#interactWithPolystore" prefHeight="25.0" prefWidth="82.0" style="-fx-background-color: FF5608;" text="Valider" textFill="WHITE" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="8.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              </children>
+                           <padding>
+                              <Insets left="16.0" right="16.0" />
+                           </padding>
+                          </VBox>
+                     </center>
+                     <padding>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                     </padding>
+                  </BorderPane>
+               </children>
+            </AnchorPane>
+         </top>
         </BorderPane>
-        <ImageView fitHeight="77.0" fitWidth="76.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true"
-                   preserveRatio="true" smooth="false">
-            <image>
-                <Image url="@../img/images.png"/>
-            </image>
-        </ImageView>
-        <TextField fx:id="requestTextField" layoutX="118.0" layoutY="48.0" prefHeight="31.0" prefWidth="320.0"/>
-        <Label layoutX="118.0" layoutY="31.0" text="Requête : "/>
-        <Button layoutX="448.0" layoutY="51.0" mnemonicParsing="false" onAction="#interactWithPolystore"
-                prefHeight="25.0" prefWidth="82.0" style="-fx-background-color: FF5608;" text="Valider"
-                textFill="WHITE"/>
     </children>
 </AnchorPane>

@@ -36,11 +36,15 @@ public class iritMainController implements Initializable {
     private iritMainApplication app;
     private Stage primaryStage;
     @FXML
-    private TextField requestTextField;
+    private TextArea requestTextField;
     @FXML
     private TabPane tabPane;
     @FXML
     private TreeView tvNode;
+
+    private Tab selectedTab = null;
+
+    private ETreeNode[] computedTrees = null;
 
     public void initContext(Stage mainStage, iritMainApplication iritMainApplication) {
         this.primaryStage = mainStage;
@@ -54,6 +58,10 @@ public class iritMainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         getAllTablesDB();
+        // Create listener for tab change
+        tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> {
+            renderTabTreeView(newTab);
+        });
     }
 
     public iritMainApplication getApp() {
@@ -62,6 +70,23 @@ public class iritMainController implements Initializable {
 
     public void setApp(iritMainApplication app) {
         this.app = app;
+    }
+
+    private void renderTabTreeView(Tab newTab) {
+        // Save selected Tab for further user
+        this.selectedTab = newTab;
+        // Re-création de la TreeView en fonction de l'arbre correspondant au panneau selectionné
+        switch (newTab.getId()) {
+            case "globalTreeTab":
+                this.renderTreeView(this.computedTrees[0]);
+                break;
+            case "multiStoreTreeTab":
+                this.renderTreeView(this.computedTrees[1]);
+                break;
+            case "transferTreeTab":
+                this.renderTreeView(this.computedTrees[2]);
+                break;
+        }
     }
 
     /**
@@ -121,36 +146,54 @@ public class iritMainController implements Initializable {
      * @param node       noeud de l'arbre a partir duquel est crée un TreeItem
      * @param treeParent TreeItem parent sur lequel on va add les enfants
      */
-    private void createTreeView(ETreeNode node, TreeItem<String> treeParent) {
+    private void populateTreeView(ETreeNode node, TreeItem<String> treeParent) {
         if (node.getClass().equals(EProjection.class)) {
             //Boucle sur le nombre d'enfant de la projection initial
             int nbChild = node.getChild().length;
             for (int i = 0; i < nbChild; i++) {
                 TreeItem<String> child = new TreeItem<>(node.getChild()[i].toString());
+                child.setExpanded(true);
                 treeParent.getChildren().add((child));
-                this.createTreeView(node.getChild()[i], child);
+                this.populateTreeView(node.getChild()[i], child);
             }
         } else if (node.getClass().equals(EJoin.class)) {
             // Si le node est de type EJoin il a un left et un right child qu'on va créer en tant que TreeItem et ajouter au parent
             TreeItem<String> childLeft = new TreeItem<>(((EJoin) node).getLeftChild().toString());
+            childLeft.setExpanded(true);
             TreeItem<String> childRight = new TreeItem<>(((EJoin) node).getRightChild().toString());
+            childRight.setExpanded(true);
             treeParent.getChildren().addAll(childLeft, childRight);
 
-            createTreeView(((EJoin) node).getRightChild(), childRight);
-            createTreeView(((EJoin) node).getLeftChild(), childLeft);
+            populateTreeView(((EJoin) node).getRightChild(), childRight);
+            populateTreeView(((EJoin) node).getLeftChild(), childLeft);
         } else if (node.getClass().equals((ESelection.class))) {
             // Si le node est de type ESelection il n'aura qu'un enfant
             TreeItem<String> child = new TreeItem<>(node.getChild()[0].toString());
-
+            child.setExpanded(true);
             treeParent.getChildren().add(child);
 
-            createTreeView(node.getChild()[0], child);
+            populateTreeView(node.getChild()[0], child);
         }
     }
 
     /**
-     *
+     * Fonction qui affiche une TreeView générée sur la scène actuelle.
      */
+    private void renderTreeView(ETreeNode node) {
+        this.tvNode.setRoot(null);
+
+        //Creation du root du TreeView qui va servir de racine à l'arbo
+        TreeItem<String> rootTree = new TreeItem<>(node.toString());
+        this.populateTreeView(node, rootTree);
+
+        // Déplie par défault l'arbre
+        rootTree.setExpanded(true);
+
+        // On ajoute l'arbo crée au composants tree view
+        this.tvNode.setRoot(rootTree);
+        this.tvNode.autosize();
+    }
+
     @FXML
     private void interactWithPolystore() {
         List<String> tablesnames = getAllTablesDB();
@@ -167,25 +210,23 @@ public class iritMainController implements Initializable {
 
             Query queryParsed = QueryParserUtils.parse(queryString);
 
-            ETreeNode[] array = Application.getTreeFromQuery(queryParsed);
+            // Sauvegarde des arbres pour utilisations ultérieures
+            this.computedTrees = Application.getTreeFromQuery(queryParsed);
 
-            for (int i = 0; i < array.length; i++) {
+            for (int i = 0; i < this.computedTrees.length; i++) {
                 Graph graph = new Graph();
-                // Add content to graph
 
+                // Add content to graph
                 Model model = graph.getModel();
                 graph.beginUpdate();
 
-                this.makeTree(array[i], model, null);
+                this.makeTree(this.computedTrees[i], model, null);
 
-                if (i == 2) {
-                    //Creation du root du TreeView qui va servir de racine à l'arbo
-                    TreeItem<String> rootTree = new TreeItem<>(array[i].toString());
-                    this.createTreeView(array[i], rootTree);
-
-                    // On ajoute l'arbo crée au composants tree view
-                    this.tvNode.setRoot(rootTree);
-                    this.tvNode.autosize();
+                // Génération de la treeview pour l'arbre global
+                if (null == this.selectedTab && i == 0) {
+                    this.renderTreeView(this.computedTrees[i]);
+                } else if (null != this.selectedTab) {
+                    this.renderTabTreeView(this.selectedTab);
                 }
 
                 graph.endUpdate();
@@ -196,7 +237,6 @@ public class iritMainController implements Initializable {
                             (HBox) ((VBox) tabPane.getTabs().get(i).getContent()).getChildren().get(0)
                     );
                 }
-
             }
         } catch (Exception e) {
             if (requestTextField.getText().isEmpty()) {
