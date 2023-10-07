@@ -23,16 +23,36 @@ public class Model implements Serializable {
     private transient ObservableList<IEdge> addedEdges;
     private transient ObservableList<IEdge> removedEdges;
 
-    public Model() {
-        root = new AbstractCell() {
-            @Override
-            public Region getGraphic(Graph graph) {
-                return null;
-            }
-        };
-        // clear model, create lists
-        clear();
-    }
+	public Model() {
+		root = new AbstractCell() {
+			@Override
+			public Region getGraphic(Graph graph) {
+				return null;
+			}
+
+			@Override
+			public double getSourceEdgeXPosition() {
+				return 0;
+			}
+
+			@Override
+			public double getSourceEdgeYPosition() {
+				return 0;
+			}
+
+			@Override
+			public double getTargetEdgeXPosition() {
+				return 0;
+			}
+
+			@Override
+			public double getTargetEdgeYPosition() {
+				return 0;
+			}
+		};
+		// clear model, create lists
+		clear();
+	}
 
     public void clear() {
         allCells = FXCollections.observableArrayList();
@@ -44,10 +64,10 @@ public class Model implements Serializable {
         removedEdges = FXCollections.observableArrayList();
     }
 
-    public void clearAddedLists() {
-        addedCells.clear();
-        addedEdges.clear();
-    }
+	public void clearAddedLists() {
+		addedCells.clear();
+		addedEdges.clear();
+	}
 
     public void endUpdate() {
         // every cell must have a parent, if it doesn't, then the graphParent is
@@ -61,17 +81,17 @@ public class Model implements Serializable {
         merge();
     }
 
-    public ObservableList<ICell> getAddedCells() {
-        return addedCells;
-    }
+	public ObservableList<ICell> getAddedCells() {
+		return addedCells;
+	}
 
-    public ObservableList<ICell> getRemovedCells() {
-        return removedCells;
-    }
+	public ObservableList<ICell> getRemovedCells() {
+		return removedCells;
+	}
 
-    public ObservableList<ICell> getAllCells() {
-        return allCells;
-    }
+	public ObservableList<ICell> getAllCells() {
+		return allCells;
+	}
 
     public ObservableList<IEdge> getAddedEdges() {
         return addedEdges;

@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
 import fr.sae.Application;
-import fr.sae.algebraictree.EJoin;
-import fr.sae.algebraictree.EProjection;
-import fr.sae.algebraictree.ESelection;
-import fr.sae.algebraictree.ETreeNode;
+import fr.sae.algebraictree.*;
 import fxgraph.cells.*;
 import fxgraph.graph.Graph;
 import fxgraph.graph.ICell;
@@ -20,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import org.abego.treelayout.Configuration;
 
@@ -29,8 +27,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 public class iritMainController implements Initializable {
     private iritMainApplication app;
@@ -268,28 +268,59 @@ public class iritMainController implements Initializable {
         } else {
             switch (child.getClass().getSimpleName()) {
                 case "EJoin":
-                    JointureCell jointure = new JointureCell("⨝ " + child);
-                    addCellAndEdge(model, jointure, previousCell);
+                    JointureCell jointure = new JointureCell(child.toString());
+
+                    model.addCell(jointure);
+                    model.addEdge(jointure, previousCell);
+
                     makeTree(((EJoin) child).getLeftChild(), model, jointure);
                     makeTree(((EJoin) child).getRightChild(), model, jointure);
                     break;
                 case "ESelection":
-                    SelectionCell selection = new SelectionCell("σ " + child);
-                    addCellAndEdge(model, selection, previousCell);
+                    char[] charArray = child.toString().toCharArray();
+                    AtomicReference<String> text = new AtomicReference<>("");
+                    if (charArray[0] == '(' && charArray[charArray.length-1] == ')'){
+                        IntStream.range(1, charArray.length-1).forEachOrdered(index -> {
+                            text.updateAndGet(v -> v + charArray[index]);
+                        });
+                    } else {
+                        text.updateAndGet(v -> child.toString());
+                    }
+                    SelectionCell selection = new SelectionCell(String.valueOf(text));
+
+                    model.addCell(selection);
+                    model.addEdge(selection, previousCell);
+
                     if (child.getChild().length > 0) {
                         makeTree(child.getChild()[0], model, selection);
                     }
                     break;
                 case "ETransfer":
                     TransferCell transfer = new TransferCell(child.toString());
-                    addCellAndEdge(model, transfer, previousCell);
+
+                    model.addCell(transfer);
+                    model.addEdge(transfer, previousCell);
+
                     if (child.getChild().length > 0) {
                         makeTree(child.getChild()[0], model, transfer);
                     }
                     break;
+                case "ETransformation":
+                    LabelCell transform = new LabelCell(child.toString());
+
+                    model.addCell(transform);
+                    model.addEdge(transform, previousCell);
+
+                    if (child.getChild().length > 0) {
+                        makeTree(child.getChild()[0], model, transform);
+                    }
+                    break;
                 default:
-                    LabelCell label = new LabelCell(child.toString());
-                    addCellAndEdge(model, label, previousCell);
+                    LabelCell label = new LabelCell(child.toString().toUpperCase());
+
+                    model.addCell(label);
+                    model.addEdge(label, previousCell);
+
                     if (child.getChild().length > 0) {
                         makeTree(child.getChild()[0], model, label);
                     }

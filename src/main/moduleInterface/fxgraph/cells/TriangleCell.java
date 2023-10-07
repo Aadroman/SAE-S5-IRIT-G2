@@ -39,6 +39,26 @@ public class TriangleCell extends AbstractCell {
 	}
 
 	@Override
+	public double getSourceEdgeXPosition() {
+		return 0;
+	}
+
+	@Override
+	public double getSourceEdgeYPosition() {
+		return 0;
+	}
+
+	@Override
+	public double getTargetEdgeXPosition() {
+		return 0;
+	}
+
+	@Override
+	public double getTargetEdgeYPosition() {
+		return 0;
+	}
+
+	@Override
 	public DoubleBinding getXAnchor(Graph graph, IEdge edge) {
 		return super.getXAnchor(graph, edge);
 	}

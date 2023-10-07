@@ -25,25 +25,17 @@ public class ProjectionCell extends AbstractCell {
 
     StackPane projectionGraph = new StackPane();
 
-    public ProjectionCell(String text) {
-        this.projectionLabel.setText(text);
-    }
+    double sourceEdgeXPosition, sourceEdgeYPosition, targetEdgeXPosition, targetEdgeYPosition;
 
-    /**
-     * Return a javaFx StackPane with projection polygon and label
-     *
-     * @param graph
-     * @return pane
-     */
-    @Override
-    public Region getGraphic(Graph graph) {
+    public ProjectionCell(String text) {
         try {
+            this.projectionLabel.setText(text);
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/tree_icons/projection.fxml")));
             Polygon projectionPolygon = (Polygon) root.lookup("#projectionPolygon");
 
             ObservableList<Double> projectionPolygonPoints = projectionPolygon.getPoints();
             double projectionPolygoneWidth = projectionPolygonPoints.get(projectionPolygonPoints.size()-2) - projectionPolygonPoints.get(0);
-            double projectionTextWidth = new Text(this.projectionLabel.getText()).getLayoutBounds().getWidth();
+            double projectionTextWidth = new Text(text).getLayoutBounds().getWidth();
             double widthDelta = projectionPolygoneWidth - projectionTextWidth ;
             double projectionLabelWidth;
 
@@ -52,7 +44,7 @@ public class ProjectionCell extends AbstractCell {
                 if (widthDelta < -100) {
                     widthDelta = -100;
                     final Tooltip tooltip = new Tooltip();
-                    tooltip.setText(this.projectionLabel.getText());
+                    tooltip.setText(text);
                     tooltip.setShowDelay(Duration.seconds(0.5));
                     this.projectionLabel.setTooltip(tooltip);
                 }
@@ -68,6 +60,11 @@ public class ProjectionCell extends AbstractCell {
                 projectionLabelWidth = projectionPolygoneWidth;
             }
 
+            double xPosition = (projectionPolygonPoints.get(projectionPolygonPoints.size()-4) - projectionPolygonPoints.get(2)) / 2;
+            this.sourceEdgeXPosition = xPosition;
+            this.targetEdgeXPosition = xPosition;
+            this.targetEdgeYPosition = abs(projectionPolygonPoints.get(1) - projectionPolygonPoints.get(3));
+
             this.projectionLabel.setMaxWidth(projectionLabelWidth);
             this.projectionLabel.setAlignment(Pos.CENTER);
             String styles =
@@ -78,11 +75,40 @@ public class ProjectionCell extends AbstractCell {
             this.projectionGraph.getChildren().add(projectionPolygon);
             this.projectionGraph.getChildren().add(this.projectionLabel);
 
-            return this.projectionGraph;
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Return a javaFx StackPane with projection polygon and label
+     *
+     * @param graph
+     * @return pane
+     */
+    @Override
+    public Region getGraphic(Graph graph) {
+        return this.projectionGraph;
+    }
+
+    @Override
+    public double getSourceEdgeXPosition() {
+        return this.sourceEdgeXPosition;
+    }
+
+    @Override
+    public double getSourceEdgeYPosition() {
+        return this.sourceEdgeYPosition;
+    }
+
+    @Override
+    public double getTargetEdgeXPosition() {
+        return targetEdgeXPosition;
+    }
+
+    @Override
+    public double getTargetEdgeYPosition() {
+        return targetEdgeYPosition;
     }
 
     @Override
