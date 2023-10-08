@@ -20,17 +20,24 @@ public class EProjection extends ETreeNode {
     public EProjection(List<EDotNotation> attributes) {this.attributes = attributes;}
 
     public EProjection (Projection p) {
-        this.correspondingProjection = p;
-        for(DotNotation dt : p.getAttributes()){
-            this.attributes.add(new EDotNotation(dt));
+        if(p.getAttributes()==null){
+            this.correspondingProjection = new Projection();
+        }else{
+            this.correspondingProjection = p;
+            for(DotNotation dt : p.getAttributes()){
+                this.attributes.add(new EDotNotation(dt));
+            }
         }
         this.child = ETreeNode.createTree(p.getChild()) ;
     }
 
     //endregion
     //region GETTERS & SETTERS
-    public ETreeNode getChild() {
-        return child;
+    @Override
+    public ETreeNode[] getChild() {
+        ETreeNode[] childs = new ETreeNode[1];
+        childs[0] = child;
+        return childs;
     }
     public List<EDotNotation> getAttributes() { return attributes; }
     //endregion
@@ -53,7 +60,7 @@ public class EProjection extends ETreeNode {
 
     @Override
     public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
-        if(this.attributes != null){
+        if (this.attributes != null) {
             List<EDotNotation> attributeListRenamed = new ArrayList<>();
             for(EDotNotation attribute : this.attributes){
                 attributeListRenamed.add(columnNamingMap.get(attribute));

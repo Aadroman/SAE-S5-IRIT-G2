@@ -8,6 +8,7 @@ import fr.irit.module1.queries.Query;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GlobalAlgebraicTreeTest {
 
-    private static final Logger LOGGER = Logger.getLogger( GlobalAlgebraicTreeTest.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(GlobalAlgebraicTreeTest.class.getName());
 
     @DisplayName("Test query with '*' PROJECTION and OR SELECTION")
     @Test
@@ -33,9 +34,10 @@ public class GlobalAlgebraicTreeTest {
         var level3 = ((Selection) level2).getChild();
 
         assertEquals("*", rootNode.toString(), "PROJECTION");
-        assertEquals("(Orders.total_price > 100 OR Orders.total_price < 201)",level2.toString(), "SELECTION");
+        assertEquals("(Orders.total_price > 100 OR Orders.total_price < 201)", level2.toString(), "SELECTION");
         assertEquals("Orders", level3.toString());
     }
+
     @DisplayName("Test query without SELECTION")
     @Test
     public void Test_BuildAlgebraicTree_Without_Selection() {
@@ -106,15 +108,15 @@ public class GlobalAlgebraicTreeTest {
         assertTrue(level2 instanceof Join);
         var level2_1 = ((Join) level2).getLeftChild();
         assertTrue(level2_1 instanceof Selection);
-            var level2_1_1 = ((Selection) level2_1).getChild();
-            assertTrue(level2_1_1 instanceof Table);
+        var level2_1_1 = ((Selection) level2_1).getChild();
+        assertTrue(level2_1_1 instanceof Table);
         var level2_2 = ((Join) level2).getRightChild();
         assertTrue(level2_2 instanceof Table);
 
         assertEquals("*", rootNode.toString(), "PROJECTION");
         assertEquals("Reviews.product_id = Products.product_id", level2.toString(), "JOIN");
         assertEquals("Reviews.rating = 5", level2_1.toString(), "SELECTION");
-            assertEquals("Reviews", level2_1_1.toString(), "TABLE");
+        assertEquals("Reviews", level2_1_1.toString(), "TABLE");
         assertEquals("Products", level2_2.toString(), "TABLE");
     }
 
