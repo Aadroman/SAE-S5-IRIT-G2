@@ -1,18 +1,20 @@
 package fr.irit;
 
 import fr.irit.module1.GlobalAlgebraicTree;
-import fr.irit.module1.queries.Query;
 import fr.irit.module1.QueryParserUtils;
+import fr.irit.module1.queries.Query;
 import fr.irit.module2.MultistoreAlgebraicTree;
 import fr.irit.module3.TransformationTransferAlgebraicTree;
-import java.io.*;
-import java.util.*;
 
-public class App 
-{
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-    public static void main( String[] args )
-    {
+public class App {
+
+    public static void main(String[] args) {
         /*
         //Store queries in a list
         List<String> queries = getQueries("C:\\Users\\lelahdab\\Documents\\STAGE - Paul\\Projet\\query-tree-modules\\src\\annexes\\queries.txt");
@@ -69,29 +71,27 @@ public class App
         System.out.println("Algebraic Multi-stores Tree : ");
         ttat.getTransformationTransferAlgebraicTree().print("");
     }
-    
+
     /**
      * User queries getter from file
+     *
      * @param fileName
      * @return listFileLines //each line contains one query
      */
-    public static List<String> getQueries(String fileName){
+    public static List<String> getQueries(String fileName) {
         List<String> listFileLines = new ArrayList<String>();
-        try{
+        try {
             // Le fichier d'entrée
-            FileInputStream file = new FileInputStream(fileName);   
-            Scanner scanner = new Scanner(file);  
+            FileInputStream file = new FileInputStream(fileName);
+            Scanner scanner = new Scanner(file);
 
             //renvoie true s'il y a une autre ligne à lire
-            while(scanner.hasNextLine())
-            {
+            while (scanner.hasNextLine()) {
                 listFileLines.add(scanner.nextLine());
                 //System.out.println(scanner.nextLine());
             }
             scanner.close();
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return listFileLines;

@@ -1,57 +1,51 @@
 package com.main.irit;
 
-import fr.irit.algebraictree.Table;
-import fr.irit.algebraictree.TreeNode;
-import fr.irit.module1.GlobalAlgebraicTree;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
-import fr.irit.module2.MultistoreAlgebraicTree;
-import fr.irit.module3.TransformationTransferAlgebraicTree;
+import fr.sae.Application;
 import fr.sae.algebraictree.*;
 import fxgraph.cells.*;
-import fxgraph.edges.CorneredEdge;
-import fxgraph.edges.Edge;
 import fxgraph.graph.Graph;
 import fxgraph.graph.ICell;
 import fxgraph.graph.Model;
 import fxgraph.layout.AbegoTreeLayout;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Orientation;
 import javafx.scene.control.*;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import org.abego.treelayout.Configuration;
 
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.antlr.v4.runtime.tree.Tree;
-import fr.sae.Application;
+import java.util.stream.IntStream;
 
 public class iritMainController implements Initializable {
-    @SuppressWarnings("FieldCanBeLocal")
     private iritMainApplication app;
     private Stage primaryStage;
-
     @FXML
-    private TextField requestTextField;
-
+    private TextArea requestTextField;
     @FXML
-    private Pane globalPane;
-
+    private TabPane tabPane;
     @FXML
     private TreeView tvNode;
+
+    private Tab selectedTab = null;
+
+    private ETreeNode[] computedTrees = null;
+
     public void initContext(Stage mainStage, iritMainApplication iritMainApplication) {
         this.primaryStage = mainStage;
         this.app = iritMainApplication;
@@ -64,6 +58,35 @@ public class iritMainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         getAllTablesDB();
+        // Create listener for tab change
+        tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> {
+            renderTabTreeView(newTab);
+        });
+    }
+
+    public iritMainApplication getApp() {
+        return app;
+    }
+
+    public void setApp(iritMainApplication app) {
+        this.app = app;
+    }
+
+    private void renderTabTreeView(Tab newTab) {
+        // Save selected Tab for further user
+        this.selectedTab = newTab;
+        // Re-création de la TreeView en fonction de l'arbre correspondant au panneau selectionné
+        switch (newTab.getId()) {
+            case "globalTreeTab":
+                this.renderTreeView(this.computedTrees[0]);
+                break;
+            case "multiStoreTreeTab":
+                this.renderTreeView(this.computedTrees[1]);
+                break;
+            case "transferTreeTab":
+                this.renderTreeView(this.computedTrees[2]);
+                break;
+        }
     }
 
     /**
@@ -86,193 +109,235 @@ public class iritMainController implements Initializable {
         return foundTables;
     }
 
+    /**
+     * Display a warning dialog with a custom message.
+     * Also logs exception message for debugging purpose.
+     */
+    private void displayWarningDialog(String description, Exception exception) {
+        Alert warning = new Alert(Alert.AlertType.WARNING);
+        warning.setTitle("Requête incorrecte");
+        warning.setContentText(description);
+
+        // Log error message for debugging purpose
+        System.out.println(exception.toString());
+        warning.showAndWait();
+    }
+
+    /**
+     * Crée le layout d'un tree sur un graph
+     */
+    private void renderTree(Graph treeGraph, HBox treePane) {
+        AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
+        // Create tree layout based on fxGraph
+        treeGraph.layout(layout);
+
+        // Initialize a childpane to add globalTreeGraph to
+        Pane childPane;
+        childPane = treeGraph.getCanvas();
+
+        treePane.getChildren().clear();
+        // Adds generated graphs to pane
+        treePane.getChildren().add(childPane);
+    }
+
+    /**
+     * Création d'une treeView avec comme paramètre node ainsi que la TreeItem parente
+     *
+     * @param node       noeud de l'arbre a partir duquel est crée un TreeItem
+     * @param treeParent TreeItem parent sur lequel on va add les enfants
+     */
+    private void populateTreeView(ETreeNode node, TreeItem<String> treeParent) {
+        if (node.getClass().equals(EProjection.class)) {
+            //Boucle sur le nombre d'enfant de la projection initial
+            int nbChild = node.getChild().length;
+            for (int i = 0; i < nbChild; i++) {
+                TreeItem<String> child = new TreeItem<>(node.getChild()[i].toString());
+                child.setExpanded(true);
+                treeParent.getChildren().add((child));
+                this.populateTreeView(node.getChild()[i], child);
+            }
+        } else if (node.getClass().equals(EJoin.class)) {
+            // Si le node est de type EJoin il a un left et un right child qu'on va créer en tant que TreeItem et ajouter au parent
+            TreeItem<String> childLeft = new TreeItem<>(((EJoin) node).getLeftChild().toString());
+            childLeft.setExpanded(true);
+            TreeItem<String> childRight = new TreeItem<>(((EJoin) node).getRightChild().toString());
+            childRight.setExpanded(true);
+            treeParent.getChildren().addAll(childLeft, childRight);
+
+            populateTreeView(((EJoin) node).getRightChild(), childRight);
+            populateTreeView(((EJoin) node).getLeftChild(), childLeft);
+        } else if (node.getClass().equals((ESelection.class))) {
+            // Si le node est de type ESelection il n'aura qu'un enfant
+            TreeItem<String> child = new TreeItem<>(node.getChild()[0].toString());
+            child.setExpanded(true);
+            treeParent.getChildren().add(child);
+
+            populateTreeView(node.getChild()[0], child);
+        }
+    }
+
+    /**
+     * Fonction qui affiche une TreeView générée sur la scène actuelle.
+     */
+    private void renderTreeView(ETreeNode node) {
+        this.tvNode.setRoot(null);
+
+        //Creation du root du TreeView qui va servir de racine à l'arbo
+        TreeItem<String> rootTree = new TreeItem<>(node.toString());
+        this.populateTreeView(node, rootTree);
+
+        // Déplie par défault l'arbre
+        rootTree.setExpanded(true);
+
+        // On ajoute l'arbo crée au composants tree view
+        this.tvNode.setRoot(rootTree);
+        this.tvNode.autosize();
+    }
+
     @FXML
     private void interactWithPolystore() {
         List<String> tablesnames = getAllTablesDB();
         boolean allTablesFound = false;
+
         try {
             // Get value from requestTextField
             String queryString = this.requestTextField.getText();
 
             List<String> foundTables = this.getFoundTablesFromInput(queryString);
 
-            // Check if the found tables are in the predefined table names list
-            allTablesFound = true;
-            for (String tableName : foundTables) {
-                if (!tablesnames.contains(tableName)) {
-                    allTablesFound = false;
-                    // Ends loop if condition is met, for performance
-                    break;
-                }
-            }
-
-            Pane childPane;
-            Graph graph = new Graph();
-            // Add content to graph
-
-            final Model model = graph.getModel();
-            graph.beginUpdate();
-
+            // Check if the found tables are in the predefined table names list (HashSet is to improve performance)
+            allTablesFound = new HashSet<>(tablesnames).containsAll(foundTables);
 
             Query queryParsed = QueryParserUtils.parse(queryString);
 
-            ETreeNode[] array = Application.getTreeFromQuery(queryParsed);
-            for(int i=0; i< array.length; i++){
-                array[i].print("");
-                if(i==2) {
-                    //Creation du root du TreeView qui va servir de racine à l'arbo
-                    TreeItem<String> rootTree = new TreeItem<>(array[i].toString());
-                    this.createTreeView(array[i], rootTree);
+            // Sauvegarde des arbres pour utilisations ultérieures
+            this.computedTrees = Application.getTreeFromQuery(queryParsed);
 
-                    // On ajoute l'arbo crée au composants tree view
-                    this.tvNode.setRoot(rootTree);
-                    this.tvNode.autosize();
+            for (int i = 0; i < this.computedTrees.length; i++) {
+                Graph graph = new Graph();
+
+                // Add content to graph
+                Model model = graph.getModel();
+                graph.beginUpdate();
+
+                this.makeTree(this.computedTrees[i], model, null);
+
+                // Génération de la treeview pour l'arbre global
+                if (null == this.selectedTab && i == 0) {
+                    this.renderTreeView(this.computedTrees[i]);
+                } else if (null != this.selectedTab) {
+                    this.renderTabTreeView(this.selectedTab);
                 }
-                makeTree(array[i], model, null);
+
+                graph.endUpdate();
+
+                if (tabPane.getTabs().get(i).getContent() instanceof VBox) {
+                    this.renderTree(
+                            graph,
+                            (HBox) ((VBox) tabPane.getTabs().get(i).getContent()).getChildren().get(0)
+                    );
+                }
             }
-
-            graph.endUpdate();
-
-            // Layout nodes
-            AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
-            graph.layout(layout);
-            childPane = graph.getCanvas();
-
-            // Adds generated graphs to pane
-            globalPane.getChildren().add(childPane);
-
         } catch (Exception e) {
             if (requestTextField.getText().isEmpty()) {
-                Alert warning = new Alert(Alert.AlertType.WARNING);
-                warning.setTitle("Requête vide");
-                warning.setHeaderText("Votre requête est vide !");
-                warning.setContentText(e.toString());
-                warning.showAndWait();
+                this.displayWarningDialog("Votre requête est vide !", e);
             } else if (!allTablesFound) {
-                Alert warning = new Alert(Alert.AlertType.WARNING);
-                warning.setTitle("Erreur requête");
-                warning.setHeaderText("Mettez une majuscule à votre table");
-                warning.setContentText(e.toString());
-                warning.showAndWait();
+                this.displayWarningDialog("Mettez une majuscule à votre table", e);
             } else {
-                Alert warning = new Alert(Alert.AlertType.WARNING);
-                warning.setTitle("Erreur requête");
-                warning.setHeaderText("Votre requête est incorrecte");
-                warning.setContentText(e.toString());
-                warning.showAndWait();
+                this.displayWarningDialog("Votre requête est incorrecte", e);
             }
         }
     }
 
     /**
-     * Création d'une treeView avec comme paramètre node ainsi que la TreeItem parente
-     * @param node noeud de l'arbre a partir duquel est crée un TreeItem
-     * @param treeParent TreeItem parent sur lequel on va add les enfants
+     * Function that recursively creates and populates a fx-graph representing the given algebraic tree.
+     *
+     * @param child        The current tree node
+     * @param model        The graph model to add cells and edges to
+     * @param previousCell The previously treated cell (e.g: the parent node's cell)
      */
-    public void createTreeView(ETreeNode node, TreeItem<String> treeParent) {
-        if(node.getClass().equals(EProjection.class)){
-            //Boucle sur le nombre d'enfant de la projection initial
-            int nbChild = node.getChild().length;
-            for(int i = 0 ; i < nbChild ; i++){
-                TreeItem<String> child = new TreeItem<>(node.getChild()[i].toString());
-                treeParent.getChildren().add((child));
-                this.createTreeView(node.getChild()[i],child);
-            }
-        }else if (node.getClass().equals(EJoin.class)) {
-            // Si le node est de type EJoin il a un left et un right child qu'on va créer en tant que TreeItem et ajouter au parent
-            TreeItem<String> childLeft = new TreeItem<>(((EJoin) node).getLeftChild().toString());
-            TreeItem<String> childRight = new TreeItem<>(((EJoin) node).getRightChild().toString());
-            treeParent.getChildren().addAll(childLeft, childRight);
-
-            createTreeView(((EJoin) node).getRightChild(),childRight);
-            createTreeView(((EJoin) node).getLeftChild(), childLeft);
-        }else if (node.getClass().equals((ESelection.class))) {
-            // Si le node est de type ESelection il n'aura qu'un enfant
-            TreeItem<String> child = new TreeItem<>(node.getChild()[0].toString());
-
-            treeParent.getChildren().add(child);
-
-            createTreeView(node.getChild()[0], child);
-        }
-    }
-
-    /**
-     * Fonction récursive permettant de générer l'arbre
-     * @param current la Node actuelle
-     * @param model le model ou est ajouté chaque noeud de l'arbre
-     * @param lastCell la cellule générée à partir du parent de current, afin de créer un lien
-     *                 entre cette cellule et celle générée par current
-     */
-    public void makeTree(ETreeNode current, Model model, ICell lastCell) {
-        //On crée la base de l'arbre si le treeNode n'a pas de parent
-        if (lastCell == null) {
-            ProjectionCell projection = new ProjectionCell("π "+ current.toString());
-
-            //On l'ajoute au model deja crée précédemment
+    private void makeTree(ETreeNode child, Model model, ICell previousCell) {
+        if (previousCell == null) {
+            ProjectionCell projection = new ProjectionCell("π " + child.toString());
+            // On l'ajoute au model deja crée précédemment
             model.addCell(projection);
-
-            //On verifie si il a des enfants et on réexecute la methode
-            if(current.getChild().length>0) {
-                makeTree(current.getChild()[0], model, projection);
-            }
-        } else if (current.getClass().equals(EJoin.class)) {
-            JointureCell jointure = new JointureCell("⨝ "+current.toString());
-
-            model.addCell(jointure);
-            model.addEdge(jointure, lastCell);
-
-            makeTree(((EJoin) current).getLeftChild(), model, jointure);
-            makeTree(((EJoin) current).getRightChild(), model, jointure);
-        } else if (current.getClass().equals(ESelection.class)) {
-            SelectionCell selection = new SelectionCell("σ "+ current.toString());
-
-            model.addCell(selection);
-            model.addEdge(selection, lastCell);
-
-            if(current.getChild().length>0) {
-                makeTree(current.getChild()[0], model, selection);
-            }
-        } else if (current.getClass().equals(ETransfer.class)) {
-            TransferCell transfer = new TransferCell(current.toString());
-
-            model.addCell(transfer);
-            model.addEdge(transfer, lastCell);
-
-            if(current.getChild().length>0){
-                makeTree(current.getChild()[0],model,transfer);
-            }
-        } else if (current.getClass().equals(ETransformation.class)) {
-            TransformCell transform = new TransformCell(current.toString());
-
-            model.addCell(transform);
-            model.addEdge(transform, lastCell);
-
-            if(current.getChild().length>0){
-                makeTree(current.getChild()[0],model,transform);
+            // On verifie si il a des enfants et on réexecute la methode
+            if (child.getChild().length > 0) {
+                makeTree(child.getChild()[0], model, projection);
             }
         } else {
-            LabelCell label = null;
-            if(current.getStore() != null) {
-                label = new LabelCell(current.toString()+"\n"+ current.getStore().toString());
-            }
-            else {
-                label = new LabelCell(current.toString());
-            }
+            switch (child.getClass().getSimpleName()) {
+                case "EJoin":
+                    JointureCell jointure = new JointureCell(child.toString());
 
-            model.addCell(label);
-            model.addEdge(label, lastCell);
-            if(current.getChild().length>0) {
-                makeTree(current.getChild()[0], model, label);
+                    model.addCell(jointure);
+                    model.addEdge(jointure, previousCell);
+
+                    makeTree(((EJoin) child).getLeftChild(), model, jointure);
+                    makeTree(((EJoin) child).getRightChild(), model, jointure);
+                    break;
+                case "ESelection":
+                    char[] charArray = child.toString().toCharArray();
+                    AtomicReference<String> text = new AtomicReference<>("");
+                    if (charArray[0] == '(' && charArray[charArray.length-1] == ')'){
+                        IntStream.range(1, charArray.length-1).forEachOrdered(index -> {
+                            text.updateAndGet(v -> v + charArray[index]);
+                        });
+                    } else {
+                        text.updateAndGet(v -> child.toString());
+                    }
+                    SelectionCell selection = new SelectionCell(String.valueOf(text));
+
+                    model.addCell(selection);
+                    model.addEdge(selection, previousCell);
+
+                    if (child.getChild().length > 0) {
+                        makeTree(child.getChild()[0], model, selection);
+                    }
+                    break;
+                case "ETransfer":
+                    TransferCell transfer = new TransferCell(child.toString());
+
+                    model.addCell(transfer);
+                    model.addEdge(transfer, previousCell);
+
+                    if (child.getChild().length > 0) {
+                        makeTree(child.getChild()[0], model, transfer);
+                    }
+                    break;
+                case "ETransformation":
+                    TransformCell transform = new TransformCell(child.toString());
+
+                    model.addCell(transform);
+                    model.addEdge(transform, previousCell);
+
+                    if (child.getChild().length > 0) {
+                        makeTree(child.getChild()[0], model, transform);
+                    }
+                    break;
+                default:
+                    LabelCell label = new LabelCell(child.toString().toUpperCase());
+
+                    model.addCell(label);
+                    model.addEdge(label, previousCell);
+
+                    if (child.getChild().length > 0) {
+                        makeTree(child.getChild()[0], model, label);
+                    }
+                    break;
             }
         }
-
     }
 
+    private void addCellAndEdge(Model model, ICell cell, ICell previousCell) {
+        model.addCell(cell);
+        model.addEdge(cell, previousCell);
+    }
 
     /***
      * Return le nom de toutes les tables dans une List de Nom
      * */
-    protected List<String> getAllTablesDB() {
+    private List<String> getAllTablesDB() {
         List<String> tablesNames = new ArrayList<>();
         // Specify the path to your JSON file
         String documentJSON = "src/main/java/fr/irit/module2/UnifiedView/documentUnifiedView.json";
@@ -304,92 +369,5 @@ public class iritMainController implements Initializable {
             e.printStackTrace();
         }
         return tablesNames;
-    }
-
-//    private TitledPane updatePane(TitledPane pane) {
-//        Pane childPane;
-//        Graph graph = new Graph();
-//        // Add content to graph
-//        populateGraph(graph);
-//        // Layout nodes
-//        AbegoTreeLayout layout = new AbegoTreeLayout(100, 500, Configuration.Location.Bottom);
-//        graph.layout(layout);
-//        childPane = graph.getCanvas();
-//        pane.setContent(childPane);
-//        return pane;
-//    }
-
-    private void populateGraph(Graph graph) {
-        final Model model = graph.getModel();
-        graph.beginUpdate();
-
-
-        // Les cellules en commentaires sont remplacées par des cellules de projection, selection ou jointure,
-        // elles sont mises de coté pour l'implementation de différents types de cells autre que des labelCell
-
-        //final ICell cellA = new LabelCell("π *");
-        final ProjectionCell cellA = new ProjectionCell("π *");
-        final ICell cellB = new LabelCell(" Orders");
-        //final ICell cellC = new LabelCell("π *");
-        final ProjectionCell cellC = new ProjectionCell("π *");
-        //final ICell cellD = new LabelCell("⨝ Orders.order_id = Orders.order_id");
-        final JointureCell cellD = new JointureCell("⨝ Orders.order_id = Orders.order_id");
-        final ICell cellE = new LabelCell("Orders : DB3-DOCUMENT \n [Orders.order_id <-> Orders.order_id, Orders.total_price <-> Orders.total_price]");
-        final ICell cellF = new LabelCell("Orders : DB2-RELATIONAL \n [Orders.order_id <-> Orders.order_id, Orders.customer_id <-> Orders.customer_id]");
-        //final ICell cellG = new LabelCell("π *");
-        final ProjectionCell cellG = new ProjectionCell("π *");
-        //final ICell cellH = new LabelCell("⨝ Orders.order_id = Orders.order_id");
-        final JointureCell cellH = new JointureCell("⨝ Orders.order_id = Orders.order_id");
-        final ICell cellI = new LabelCell("Transfer : DB3 -> DB1");
-        final ICell cellJ = new LabelCell("Transfer : DB2 -> DB1");
-        final ICell cellK = new LabelCell("Transformation : DOCUMENT -> RELATIONAL");
-        final ICell cellL = new LabelCell("Orders : DB3-DOCUMENT [Orders.order_id <-> Orders.order_id, Orders.total_price <-> Orders.total_price]");
-        final ICell cellM = new LabelCell("Orders : DB2-RELATIONAL [Orders.order_id <-> Orders.order_id, Orders.customer_id <-> Orders.customer_id]");
-
-        model.addCell(cellA);
-        model.addCell(cellB);
-        model.addCell(cellC);
-        model.addCell(cellD);
-        model.addCell(cellE);
-        model.addCell(cellF);
-        model.addCell(cellG);
-        model.addCell(cellH);
-        model.addCell(cellI);
-        model.addCell(cellJ);
-        model.addCell(cellK);
-        model.addCell(cellL);
-        model.addCell(cellM);
-
-        //algebric tree
-        final CorneredEdge edgeAlgebricTreeProjection = new CorneredEdge(cellA, cellB, Orientation.VERTICAL);
-        model.addEdge(edgeAlgebricTreeProjection);
-
-        //algebric multi stores tree
-        final CorneredEdge edgeAlgebricMultiStoresTreeProjection = new CorneredEdge(cellC, cellD, Orientation.VERTICAL);
-        model.addEdge(edgeAlgebricMultiStoresTreeProjection);
-
-        final CorneredEdge edgeMultiStoreDataType1 = new CorneredEdge(cellD, cellE, Orientation.VERTICAL);
-        model.addEdge(edgeMultiStoreDataType1);
-        final CorneredEdge edgeMultiStoreDataType2 = new CorneredEdge(cellD, cellF, Orientation.VERTICAL);
-        model.addEdge(edgeMultiStoreDataType2);
-
-        //algebric multi stores tree with transformation
-        final Edge edgeAlgebricMultiStoresWTransferAndTransformationTreeProjection = new Edge(cellH, cellG);
-        model.addEdge(edgeAlgebricMultiStoresWTransferAndTransformationTreeProjection);
-
-        final CorneredEdge edgeMultiStoreTransfer1 = new CorneredEdge(cellI, cellH, Orientation.HORIZONTAL);
-        model.addEdge(edgeMultiStoreTransfer1);
-        final CorneredEdge edgeMultiStoreTransfer2 = new CorneredEdge(cellJ, cellH, Orientation.HORIZONTAL);
-        model.addEdge(edgeMultiStoreTransfer2);
-
-        final CorneredEdge edgeMultiStoreTransformation1 = new CorneredEdge(cellK, cellI, Orientation.HORIZONTAL);
-        model.addEdge(edgeMultiStoreTransformation1);
-
-        final CorneredEdge edgeMultiStoresWTransferAndTransformationDataType1 = new CorneredEdge(cellL, cellK, Orientation.HORIZONTAL);
-        model.addEdge(edgeMultiStoresWTransferAndTransformationDataType1);
-        final CorneredEdge edgeMultiStoresWTransferAndTransformationDataType2 = new CorneredEdge(cellM, cellJ, Orientation.HORIZONTAL);
-        model.addEdge(edgeMultiStoresWTransferAndTransformationDataType2);
-
-        graph.endUpdate();
     }
 }

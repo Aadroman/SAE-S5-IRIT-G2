@@ -1,52 +1,80 @@
 package fxgraph.cells;
 
 import fxgraph.graph.Graph;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Polygon;
+
+import java.io.IOException;
+import java.util.Objects;
+
+import static java.lang.Math.abs;
 
 public class SelectionCell extends AbstractCell {
 
-    Label text = new Label();
+    String selectionText;
 
-    public SelectionCell() {
-    }
+    StackPane selectionGraph = new StackPane();
 
-    public SelectionCell(String texte) {
-        this.text.setText(texte);
+    double sourceEdgeXPosition, sourceEdgeYPosition, targetEdgeXPosition, targetEdgeYPosition;
+
+    public SelectionCell(String text) {
+        try {
+            this.selectionText = text;
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/tree_icons/selection.fxml")));
+            Group selectionGroup = (Group) root.lookup("#selectionGroup");
+            Label selectionLabel = (Label) selectionGroup.lookup("#selectionLabel");
+            Polygon selectionPolygon = (Polygon) selectionGroup.lookup("#selectionPolygon");
+            ObservableList<Double> projectionPolygonPoints = selectionPolygon.getPoints();
+            this.targetEdgeYPosition = abs(projectionPolygonPoints.get(2) - projectionPolygonPoints.get(4));
+
+            selectionLabel.setText(this.selectionText);
+
+            String styles =
+                "-fx-font-weight: 700;" +
+                "-fx-text-fill: black;" ;
+            selectionLabel.setStyle(styles);
+
+            this.selectionGraph.getChildren().add(selectionGroup);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public Region getGraphic(Graph graph) {
-        final Polygon view = new Polygon();
-        view.getPoints().addAll(new Double[]{
-                0.0, 10.0,
-                -20.0, 40.0,
-                70.0, 40.0,
-                50.0, 10.0});
-        view.setRotate(90);
+        return this.selectionGraph;
+    }
 
-        view.setStroke(Color.DODGERBLUE);
-        view.setFill(Color.DODGERBLUE);
+    @Override
+    public double getSourceEdgeXPosition() {
+        return this.sourceEdgeXPosition;
+    }
 
-        Group group = new Group(view, text);
+    @Override
+    public double getSourceEdgeYPosition() {
+        return this.sourceEdgeYPosition;
+    }
 
-        text.setLayoutX(45);
-        text.setLayoutY(15);
+    @Override
+    public double getTargetEdgeXPosition() {
+        return targetEdgeXPosition;
+    }
 
-        final Pane pane = new Pane(group);
-        pane.setPrefSize(50, 50);
-
-        return pane;
+    @Override
+    public double getTargetEdgeYPosition() {
+        return targetEdgeYPosition;
     }
 
     @Override
     public void setSelected(boolean select) {
         // TODO Auto-generated method stub
-
     }
 
 }

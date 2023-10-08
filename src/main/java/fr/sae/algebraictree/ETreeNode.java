@@ -2,7 +2,6 @@ package fr.sae.algebraictree;
 
 import fr.irit.algebraictree.*;
 import fr.irit.module2.UnifiedView.Store;
-import fr.irit.module3.TransformationTransferAlgebraicTree;
 
 import java.util.List;
 import java.util.Map;
@@ -10,22 +9,25 @@ import java.util.Set;
 
 public class ETreeNode {
 
-    public Store getStore() {return null;}
+    public Store getStore() {
+        return null;
+    }
+
     //region ATTRIBUTES
     private ETreeNode parent;
 
-    public static ETreeNode createTree (TreeNode node) {
-        if(node instanceof Projection) {
-            return new EProjection((Projection)node);
-        } else  if(node instanceof Selection) {
-            return new ESelection((Selection)node);
-        } else if(node instanceof Join) {
-            return new EJoin((Join)node);
-        }  else if(node instanceof Table) {
+    public static ETreeNode createTree(TreeNode node) {
+        if (node instanceof Projection) {
+            return new EProjection((Projection) node);
+        } else if (node instanceof Selection) {
+            return new ESelection((Selection) node);
+        } else if (node instanceof Join) {
+            return new EJoin((Join) node);
+        } else if (node instanceof Table) {
             return new ETable((Table) node);
-        } else if(node instanceof Transfer) {
+        } else if (node instanceof Transfer) {
             return new ETransfer((Transfer) node);
-        } else if ( node instanceof Transformation){
+        } else if (node instanceof Transformation) {
             return new ETransformation((Transformation) node);
         }
 
@@ -35,8 +37,14 @@ public class ETreeNode {
 
     //endregion
     //region GETTERS & SETTERS
-    public ETreeNode getParent() { return this.parent; }
-    public void setParent(ETreeNode parent) { this.parent = parent; }
+    public ETreeNode getParent() {
+        return this.parent;
+    }
+
+    public void setParent(ETreeNode parent) {
+        this.parent = parent;
+    }
+
     //endregion
     //region METHODS
     public boolean isRoot() {

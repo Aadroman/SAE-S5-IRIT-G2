@@ -1,6 +1,7 @@
 package fxgraph.edges;
 
 
+import fxgraph.cells.AbstractCell;
 import fxgraph.graph.Graph;
 import fxgraph.graph.ICell;
 import javafx.beans.binding.DoubleBinding;
@@ -24,7 +25,7 @@ public class Edge extends AbstractEdge {
 
 	@Override
 	public EdgeGraphic getGraphic(Graph graph) {
-		return new EdgeGraphic(graph, this, textProperty);
+		return new EdgeGraphic(graph, this, textProperty, (AbstractCell) this.getSource(), (AbstractCell) this.getTarget());
 	}
 
 	public StringProperty textProperty() {
@@ -37,14 +38,17 @@ public class Edge extends AbstractEdge {
 		private final Line line;
 		private final Text text;
 
-		public EdgeGraphic(Graph graph, Edge edge, StringProperty textProperty) {
+		public EdgeGraphic(Graph graph, Edge edge, StringProperty textProperty, AbstractCell source, AbstractCell target) {
 			group = new Group();
 			line = new Line();
 
-			final DoubleBinding sourceX = edge.getSource().getXAnchor(graph, edge);
-			final DoubleBinding sourceY = edge.getSource().getYAnchor(graph, edge);
-			final DoubleBinding targetX = edge.getTarget().getXAnchor(graph, edge);
-			final DoubleBinding targetY = edge.getTarget().getYAnchor(graph, edge);
+			final DoubleBinding sourceX, sourceY;
+			final DoubleBinding targetX, targetY;
+
+			sourceX = edge.getSource().getXAnchor(graph, edge, source.getSourceEdgeXPosition());
+			sourceY = edge.getSource().getYAnchor(graph, edge, source.getSourceEdgeYPosition());
+			targetX = edge.getTarget().getXAnchor(graph, edge, target.getTargetEdgeXPosition());
+			targetY = edge.getTarget().getYAnchor(graph, edge, target.getTargetEdgeYPosition());
 
 			line.startXProperty().bind(sourceX);
 			line.startYProperty().bind(sourceY);

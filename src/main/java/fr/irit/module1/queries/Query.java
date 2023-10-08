@@ -1,6 +1,8 @@
 package fr.irit.module1.queries;
 
-import fr.irit.algebraictree.*;
+import fr.irit.algebraictree.Join;
+import fr.irit.algebraictree.Projection;
+import fr.irit.algebraictree.Selection;
 
 import java.util.List;
 
@@ -10,16 +12,22 @@ import java.util.List;
  */
 public abstract class Query<T> {
     private T parsedQuery;
+
     protected void setParsedQuery(T parsedQuery) {
         this.parsedQuery = parsedQuery;
     }
+
     protected T getParsedQuery() {
         return this.parsedQuery;
     }
 
     public abstract List<String> getTablesNames();
+
     public abstract List<Selection> createSelectionNodes();
+
     public abstract List<Join> createJoinNodes();
+
     public abstract Projection createProjectionNode();
+
     public abstract boolean hasCondition();
 }
