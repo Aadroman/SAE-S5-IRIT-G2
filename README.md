@@ -50,12 +50,14 @@
 
 ## Branches
 
-* [Main](https://github.com/AurelienSP/SAE-S5-IRIT-G2) : la branche principale
-* [Development](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/development) : la branche de développement
-* integration_interface (branche de résultats) : la branche utilisée pour l'intégration de l'application IHM à l'application de l'IRIT (voir [src/main/moduleInterface](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/integration_interface/src/main/moduleInterface))
-* Eprojet (branche de résultats) : la branche utilisée pour préparer l'application de l'IRIT à recevoir et renvoyer des données à l'application IHM (voir [src/main/java/fr/sae](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/EProjet/src/main/java/fr/sae/)) 
-* Prototype (branche d'essais) : branche pour la sous-équipe qui cherche à récupérer les données (voir [src/main/java/fr/irit/prototype.java](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/Prototype/src/main/java/fr/irit/prototype.java)) 
-* display_tests (branche d'essais) : branche pour la sous-équipe qui cherche a faire un affichage (voir dossier ["display_tests"](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/display_tests/display_tests/Aur%C3%A9lien))
+| Branche | Description |
+|--------|------------------|
+| [Main](https://github.com/AurelienSP/SAE-S5-IRIT-G2) | branche principale |
+| [Development](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/development) | branche de développement |
+| [query/mongo_db](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/query/mongo_db) | branche pour implémenter l'utilisation de requêtes MongoDB |
+| [fix/bug](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/fix/bug) | branche pour corriger certains bugs de la V1 |
+| [feature/tree-design](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/feature/tree-design) | branche pour les modification visuelles de l'arbre |
+
 
 ## Détail des sprints
 
