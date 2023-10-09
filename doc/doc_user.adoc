@@ -85,11 +85,21 @@ TIP: Pensez à ajouter le fichier aux sources du projet si vous n'arrivez pas ex
 
 L'application est divisée en trois parties : 
 
-* l'entrée de requête (en haut)
-* l'affichage de l'arbre (à gauche)
-* présentation de l'arbre en forme de répertoire (à droite)
+image::images/interface-sans-req.PNG[]
+
+* la saisie de la requête (en haut)
+* l'affichage des arbres (les trois onglets à gauche)
+* présentation des arbres en forme de répertoire (à droite)
 
 ==== Saisir une requête et consulter l'arbre algébrique correspondant.
 
-Il suffit d'entrer une requete (ex : `Select * from Orders`) et de cliquer sur le bouton `OK` pour afficher l'arbre algébrique correspondant à la requête.
-Vous pouvez naviguer dans l'abre avec votre souris et déplacer les éléments de ce dernier. Vous pouvez également zoomer.
+Il suffit d'entrer une requête et de cliquer sur le bouton `Valider`.
+
+image::images/ajout-req.PNG[]
+
+Les arbres algébriques sont séparés en trois onglets:
+
+image::images/interface-avec-req.PNG[]
+
+Chaque arbre est aussi représenté sous forme d'arborescence à droite de l'interface.
+Vous pouvez naviguer dans les abres avec le clic droit de votre souris et déplacer les éléments. Vous pouvez également zoomer.
