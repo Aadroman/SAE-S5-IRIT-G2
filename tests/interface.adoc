@@ -1,17 +1,31 @@
-= Tests du site web (dernière mise à jour le 14/01/23)
+= Tests de l'application (dernière mise à jour le 09/10/23)
 :toc:
 :toc-title: Sommaire
 :numbered:
 
 == Introduction
 
-Tests rédigés par Ludovic Estival.
-Ces tests ont pour but de vérifier les fonctionnalités implémentées sur le site.= Tests du site web (dernière mise à jour le 14/01/23)
+Ces tests ont pour but de vérifier les fonctionnalités de l'application.
+
 :toc:
 :toc-title: Sommaire
 :numbered:
 
-== Introduction
+== Test n°1: saisie d'une requête
 
-Tests rédigés par Ludovic Estival.
-Ces tests ont pour but de vérifier les fonctionnalités implémentées sur le site.
+|=======
+|Scénario |Attendu |Résultat
+
+|L'utilisateur lance l'application et saisie une requête simple |Calcul et affichage des trois arbres correspondants à la requête |A faire
+|L'utilisateur lance l'application et saisie une requête complexe |Calcul et affichage des trois arbres correspondants à la requête |A faire
+|=======
+
+== Test n°2: manipulation des arbres
+
+|=======
+|Scénario |Attendu |Résultat
+|L'utilisateur saisie une requête et déplace les éléments des arbres |Les éléments sont déplaces sans créer de problèmes visuels |A faire
+|L'utilisateur saisie une requête et utilise le zoom sur les arbes |Le zoom fonctionne sans créer de problèmes visuels |A faire
+|=======
+
+== Test n°3: saisie d'une sous-requête
