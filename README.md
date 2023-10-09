@@ -17,6 +17,7 @@
 1. [Equipe](#equipe)
 2. [Documentation](#documentation)
 3. [Branches](#branches)
+4. [Détail des sprints](#détail-des-sprints)
 
 ## Equipe
 
