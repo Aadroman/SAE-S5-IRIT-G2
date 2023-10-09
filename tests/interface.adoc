@@ -16,8 +16,8 @@ Ces tests ont pour but de vérifier les fonctionnalités de l'application.
 |=======
 |Scénario |Attendu |Résultat
 
-|L'utilisateur lance l'application et saisie une requête simple |Calcul et affichage des trois arbres correspondants à la requête |A faire
-|L'utilisateur lance l'application et saisie une requête complexe |Calcul et affichage des trois arbres correspondants à la requête |A faire
+|L'utilisateur lance l'application et saisie une requête simple |Calcul et affichage des trois arbres correspondants à la requête |A tester
+|L'utilisateur lance l'application et saisie une requête complexe |Calcul et affichage des trois arbres correspondants à la requête |OK
 |=======
 
 Requêtes utilisées:
@@ -31,8 +31,8 @@ Requête complexe:
 
 |=======
 |Scénario |Attendu |Résultat
-|L'utilisateur saisie une requête et déplace les éléments des arbres |Les éléments sont déplaces sans créer de problèmes visuels |A faire
-|L'utilisateur saisie une requête et utilise le zoom sur les arbes |Le zoom fonctionne sans créer de problèmes visuels |A faire
+|L'utilisateur saisie une requête et déplace les éléments des arbres |Les éléments sont déplaces sans créer de problèmes visuels |OK
+|L'utilisateur saisie une requête et utilise le zoom sur les arbes |Le zoom fonctionne sans créer de problèmes visuels |OK
 |=======
 
 == Test n°3: saisie d'une sous-requête
