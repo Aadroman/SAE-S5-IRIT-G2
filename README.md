@@ -9,8 +9,8 @@
 
 :memo: **Note:** développement en cours
 
-- Version courante: [0.8](https://github.com/AurelienSP/SAE-S5-IRIT-G2/releases/tag/0.8)
-- User Stories: [ici](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+label%3A%22User+Story%22), reste (4/6)
+- Version courante: [1.0](https://github.com/AurelienSP/SAE-S5-IRIT-G2/releases/tag/1.0)
+- User Stories: [ici](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+label%3A%22User+Story%22), reste 2/6
 - Product Backlog et Sprint Backlog: [ici](https://github.com/users/AurelienSP/projects/1)
 
 ## Table des matières:
@@ -20,23 +20,23 @@
 
 ## Equipe
 
-DRUELLE Julien
+[DRUELLE Julien](https://github.com/Julien-D234)
 
-MARCHANT Adriel
+[MARCHANT Adriel](https://github.com/AdrielMarchant)
 
-LONGEQUE Rubén
-
-SANCHEZ-PORRO Aurélien (alternant présent avant l'heure) 
+[LONGEQUE Rubén](https://github.com/Aadroman)
 
 **Alternants**
 
-BROUXEL Enzo 
+[BROUXEL Enzo](https://github.com/enzobxl)
 
-COURREJOU Matthieu
+[COURREJOU Matthieu](https://github.com/MCkeydev)
 
-ESTIVAL Ludovic
+[ESTIVAL Ludovic](https://github.com/ludovic-estival)
 
-GUINLE Loic
+[GUINLE Loic](https://github.com/Guinlel)
+
+[SANCHEZ-PORRO Aurélien](https://github.com/AurelienSP) (alternant présent avant l'heure) 
 
 ## Documentation
 
@@ -50,6 +50,7 @@ GUINLE Loic
 ## Branches
 
 * [Main](https://github.com/AurelienSP/SAE-S5-IRIT-G2) : la branche principale
+* [Development](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/development) : la branche de développement
 * integration_interface (branche de résultats) : la branche utilisée pour l'intégration de l'application IHM à l'application de l'IRIT (voir [src/main/moduleInterface](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/integration_interface/src/main/moduleInterface))
 * Eprojet (branche de résultats) : la branche utilisée pour préparer l'application de l'IRIT à recevoir et renvoyer des données à l'application IHM (voir [src/main/java/fr/sae](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/EProjet/src/main/java/fr/sae/)) 
 * Prototype (branche d'essais) : branche pour la sous-équipe qui cherche à récupérer les données (voir [src/main/java/fr/irit/prototype.java](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/Prototype/src/main/java/fr/irit/prototype.java)) 

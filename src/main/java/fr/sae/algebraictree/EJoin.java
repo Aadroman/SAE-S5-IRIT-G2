@@ -59,7 +59,7 @@ public class EJoin extends ETreeNode {
             leftChild.setParent(this);
             rightChild.setParent(this);
         } else {
-            throw new  UnsupportedOperationException("A Projection node should have 2 children");
+            throw new UnsupportedOperationException("A Projection node should have 2 children");
         }
     }
 

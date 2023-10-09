@@ -21,7 +21,7 @@ public class GlobalAlgebraicTree {
      * Construct the AlgebraicTree and set AlgebraicTree root node attribute
      * @param query Query parsed by the antlr parser
      */
-    public GlobalAlgebraicTree(Query<?> query){
+    public GlobalAlgebraicTree(Query<?> query) {
         // Start tree building : create projection node (root)
         Projection rootNode = query.createProjectionNode();
         // Get all table names in a list (used for check at the end)
@@ -42,8 +42,6 @@ public class GlobalAlgebraicTree {
         }
         this.root = rootNode;
     };
-
-
 
     /**
      * This method add all the joins and the tables associated to the tree.
