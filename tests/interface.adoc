@@ -1,0 +1,17 @@
+= Tests du site web (dernière mise à jour le 14/01/23)
+:toc:
+:toc-title: Sommaire
+:numbered:
+
+== Introduction
+
+Tests rédigés par Ludovic Estival.
+Ces tests ont pour but de vérifier les fonctionnalités implémentées sur le site.= Tests du site web (dernière mise à jour le 14/01/23)
+:toc:
+:toc-title: Sommaire
+:numbered:
+
+== Introduction
+
+Tests rédigés par Ludovic Estival.
+Ces tests ont pour but de vérifier les fonctionnalités implémentées sur le site.
