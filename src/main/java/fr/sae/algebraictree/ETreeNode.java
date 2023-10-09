@@ -16,6 +16,10 @@ public class ETreeNode {
     //region ATTRIBUTES
     private ETreeNode parent;
 
+    /**
+     * @param node
+     * @return
+     */
     public static ETreeNode createTree(TreeNode node) {
         if (node instanceof Projection) {
             return new EProjection((Projection) node);
@@ -37,20 +41,32 @@ public class ETreeNode {
 
     //endregion
     //region GETTERS & SETTERS
+    /**
+     * @return
+     */
     public ETreeNode getParent() {
         return this.parent;
     }
-
+    /**
+     * @param parent
+     */
     public void setParent(ETreeNode parent) {
         this.parent = parent;
     }
 
     //endregion
     //region METHODS
+
+    /**
+     * @return
+     */
     public boolean isRoot() {
         return this.parent == null;
     }
 
+    /**
+     * @return
+     */
     public String toString() {
         return null;
     }
@@ -58,6 +74,8 @@ public class ETreeNode {
     /**
      * Return a list of tables included in the node and its children
      * This method is called recursively on its child nodes
+     *
+     * @return
      */
     public List<String> listIncludedTablesRecursive() {
         return null;
@@ -79,13 +97,21 @@ public class ETreeNode {
         return null;
     }
 
-    public void addChildren(ETreeNode... children) {
-    }
+    /**
+     * @param children zero or more
+     */
+    public void addChildren(ETreeNode... children) { }
 
+    /**
+     * @param prefix
+     */
     public void print(String prefix) {
 
     }
 
+    /**
+     * @param columnNamingMap
+     */
     public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
 
     }

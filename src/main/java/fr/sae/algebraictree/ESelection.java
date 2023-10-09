@@ -14,14 +14,24 @@ public class ESelection extends ETreeNode {
     private List<EPredicate> predicates;
     //endregion
     //region CONSTRUCTOR
+    /**
+     * @param predicates
+     */
     public ESelection(List<EPredicate> predicates){
         this.predicates = predicates;
     }
+
+    /**
+     * @param predicate
+     */
     public ESelection(EPredicate predicate){
         this.predicates = new ArrayList<EPredicate>();
         this.predicates.add(predicate);
     }
 
+    /**
+     * @param s
+     */
     public ESelection (Selection s) {
         this.correspondingSelection = s;
         this.predicates = new ArrayList<>();
@@ -31,6 +41,10 @@ public class ESelection extends ETreeNode {
         this.child = ETreeNode.createTree(s.getChild()) ;
     }
 
+    /**
+     * @param s
+     * @return predicates List
+     */
     protected List<EPredicate> getPredicates(Selection s){
         List<EPredicate> result = new ArrayList<>();
         List<Predicate> source = s.getPredicates();
@@ -53,6 +67,9 @@ public class ESelection extends ETreeNode {
     }
     //endregion
     //region METHODS
+    /**
+     * @param children zero or more
+     */
     @Override
     public void addChildren(ETreeNode... children) {
         if(children.length == 1){
@@ -63,6 +80,9 @@ public class ESelection extends ETreeNode {
         }
     }
 
+    /**
+     * @param prefix
+     */
     @Override
     public void print(String prefix) {
         if(this.getParent() instanceof EJoin){
@@ -73,6 +93,9 @@ public class ESelection extends ETreeNode {
         this.child.print(prefix + "    ");
     }
 
+    /**
+     * @param columnNamingMap
+     */
     @Override
     public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
         for(EPredicate p : this.predicates){
@@ -81,6 +104,9 @@ public class ESelection extends ETreeNode {
         this.child.renameColumnsRecursive(columnNamingMap);
     }
 
+    /**
+     * @return
+     */
     @Override
     public String toString() {
         if(this.predicates.size() > 1) {
@@ -97,6 +123,9 @@ public class ESelection extends ETreeNode {
         }
     }
 
+    /**
+     * @return
+     */
     @Override
     public List<String> listIncludedTablesRecursive() {
         return this.child.listIncludedTablesRecursive();
@@ -104,6 +133,9 @@ public class ESelection extends ETreeNode {
 
     /**
      * A Selection node cannot be the lowest node which contain 1 or n tables.
+     *
+     * @param tableList List of table names searched
+     * @return
      */
     @Override
     public ETreeNode findLowestNodeContainingTables(List<String> tableList) {
@@ -113,6 +145,10 @@ public class ESelection extends ETreeNode {
             return this.child.findLowestNodeContainingTables(tableList);
         }
     }
+
+    /**
+     * @return
+     */
     @Override
     public Set<EDotNotation> listDistinctColumnsRecursive() {
         Set<EDotNotation> includedColumns = new HashSet<EDotNotation>();
