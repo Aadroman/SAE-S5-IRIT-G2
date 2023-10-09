@@ -1,9 +1,12 @@
-package fr.irit.module1;
+package com.main.irit;
+
 
 import fr.irit.algebraictree.Join;
 import fr.irit.algebraictree.Projection;
 import fr.irit.algebraictree.Selection;
 import fr.irit.algebraictree.Table;
+import fr.irit.module1.GlobalAlgebraicTree;
+import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -11,14 +14,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GlobalAlgebraicTreeTest {
-
-//    private static final Logger LOGGER = Logger.getLogger(GlobalAlgebraicTreeTest.class.getName());
+public class iritMainApplicationTest {
 
     @DisplayName("Test query with '*' PROJECTION and OR SELECTION")
     @Test
@@ -181,5 +181,10 @@ public class GlobalAlgebraicTreeTest {
         String query = "SELECT product_id, title, rating FROM Product P, Reviews R WHERE P.product_id=R.product_id";
         Query queryParsed = QueryParserUtils.parse(query);
         var rootNode = new GlobalAlgebraicTree(queryParsed).getRootNode();
+    }
+
+    @Test
+    public void testMain() {
+        //TODO Better tests
     }
 }
