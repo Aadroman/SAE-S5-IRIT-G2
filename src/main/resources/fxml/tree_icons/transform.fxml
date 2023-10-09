@@ -7,9 +7,7 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <Group fx:id="transformGroup" layoutX="300.0" layoutY="170.0">
-      <Polygon fx:id="transformBas" fill="#ff5608" points="0.0, 30.0, 0.0, 50.0, 50.0, 50.0, 50.0, 60.0, 70.0, 40.0, 50.0, 20.0, 50.0, 30.0" stroke="BLACK" strokeType="INSIDE" />
-      <Polygon fx:id="transformHaut" fill="#616161" points="       45.0, 20.0,       45.0, 10.0,       15.0, 10.0,       15.0, 0.0,       0.0, 15.0,       15.0, 30.0,       15.0, 20.0" stroke="BLACK" strokeType="INSIDE" />
-      <Label fx:id="transformArrowSign" layoutX="25.0" layoutY="15.0" text="-&gt;" />
+      <Polygon fx:id="transformBas" fill="#ff5608" points="50.0, 80.0, 50.0, 60.0, 36.0, 60.0, 20.0, 60.0, 20.0, 20.0, 50.0, 20.0, 50.0, 30.0, 70.0, 10.0, 50.0, -10.0, 50.0, 0.0, 0.0, 0.0, 0.0, 80.0" stroke="BLACK" strokeType="INSIDE" />
       <Label fx:id="transformLeftLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="-10.0" layoutY="17.0" text="left" textAlignment="RIGHT" />
       <Label fx:id="transformRightLabel" layoutX="67.0" layoutY="17.0" text="right" />
    </Group>
