@@ -65,7 +65,7 @@
 |--------|------------------|
 | Sprint n°0 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+0%22+) |
 | Sprint n°1 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+1%22+) |
-| Sprint n°2 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+2%22+) |
+| Sprint n°2 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/milestone/3?closed=1) |
 | Sprint n°3 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+3%22+) |
 | Sprint n°4 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+4%22+) |
 | Sprint n°5 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+5%22+) |
