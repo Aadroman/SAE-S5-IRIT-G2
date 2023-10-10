@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
+import fr.irit.module2.UnifiedView.Store;
 import fr.sae.Application;
 import fr.sae.algebraictree.*;
 import fxgraph.cells.*;
@@ -14,6 +15,7 @@ import fxgraph.layout.AbegoTreeLayout;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -23,10 +25,7 @@ import org.abego.treelayout.Configuration;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -77,16 +76,17 @@ public class iritMainController implements Initializable {
     private void renderTabTreeView(Tab newTab) {
         // Save selected Tab for further user
         this.selectedTab = newTab;
+
         // Re-création de la TreeView en fonction de l'arbre correspondant au panneau selectionné
         switch (newTab.getId()) {
             case "globalTreeTab":
-                this.renderTreeView(this.computedTrees[0]);
+                this.renderTreeView(this.computedTrees[0], false);
                 break;
             case "multiStoreTreeTab":
-                this.renderTreeView(this.computedTrees[1]);
+                this.renderTreeView(this.computedTrees[1], false);
                 break;
             case "transferTreeTab":
-                this.renderTreeView(this.computedTrees[2]);
+                this.renderTreeView(this.computedTrees[2], true);
                 break;
         }
     }
@@ -148,21 +148,21 @@ public class iritMainController implements Initializable {
      * @param node       noeud de l'arbre a partir duquel est crée un TreeItem
      * @param treeParent TreeItem parent sur lequel on va add les enfants
      */
-    private void populateTreeView(ETreeNode node, TreeItem<String> treeParent) {
+    private void populateTreeView(ETreeNode node, TreeItem<ETreeNode> treeParent) {
         if (node.getClass().equals(EProjection.class)) {
             //Boucle sur le nombre d'enfant de la projection initial
             int nbChild = node.getChild().length;
             for (int i = 0; i < nbChild; i++) {
-                TreeItem<String> child = new TreeItem<>(node.getChild()[i].toString());
+                TreeItem<ETreeNode> child = new TreeItem<>(node.getChild()[i]);
                 child.setExpanded(true);
                 treeParent.getChildren().add((child));
                 this.populateTreeView(node.getChild()[i], child);
             }
         } else if (node.getClass().equals(EJoin.class)) {
             // Si le node est de type EJoin il a un left et un right child qu'on va créer en tant que TreeItem et ajouter au parent
-            TreeItem<String> childLeft = new TreeItem<>(((EJoin) node).getLeftChild().toString());
+            TreeItem<ETreeNode> childLeft = new TreeItem<>(((EJoin) node).getLeftChild());
             childLeft.setExpanded(true);
-            TreeItem<String> childRight = new TreeItem<>(((EJoin) node).getRightChild().toString());
+            TreeItem<ETreeNode> childRight = new TreeItem<>(((EJoin) node).getRightChild());
             childRight.setExpanded(true);
             treeParent.getChildren().addAll(childLeft, childRight);
 
@@ -170,7 +170,7 @@ public class iritMainController implements Initializable {
             populateTreeView(((EJoin) node).getLeftChild(), childLeft);
         } else if (node.getClass().equals((ESelection.class))) {
             // Si le node est de type ESelection il n'aura qu'un enfant
-            TreeItem<String> child = new TreeItem<>(node.getChild()[0].toString());
+            TreeItem<ETreeNode> child = new TreeItem<>(node.getChild()[0]);
             child.setExpanded(true);
             treeParent.getChildren().add(child);
 
@@ -181,19 +181,92 @@ public class iritMainController implements Initializable {
     /**
      * Fonction qui affiche une TreeView générée sur la scène actuelle.
      */
-    private void renderTreeView(ETreeNode node) {
+    private void renderTreeView(ETreeNode node, Boolean separateDB) {
+        // Reset children
         this.tvNode.setRoot(null);
 
         //Creation du root du TreeView qui va servir de racine à l'arbo
-        TreeItem<String> rootTree = new TreeItem<>(node.toString());
-        this.populateTreeView(node, rootTree);
-
-        // Déplie par défault l'arbre
-        rootTree.setExpanded(true);
+        TreeItem<ETreeNode> rootTree = new TreeItem<>(node);
 
         // On ajoute l'arbo crée au composants tree view
         this.tvNode.setRoot(rootTree);
-        this.tvNode.autosize();
+
+        if (separateDB) {
+            this.organiseTreeView(node);
+
+            List<TreeItem<String>> reversedItems = new ArrayList<>(this.tvNode.getRoot().getChildren());
+            Collections.reverse(reversedItems);
+            this.tvNode.getRoot().getChildren().setAll(reversedItems);
+        } else {
+            this.populateTreeView(node, rootTree);
+            // Déplie par défault l'arbre
+            rootTree.setExpanded(true);
+
+            this.tvNode.setShowRoot(false);
+        }
+    }
+
+    private void organiseTreeView(ETreeNode node) {
+        switch (node.getClass().getSimpleName()) {
+            case "EProjection":
+                Arrays.stream(node.getChild()).forEach(this::organiseTreeView);
+                break;
+            case "EJoin":
+                organiseTreeView(((EJoin) node).getLeftChild());
+                organiseTreeView(((EJoin) node).getRightChild());
+                break;
+            case "ESelection":
+                organiseTreeView(node.getChild()[0]);
+                break;
+            case "ETransfer", "ETransformation":
+                if (node.getChild().length > 0) {
+                    this.organiseTreeView(node.getChild()[0]);
+                }
+                break;
+            case "ETable":
+                if (node.getStore() != null) {
+                    TreeItem dbRoot = addValueToTree(node.getStore().name);
+                    if (null != dbRoot) {
+                        TreeItem text = new TreeItem(node);
+                        dbRoot.getChildren().add(this.addFunctionToParent(text, node.getParent()));
+                    }
+                } else if (((ETable) node).getCorrespondingTable() != null) {
+                    TreeItem dbRoot = addValueToTree(((ETable) node).getCorrespondingTable().getStore().name);
+                    if (null != dbRoot) {
+                        dbRoot.getChildren().add(this.addFunctionToParent(new TreeItem(node), node.getParent()));
+                    }
+                }
+                break;
+        }
+    }
+
+    private TreeItem addFunctionToParent(TreeItem child, ETreeNode parent) {
+        if (null == parent) {
+            return child;
+        } else {
+            TreeItem parentItem = new TreeItem(parent);
+            parentItem.getChildren().add(child);
+
+            return this.addFunctionToParent(parentItem, parent.getParent());
+        }
+    }
+
+    // Helper method to add a value to the tree if it doesn't already exist
+    private TreeItem addValueToTree(String valueToAdd) {
+        if (!isValueExists(valueToAdd)) {
+            TreeItem dbRoot = new TreeItem(valueToAdd);
+            tvNode.getRoot().getChildren().add(dbRoot);
+
+            return dbRoot;
+        }
+
+        return null;
+    }
+
+    // Helper method to check if the value already exists in the tree
+    private boolean isValueExists(String value) {
+        return tvNode.getRoot().getChildren().stream()
+                .anyMatch(item -> ((TreeItem) item).getValue().equals(value));
     }
 
     @FXML
@@ -226,7 +299,7 @@ public class iritMainController implements Initializable {
 
                 // Génération de la treeview pour l'arbre global
                 if (null == this.selectedTab && i == 0) {
-                    this.renderTreeView(this.computedTrees[i]);
+                    this.renderTreeView(this.computedTrees[i], false);
                 } else if (null != this.selectedTab) {
                     this.renderTabTreeView(this.selectedTab);
                 }
@@ -272,8 +345,7 @@ public class iritMainController implements Initializable {
                 case "EJoin":
                     JointureCell jointure = new JointureCell(child.toString());
 
-                    model.addCell(jointure);
-                    model.addEdge(jointure, previousCell);
+                    this.addCellAndEdge(model, jointure, previousCell);
 
                     makeTree(((EJoin) child).getLeftChild(), model, jointure);
                     makeTree(((EJoin) child).getRightChild(), model, jointure);
@@ -290,8 +362,7 @@ public class iritMainController implements Initializable {
                     }
                     SelectionCell selection = new SelectionCell(String.valueOf(text));
 
-                    model.addCell(selection);
-                    model.addEdge(selection, previousCell);
+                    this.addCellAndEdge(model, selection, previousCell);
 
                     if (child.getChild().length > 0) {
                         makeTree(child.getChild()[0], model, selection);
@@ -300,8 +371,7 @@ public class iritMainController implements Initializable {
                 case "ETransfer":
                     TransferCell transfer = new TransferCell(child.toString());
 
-                    model.addCell(transfer);
-                    model.addEdge(transfer, previousCell);
+                    this.addCellAndEdge(model, transfer, previousCell);
 
                     if (child.getChild().length > 0) {
                         makeTree(child.getChild()[0], model, transfer);
@@ -310,8 +380,7 @@ public class iritMainController implements Initializable {
                 case "ETransformation":
                     TransformCell transform = new TransformCell(child.toString());
 
-                    model.addCell(transform);
-                    model.addEdge(transform, previousCell);
+                    this.addCellAndEdge(model, transform, previousCell);
 
                     if (child.getChild().length > 0) {
                         makeTree(child.getChild()[0], model, transform);
@@ -320,8 +389,7 @@ public class iritMainController implements Initializable {
                 default:
                     LabelCell label = new LabelCell(child.toString().toUpperCase());
 
-                    model.addCell(label);
-                    model.addEdge(label, previousCell);
+                    this.addCellAndEdge(model, label, previousCell);
 
                     if (child.getChild().length > 0) {
                         makeTree(child.getChild()[0], model, label);

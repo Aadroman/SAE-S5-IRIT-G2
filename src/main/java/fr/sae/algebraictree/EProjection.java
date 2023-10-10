@@ -35,7 +35,8 @@ public class EProjection extends ETreeNode {
                 this.attributes.add(new EDotNotation(dt));
             }
         }
-        this.child = ETreeNode.createTree(p.getChild()) ;
+        this.child = ETreeNode.createTree(p.getChild());
+        this.child.setParent(this);
     }
 
     //endregion

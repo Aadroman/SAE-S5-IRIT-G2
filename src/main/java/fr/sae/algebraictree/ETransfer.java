@@ -23,6 +23,7 @@ public class ETransfer extends ETreeNode {
     public ETransfer(Transfer node) {
         this.correspondingTransfer = node;
         this.child = ETreeNode.createTree(node.getChild());
+        this.child.setParent(this);
         String[] split = this.correspondingTransfer.toString().split(" -> ");
         this.sourceDatabase = split[0];
         this.targetDatabase = split[1];
@@ -104,5 +105,9 @@ public class ETransfer extends ETreeNode {
     @Override
     public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
         this.child.renameColumnsRecursive(columnNamingMap);
+    }
+
+    public String getSourceDatabase() {
+        return this.sourceDatabase;
     }
 }
