@@ -7,12 +7,15 @@ import fr.irit.module1.GlobalAlgebraicTree;
 import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.testfx.api.FxAssert;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
+
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,6 +42,7 @@ public class iritMainApplicationTest {
         robot.clickOn("#requestTextField");
         robot.write(query);
         robot.clickOn("#checkButton");
+        //trouver comment verif que pane est pas vide
 //        Query queryParsed = QueryParserUtils.parse(query);
 //        var rootNode = new GlobalAlgebraicTree(queryParsed).getRootNode();
 //        rootNode.print("");
