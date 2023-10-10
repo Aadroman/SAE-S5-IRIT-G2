@@ -48,6 +48,10 @@ TreeView .tree-cell {
     -fx-background-radius: 6;
 }
 
+TreeView .tree-cell:selected {
+    -fx-text-fill: #F04A0F;
+}
+
 .tab-pane .tab:selected {
     -fx-background-color: #F04A0F;
 }
