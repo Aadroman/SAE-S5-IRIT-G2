@@ -59,9 +59,7 @@ public class iritMainController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         getAllTablesDB();
         // Create listener for tab change
-        tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> {
-            renderTabTreeView(newTab);
-        });
+        tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> renderTabTreeView(newTab));
     }
 
     public iritMainApplication getApp() {
@@ -195,7 +193,7 @@ public class iritMainController implements Initializable {
     }
 
     @FXML
-    private void interactWithPolystore() {
+    public void interactWithPolystore() {
         List<String> tablesnames = getAllTablesDB();
         boolean allTablesFound = false;
 
@@ -258,7 +256,7 @@ public class iritMainController implements Initializable {
      */
     private void makeTree(ETreeNode child, Model model, ICell previousCell) {
         if (previousCell == null) {
-            ProjectionCell projection = new ProjectionCell("π " + child.toString());
+            ProjectionCell projection = new ProjectionCell(child.toString());
             // On l'ajoute au model deja crée précédemment
             model.addCell(projection);
             // On verifie si il a des enfants et on réexecute la methode

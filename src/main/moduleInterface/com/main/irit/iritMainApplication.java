@@ -1,15 +1,17 @@
 package com.main.irit;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class iritMainApplication extends Application {
-    private Stage mainStage;
-    private iritMainController mainController;
 
     public static void main(String[] args) {
         launch(args);
@@ -17,7 +19,6 @@ public class iritMainApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        mainStage = stage;
         FXMLLoader loader = new FXMLLoader(iritMainController.class.getResource("/fxml/irit-main-view.fxml"));
 
         Pane root = loader.load();
@@ -27,8 +28,18 @@ public class iritMainApplication extends Application {
 
         stage.setScene(sceneRoot);
         stage.setMaximized(true);
-        this.mainController = loader.getController();
-        this.mainController.initContext(mainStage, this);
-        this.mainController.displayDialog();
+        iritMainController mainController = loader.getController();
+        mainController.initContext(stage, this);
+        mainController.displayDialog();
+
+        Node queryInput = root.lookup("#requestTextField");
+        Platform.runLater(queryInput::requestFocus);
+
+        sceneRoot.addEventFilter(KeyEvent.KEY_PRESSED, ke -> {
+            if (ke.getCode() == KeyCode.ENTER) {
+                mainController.interactWithPolystore();
+                ke.consume();
+            }
+        });
     }
 }

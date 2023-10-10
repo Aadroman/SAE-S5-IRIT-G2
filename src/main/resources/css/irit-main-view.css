@@ -49,7 +49,7 @@ TreeView .tree-cell {
 }
 
 .tab-pane .tab:selected {
-    -fx-background-color: #F04A0F;
+    -fx-background-color: #ff5608;
 }
 
 .tab-pane .tab:hover {
