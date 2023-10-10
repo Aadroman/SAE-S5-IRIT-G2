@@ -60,7 +60,9 @@ public class iritMainController implements Initializable {
         getAllTablesDB();
         // Create listener for tab change
         tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> {
-            renderTabTreeView(newTab);
+            if (null != this.computedTrees) {
+                renderTabTreeView(newTab);
+            }
         });
     }
 
