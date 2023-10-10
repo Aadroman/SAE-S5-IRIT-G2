@@ -36,8 +36,6 @@ public class TransformCell extends AbstractCell{
             Group transformGroup = (Group) root.lookup("#transformGroup");
             Label transformLeftLabel = (Label) transformGroup.lookup("#transformLeftLabel");
             Label transformRightLabel = (Label) transformGroup.lookup("#transformRightLabel");
-            Polygon transformLeftPolygon = (Polygon) transformGroup.lookup("#tranformLeftPolygon");
-            ObservableList<Double> transformLeftPolygonPoints = transformLeftPolygon.getPoints();
 
             double transformLeftTextWidth = new Text(this.leftTransformText).getLayoutBounds().getWidth();
 
@@ -46,9 +44,10 @@ public class TransformCell extends AbstractCell{
 
             transformLeftLabel.setLayoutX(transformLeftLabel.getLayoutX()-transformLeftTextWidth);
 
-            this.sourceEdgeXPosition = abs(transformLeftLabel.getLayoutX()) + transformLeftPolygonPoints.get(7) + 33;
-            this.targetEdgeXPosition = abs(transformLeftLabel.getLayoutX()) + transformLeftPolygonPoints.get(7) + 62;
-            this.targetEdgeYPosition = transformLeftPolygonPoints.get(1) + 23;
+            this.sourceEdgeXPosition = abs(transformLeftLabel.getLayoutX()) + 40;
+            this.targetEdgeXPosition = this.sourceEdgeXPosition;
+            this.targetEdgeYPosition = 37;
+            this.sourceEdgeYPosition = 5;
 
             String styles =
                 "-fx-font-weight: 700;" +
