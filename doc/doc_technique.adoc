@@ -48,6 +48,14 @@ Ou le programme pour démarrer l'application IHM
     |       ├── com.main.irit.irit.main.iritMainApplication.java (Main)
     |       └── com.main.irit.irit.main.iritMainController.java (Controller)
     └── test
+        ├── java
+        |   ├── fr.irit.module1
+        |   |   ├── algebraictree.TableTest.java
+        |   |   └── GlobalAlgebraicTreeTest.java
+        |   ├── fr.irit.module2.MultistoreGlobalAlgebraicTreeTest.java
+        |   └── AppTest.java
+        ├── moduleInterface
+        |   └── com.main.irit.iritMainApplicationTest.java
 ```
 
 ### Librairie FXGraph
