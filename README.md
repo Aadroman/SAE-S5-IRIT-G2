@@ -41,8 +41,8 @@
 
 ## Documentation
 
-- `Backlog Produit` => (format [adoc](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/Backlog_produit_IRIT.adoc) et [pdf](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/Backlog_produit_IRIT.pdf))
-- `Backlog Produit + Sprint` => [issues](https://github.com/users/AurelienSP/projects/1)
+- `User Stories` => (format [adoc](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/Backlog_produit_IRIT.adoc) et [pdf](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/Backlog_produit_IRIT.pdf))
+- `Backlog Produit + Backlog Sprint` => [issues](https://github.com/users/AurelienSP/projects/1)
 - `Diagramme de classes` => (format [png](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/class/module1.png) et [puml](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/class/module1.puml))
 - `Diagramme de séquence` => (format [png](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/sequence/overall_structure.png) et [puml](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/sequence/overall_structure.puml))
 - `Documentation utilisateur` => [ici](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/doc_user.adoc)
