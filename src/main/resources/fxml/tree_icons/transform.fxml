@@ -7,8 +7,9 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <Group fx:id="transformGroup" layoutX="300.0" layoutY="170.0">
-      <Polygon fx:id="transformBas" fill="#ff5608" points="50.0, 80.0, 50.0, 60.0, 36.0, 60.0, 20.0, 60.0, 20.0, 20.0, 50.0, 20.0, 50.0, 30.0, 70.0, 10.0, 50.0, -10.0, 50.0, 0.0, 0.0, 0.0, 0.0, 80.0" stroke="BLACK" strokeType="INSIDE" />
-      <Label fx:id="transformLeftLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="-10.0" layoutY="17.0" text="left" textAlignment="RIGHT" />
-      <Label fx:id="transformRightLabel" layoutX="67.0" layoutY="17.0" text="right" />
+      <Label fx:id="transformLeftLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutY="20.0" text="left" textAlignment="RIGHT" />
+      <Label fx:id="transformRightLabel" layoutX="120.0" layoutY="20.0" text="right" />
+      <Polygon fx:id="tranformLeftPolygon" fill="#ff5608" layoutX="10.0" points="30.0, 60.0, 30.0, 45.0, 15.0, 45.0, 15.0, 15.0, 38.0, 15.0, 38.0, 27.0, 70.0, 8.0, 38.0, -12.0, 38.0, 0.0, 0.0, 0.0, 0.0, 60.0" stroke="BLACK" strokeType="INSIDE" />
+      <Polygon fx:id="tranformRightPolygon" fill="#ff5608" layoutX="45.0" layoutY="12.0" points="30.0, 60.0, 30.0, 45.0, 15.0, 45.0, 15.0, 15.0, 38.0, 15.0, 38.0, 27.0, 70.0, 8.0, 38.0, -12.0, 38.0, 0.0, 0.0, 0.0, 0.0, 60.0" rotate="180.0" stroke="BLACK" strokeType="INSIDE" />
    </Group>
 </AnchorPane>
