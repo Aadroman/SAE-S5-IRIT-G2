@@ -5,7 +5,7 @@
 
 == Introduction
 
-Ces tests ont pour but de vérifier les fonctionnalités de l'application.
+Ces tests ont pour but de vérifier les fonctionnalités de la version 1 de l'application.
 
 :toc:
 :toc-title: Sommaire
@@ -18,14 +18,17 @@ Ces tests ont pour but de vérifier les fonctionnalités de l'application.
 
 |L'utilisateur lance l'application et saisie une requête simple |Calcul et affichage des trois arbres correspondants à la requête |A tester
 |L'utilisateur lance l'application et saisie une requête complexe |Calcul et affichage des trois arbres correspondants à la requête |OK
+|L'utilisateur lance l'application et saisie une requête mal formée |Un message d'erreur s'affiche. Il n'y a pas de calcul ni d'affichage d'arbres |A tester
 |=======
 
 Requêtes utilisées:
 
-Requête simple: `SELECT * FROM Orders WHERE total_price <= 1000;`
+Requête simple: `SELECT * FROM Orders WHERE total_price <= 1000`
 
 Requête complexe: 
 `SELECT Customers.customer_id, Orders.order_id, Orders.total_price, Products.brand FROM Reviews, Orders, Products, Customers WHERE (Orders.total_price > 10000 OR Customers.zipcode = 31000) AND Products.brand = nike AND Products.p_price > 100 AND Reviews.order_id = Orders.order_id AND Reviews.product_id = Products.product_id AND Customers.customer_id = Orders.customer_id`
+
+Requête mal formée: `SELECT * FROM`
 
 == Test n°2: manipulation des arbres
 
