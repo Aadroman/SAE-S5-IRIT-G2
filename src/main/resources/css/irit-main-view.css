@@ -72,3 +72,9 @@ TreeView .tree-cell {
     -fx-background-color: white;
     -fx-border-color: white;
 }
+
+.color-polygon {
+    -fx-fill: #ff5608;
+    -fx-stroke: black;
+    -fx-stroke-type: inside;
+}

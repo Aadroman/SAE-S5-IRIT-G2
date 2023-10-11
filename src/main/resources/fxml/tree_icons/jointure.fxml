@@ -5,10 +5,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
+<?import java.net.URL?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <Group fx:id="jointureGroup" layoutX="300.0" layoutY="170.0">
-      <Polygon fx:id="jointurePolygon" fill="#ff5608" points="-10.0, 0.0, -10.0, 50.0, 60.0, 0.0, 60.0, 50.0"
-               stroke="BLACK" strokeType="INSIDE"/>
+      <stylesheets>
+         <URL value="@../../css/irit-main-view.css" />
+      </stylesheets>
+      <Polygon fx:id="jointurePolygon" styleClass="color-polygon" points="-10.0, 0.0, -10.0, 50.0, 60.0, 0.0, 60.0, 50.0" />
       <Label fx:id="jointureEqualSign" layoutX="21.0" layoutY="30.0" text="="/>
       <Label fx:id="jointureLeftLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="-25.0" layoutY="17.0"
              text="left" textAlignment="RIGHT"/>

@@ -5,10 +5,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
+<?import java.net.URL?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <Group fx:id="selectionGroup" layoutX="300.0" layoutY="170.0">
-      <Polygon fx:id="selectionPolygon" fill="#ff5608" points="0.0, 10.0, -20.0, 40.0, 70.0, 40.0, 50.0, 10.0"
-               rotate="90.0" stroke="BLACK" strokeType="INSIDE"/>
+      <stylesheets>
+         <URL value="@../../css/irit-main-view.css" />
+      </stylesheets>
+      <Polygon fx:id="selectionPolygon" styleClass="color-polygon" points="0.0, 10.0, -20.0, 40.0, 70.0, 40.0, 50.0, 10.0" rotate="90.0"/>
       <Label fx:id="selectionLabel" layoutX="50.0" layoutY="17.0" text="right"/>
    </Group>
 </AnchorPane>
