@@ -18,7 +18,6 @@ public class iritHelpPopup {
 
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.WINDOW_MODAL);
-        popupStage.setTitle("Pop-up Window");
         popupStage.setScene(scene);
         primaryStage.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             if (!popupStage.getScene().getRoot().getLayoutBounds().contains(event.getSceneX(), event.getSceneY())) {
