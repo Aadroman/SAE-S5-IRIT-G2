@@ -63,7 +63,7 @@
                               <TextArea fx:id="requestTextField" prefHeight="200.0" prefWidth="200.0" wrapText="true" />
                               <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
                                  <children>
-                                      <Button mnemonicParsing="false" onAction="#interactWithPolystore" prefHeight="25.0" prefWidth="82.0" style="-fx-background-color: FF5608;" text="Valider" textFill="WHITE" />
+                                      <Button fx:id="boutonValider" mnemonicParsing="false" onAction="#interactWithPolystore" prefHeight="25.0" prefWidth="82.0" style="-fx-background-color: FF5608;" text="Valider" textFill="WHITE" />
                                  </children>
                                  <VBox.margin>
                                     <Insets top="8.0" />
