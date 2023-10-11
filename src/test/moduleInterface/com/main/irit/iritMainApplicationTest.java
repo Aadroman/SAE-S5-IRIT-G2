@@ -43,9 +43,20 @@ public class iritMainApplicationTest {
         robot.write(query);
         robot.clickOn("#boutonValider");
 
-        //Sûrement une meilleure solution pour remplacer isVisible
+        // Le but est de vérifier que le pane n'est pas vide,
+        // Il y a sûrement une meilleure solution pour remplacer 'isVisible'
+
         FxAssert.verifyThat("#globalTreeTab", Node::isVisible);
-        
+        FxAssert.verifyThat("#multiStoreTreeTab", Node::isVisible);
+        FxAssert.verifyThat("#transferTreeTab", Node::isVisible);
+
+        /* Il faudrait ajouter un id aux éléments de l'arbre pour tester qu'ils ont le bon texte
+        // et donc que le pane existe et contient les arbres
+        FxAssert.verifyThat("#...", LabeledMatchers.hasText("Orders.total_price"));
+        FxAssert.verifyThat("#...", LabeledMatchers.hasText("Orders.total_price"));
+        FxAssert.verifyThat("#...", LabeledMatchers.hasText("Orders.total_price"));
+        */
+
         Query queryParsed = QueryParserUtils.parse(query);
         var rootNode = new GlobalAlgebraicTree(queryParsed).getRootNode();
         rootNode.print("");
@@ -58,6 +69,28 @@ public class iritMainApplicationTest {
         assertEquals("*", rootNode.toString(), "PROJECTION");
         assertEquals("(Orders.total_price > 100 OR Orders.total_price < 201)", level2.toString(), "SELECTION");
         assertEquals("Orders", level3.toString());
+    }
+
+    @DisplayName("Test input of badly written SQL request")
+    @Test
+    public void Test_Wrong_SQL_Request(FxRobot robot) {
+        String query = "SELECT * FROM";
+
+        robot.clickOn("#requestTextField");
+        robot.write(query);
+        robot.clickOn("#boutonValider");
+
+        //FxAssert.verifyThat("#globalTreeTab", Node::isVisible);
+        // Après la saisie d'une requête, vérifier que la boîte de dialogue s'ouvre et qu'aucun arbre n'est généré
+
+        // Idée 1: tester l'existence du bouton de la boîte de dialogue
+        // --> pas de possibilités d'ajouter un id au bouton de la boîte de dialogue
+
+        // Idée 2: modifier le code de la boîte de dialogue pour qu'elle lance une exception
+        // --> tester ici l'exception lancée (assertThrows)
+
+
+
     }
 
 
