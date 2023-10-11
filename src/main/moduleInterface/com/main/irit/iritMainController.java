@@ -318,7 +318,15 @@ public class iritMainController implements Initializable {
                     }
                     break;
                 default:
-                    LabelCell label = new LabelCell(child.toString().toUpperCase());
+                    LabelCell label;
+                    if (child.getStore() == null){
+                        label = new LabelCell(child.toString().toUpperCase());
+                    }else {
+                        String str = ""+child.getStore();
+                        String tableStr[] = str.split(" ", 2);
+                        label = new LabelCell(child.toString().toUpperCase()+" : "+tableStr[0]+"\n"+tableStr[1]);
+                    }
+
 
                     model.addCell(label);
                     model.addEdge(label, previousCell);
