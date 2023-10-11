@@ -9,7 +9,7 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <Group fx:id="transformGroup" layoutX="300.0" layoutY="170.0">
       <stylesheets>
-         <URL value="@../../css/irit-main-view.css" />
+         <URL value="@../../css/styles.css" />
       </stylesheets>
       <Label fx:id="transformLeftLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="13.0" layoutY="7.0" text="left" textAlignment="RIGHT" />
       <Label fx:id="transformRightLabel" layoutX="70.0" layoutY="7.0" text="right" />

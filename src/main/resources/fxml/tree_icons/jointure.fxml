@@ -9,7 +9,7 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <Group fx:id="jointureGroup" layoutX="300.0" layoutY="170.0">
       <stylesheets>
-         <URL value="@../../css/irit-main-view.css" />
+         <URL value="@../../css/styles.css" />
       </stylesheets>
       <Polygon fx:id="jointurePolygon" styleClass="color-polygon" points="-10.0, 0.0, -10.0, 50.0, 60.0, 0.0, 60.0, 50.0" />
       <Label fx:id="jointureEqualSign" layoutX="21.0" layoutY="30.0" text="="/>
