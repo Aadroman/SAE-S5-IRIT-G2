@@ -54,7 +54,7 @@
 |--------|------------------|
 | [Main](https://github.com/AurelienSP/SAE-S5-IRIT-G2) | Branche principale |
 | [Development](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/development) | Branche de développement |
-| [query/mongo_db](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/query/mongo_db) | Branche pour implémenter l'utilisation de requêtes MongoDB |
+| [query/mongo_db](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/query/mongo_db) | Branche pour implémenter l'utilisation de requêtes MongoDB (à supprimer) |
 | [feature/tree-design](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/feature/tree-design) | Branche pour les modification visuelles de l'arbre |
 | [test/testApplication](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/test/testApplication) | Branche pour ajouter les tests unitaires de l'application |
 
