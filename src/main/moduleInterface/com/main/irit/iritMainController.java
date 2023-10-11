@@ -5,19 +5,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
 import fr.sae.Application;
-import fr.sae.algebraictree.*;
+import fr.sae.algebraictree.EJoin;
+import fr.sae.algebraictree.EProjection;
+import fr.sae.algebraictree.ESelection;
+import fr.sae.algebraictree.ETreeNode;
 import fxgraph.cells.*;
 import fxgraph.graph.Graph;
 import fxgraph.graph.ICell;
 import fxgraph.graph.Model;
 import fxgraph.layout.AbegoTreeLayout;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import org.abego.treelayout.Configuration;
 
@@ -33,12 +36,19 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public class iritMainController implements Initializable {
+
     private iritMainApplication app;
+
+    private iritHelpPopup helpPopup = new iritHelpPopup();
+
     private Stage primaryStage;
+
     @FXML
     private TextArea requestTextField;
+
     @FXML
     private TabPane tabPane;
+
     @FXML
     private TreeView tvNode;
 
@@ -367,5 +377,10 @@ public class iritMainController implements Initializable {
             e.printStackTrace();
         }
         return tablesNames;
+    }
+
+    @FXML
+    private void openHelpPopup(ActionEvent event) throws Exception {
+        this.helpPopup.start(this.primaryStage);
     }
 }

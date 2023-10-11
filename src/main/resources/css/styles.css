@@ -82,3 +82,7 @@ TreeView .tree-cell {
     -fx-stroke: black;
     -fx-stroke-type: inside;
 }
+
+.text-area {
+    -fx-font-size: 16px;
+}

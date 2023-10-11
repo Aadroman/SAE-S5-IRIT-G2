@@ -4,74 +4,76 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: white;" stylesheets="@../css/styles.css"
-            xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.main.irit.iritMainController">
-    <BorderPane layoutY="-2.0" prefHeight="722.0" prefWidth="1280.0" style="-fx-border-color: white;"
-                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                AnchorPane.topAnchor="-2.0">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: white;" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.irit.iritMainController">
+    <BorderPane layoutY="-2.0" prefHeight="722.0" prefWidth="1280.0" style="-fx-border-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
         <center>
-            <SplitPane dividerPositions="0.6217877094972066" prefHeight="594.0" prefWidth="1280.0"
-                       style="-fx-background-color: white;" BorderPane.alignment="CENTER">
-                <TabPane fx:id="tabPane" prefHeight="562.0" prefWidth="791.0"
-                         style="-fx-background-color: white; -fx-border-color: white;" tabClosingPolicy="UNAVAILABLE"
-                         tabMaxHeight="100.0" tabMaxWidth="100.0" BorderPane.alignment="CENTER">
+            <SplitPane dividerPositions="0.6217877094972066" prefHeight="594.0" prefWidth="1280.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+                <TabPane fx:id="tabPane" prefHeight="562.0" prefWidth="791.0" style="-fx-background-color: white; -fx-border-color: white;" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMaxWidth="100.0" BorderPane.alignment="CENTER">
                     <Tab fx:id="globalTreeTab" text="Arbre global">
                         <VBox alignment="CENTER">
-                            <HBox alignment="CENTER"/>
+                            <HBox alignment="CENTER" />
                         </VBox>
                     </Tab>
                     <Tab fx:id="multiStoreTreeTab" text="Multi-store">
                         <VBox alignment="CENTER">
-                            <HBox alignment="CENTER"/>
+                            <HBox alignment="CENTER" />
                         </VBox>
                     </Tab>
                     <Tab fx:id="transferTreeTab" text="Transfers">
                         <VBox alignment="CENTER">
-                            <HBox alignment="CENTER"/>
+                            <HBox alignment="CENTER" />
                         </VBox>
                     </Tab>
                 </TabPane>
                 <TreeView fx:id="tvNode" prefHeight="538.0" prefWidth="479.0">
                     <padding>
-                        <Insets top="24.0"/>
+                        <Insets top="24.0" />
                     </padding>
                 </TreeView>
             </SplitPane>
         </center>
         <top>
             <AnchorPane prefHeight="136.0" prefWidth="1278.0" BorderPane.alignment="CENTER">
-                <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                            AnchorPane.topAnchor="0.0">
+                <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <left>
-                        <ImageView fitHeight="77.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true"
-                                   smooth="false" BorderPane.alignment="CENTER">
-                            <Image url="@../img/image.png"/>
+                        <ImageView fitHeight="77.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true" smooth="false" BorderPane.alignment="CENTER">
+                            <Image url="@../img/image.png" />
                         </ImageView>
                     </left>
-                    <center>
-                        <VBox prefHeight="68.0" prefWidth="620.0" BorderPane.alignment="CENTER">
-                            <padding>
-                                <Insets left="16.0" right="16.0"/>
-                            </padding>
-                            <Label text="Requête : "/>
-                            <TextArea fx:id="requestTextField" prefHeight="200.0" prefWidth="200.0"
-                                      wrapText="true"/>
-                            <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
-                                <VBox.margin>
-                                    <Insets top="8.0"/>
-                                </VBox.margin>
-                                <Button fx:id="submitButton" mnemonicParsing="false"
-                                        onAction="#interactWithPolystore" prefHeight="25.0" prefWidth="82.0"
-                                        style="-fx-background-color: FF5608;" text="Valider"
-                                        textFill="WHITE"/>
-                            </HBox>
-                        </VBox>
-                    </center>
                     <padding>
-                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                     </padding>
+               <center>
+                         <TextArea fx:id="requestTextField" prefHeight="200.0" prefWidth="200.0" promptText="Entrer votre requête ici" wrapText="true" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets bottom="10.0" left="30.0" right="20.0" top="10.0" />
+                     </BorderPane.margin>
+                  </TextArea>
+               </center>
+               <right>
+                  <BorderPane prefHeight="84.0" prefWidth="84.0" BorderPane.alignment="CENTER">
+                     <top>
+                                <Button fx:id="helpButton" mnemonicParsing="false" onAction="#openHelpPopup" prefHeight="14.0" prefWidth="84.0" style="-fx-background-color: green;" text="?" textFill="WHITE" BorderPane.alignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font></Button>
+                     </top>
+                     <bottom>
+                        <Button fx:id="submitButton" mnemonicParsing="false" onAction="#interactWithPolystore" prefHeight="41.0" prefWidth="84.0" style="-fx-background-color: FF5608;" text="VALIDER" textFill="WHITE" BorderPane.alignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font></Button>
+                     </bottom>
+                     <BorderPane.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </BorderPane.margin>
+                     <padding>
+                        <Insets bottom="2.0" top="2.0" />
+                     </padding>
+                  </BorderPane>
+               </right>
                 </BorderPane>
             </AnchorPane>
         </top>
