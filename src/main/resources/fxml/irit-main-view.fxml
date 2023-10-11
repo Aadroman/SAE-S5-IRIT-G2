@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
@@ -13,9 +12,9 @@
                     <TabPane fx:id="tabPane" prefHeight="562.0" prefWidth="791.0" style="-fx-background-color: white; -fx-border-color: white;" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMaxWidth="100.0" BorderPane.alignment="CENTER">
                         <tabs>
                             <Tab fx:id="globalTreeTab" text="Arbre global">
-                                    <VBox alignment="CENTER">
-                                        <HBox alignment="CENTER" />
-                                    </VBox>
+                                <VBox alignment="CENTER">
+                                    <HBox alignment="CENTER" />
+                                </VBox>
                             </Tab>
                             <Tab fx:id="multiStoreTreeTab" text="Multi-store">
                                 <VBox alignment="CENTER">
@@ -29,49 +28,55 @@
                             </Tab>
                         </tabs>
                     </TabPane>
-                    <TreeView fx:id="tvNode" prefHeight="538.0" prefWidth="479.0">
-                  <padding>
-                     <Insets top="24.0" />
-                  </padding></TreeView>
+                    <!-- Enveloppez la TreeView dans un ScrollPane -->
+                    <ScrollPane>
+                        <content>
+                            <TreeView fx:id="tvNode" prefHeight="538.0" prefWidth="479.0">
+                                <padding>
+                                    <Insets top="24.0" />
+                                </padding>
+                            </TreeView>
+                        </content>
+                    </ScrollPane>
                 </SplitPane>
             </center>
-         <top>
-            <AnchorPane prefHeight="136.0" prefWidth="1278.0" BorderPane.alignment="CENTER">
-               <children>
-                  <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <left>
-                          <ImageView fitHeight="77.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true" smooth="false" BorderPane.alignment="CENTER">
-                              <image>
-                                  <Image url="@../img/images.png" />
-                              </image>
-                          </ImageView>
-                     </left>
-                     <center>
-                          <VBox prefHeight="68.0" prefWidth="620.0" BorderPane.alignment="CENTER">
-                              <children>
-                                  <Label text="Requête : " />
-                              <TextArea fx:id="requestTextField" prefHeight="200.0" prefWidth="200.0" wrapText="true" />
-                              <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
-                                 <children>
-                                      <Button mnemonicParsing="false" onAction="#interactWithPolystore" prefHeight="25.0" prefWidth="82.0" style="-fx-background-color: FF5608;" text="Valider" textFill="WHITE" />
-                                 </children>
-                                 <VBox.margin>
-                                    <Insets top="8.0" />
-                                 </VBox.margin>
-                              </HBox>
-                              </children>
-                           <padding>
-                              <Insets left="16.0" right="16.0" />
-                           </padding>
-                          </VBox>
-                     </center>
-                     <padding>
-                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-                     </padding>
-                  </BorderPane>
-               </children>
-            </AnchorPane>
-         </top>
+            <top>
+                <AnchorPane prefHeight="136.0" prefWidth="1278.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <left>
+                                <ImageView fitHeight="77.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true" smooth="false" BorderPane.alignment="CENTER">
+                                    <image>
+                                        <Image url="@../img/images.png" />
+                                    </image>
+                                </ImageView>
+                            </left>
+                            <center>
+                                <VBox prefHeight="68.0" prefWidth="620.0" BorderPane.alignment="CENTER">
+                                    <children>
+                                        <Label text="Requête : " />
+                                        <TextArea fx:id="requestTextField" prefHeight="200.0" prefWidth="200.0" wrapText="true" />
+                                        <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                                            <children>
+                                                <Button mnemonicParsing="false" onAction="#interactWithPolystore" prefHeight="25.0" prefWidth="82.0" style="-fx-background-color: FF5608;" text="Valider" textFill="WHITE" />
+                                            </children>
+                                            <VBox.margin>
+                                                <Insets top="8.0" />
+                                            </VBox.margin>
+                                        </HBox>
+                                    </children>
+                                    <padding>
+                                        <Insets left="16.0" right="16.0" />
+                                    </padding>
+                                </VBox>
+                            </center>
+                            <padding>
+                                <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                            </padding>
+                        </BorderPane>
+                    </children>
+                </AnchorPane>
+            </top>
         </BorderPane>
     </children>
 </AnchorPane>
