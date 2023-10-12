@@ -3,6 +3,7 @@ package com.main.irit;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -24,6 +25,8 @@ public class iritHelpPopup {
                 popupStage.close();
             }
         });
+        popupStage.setResizable(false);
+        popupStage.getIcons().add(new Image(String.valueOf(getClass().getResource("/img/help.png"))));
         popupStage.show();
     }
 }
