@@ -84,16 +84,18 @@ public class iritMainController implements Initializable {
         // Save selected Tab for further user
         this.selectedTab = newTab;
         // Re-création de la TreeView en fonction de l'arbre correspondant au panneau selectionné
-        switch (newTab.getId()) {
-            case "globalTreeTab":
-                this.renderTreeView(this.computedTrees[0]);
-                break;
-            case "multiStoreTreeTab":
-                this.renderTreeView(this.computedTrees[1]);
-                break;
-            case "transferTreeTab":
-                this.renderTreeView(this.computedTrees[2]);
-                break;
+        if (this.computedTrees != null){
+            switch (newTab.getId()) {
+                case "globalTreeTab":
+                    this.renderTreeView(this.computedTrees[0]);
+                    break;
+                case "multiStoreTreeTab":
+                    this.renderTreeView(this.computedTrees[1]);
+                    break;
+                case "transferTreeTab":
+                    this.renderTreeView(this.computedTrees[2]);
+                    break;
+            }
         }
     }
 
