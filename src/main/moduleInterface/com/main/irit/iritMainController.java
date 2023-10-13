@@ -83,6 +83,8 @@ public class iritMainController implements Initializable {
 
     @FXML
     private void onSubRequestButtonClick() {
+        this.renderTreeView(this.computedTrees[2], true);
+
         // Clause de garde afin d'éviter d'afficher une dialog inutilement
         if (this.branchQueries.isEmpty()) return;
 
@@ -126,12 +128,15 @@ public class iritMainController implements Initializable {
         // Re-création de la TreeView en fonction du panneau selectionné
         switch (newTab.getId()) {
             case "globalTreeTab":
+                this.subRequestButton.setDisable(true);
                 this.renderTreeView(this.computedTrees[0], false);
                 break;
             case "multiStoreTreeTab":
+                this.subRequestButton.setDisable(true);
                 this.renderTreeView(this.computedTrees[1], false);
                 break;
             case "transferTreeTab":
+                this.subRequestButton.setDisable(false);
                 this.renderTreeView(this.computedTrees[2], true);
                 break;
         }
@@ -240,11 +245,18 @@ public class iritMainController implements Initializable {
         this.tvNode.setRoot(rootTree);
 
         if (separateDB) {
-            HashMap<String, ArrayList<String>> dbTables = new HashMap<>();
-            this.populateTransferTreeview(node, dbTables);
+            this.dbLeaves.clear();
+            this.branchQueries.clear();
+            this.populateTransferTreeview(node);
 
+            this.dbLeaves.forEach((key, value) -> {
+                this.branchQueries.put(key, QueryBuilder.buildQueryFromTree(value));
+            });
+
+            // Reverse l'ordre des TreeItems
             List<TreeItem<String>> reversedItems = new ArrayList<>(this.tvNode.getRoot().getChildren());
             Collections.reverse(reversedItems);
+
             this.tvNode.getRoot().getChildren().setAll(reversedItems);
         } else {
             this.populateTreeView(node, rootTree);
@@ -258,60 +270,36 @@ public class iritMainController implements Initializable {
     /**
      * Ajoute récursivement les noeuds adéquats à la TreeView de transfert, en séparant l'arborescence de chaque BDD.
      */
-    private void populateTransferTreeview(ETreeNode node, HashMap<String, ArrayList<String>> dbTables) {
+    private void populateTransferTreeview(ETreeNode node) {
         switch (node.getClass().getSimpleName()) {
             case "EProjection":
-                Arrays.stream(node.getChild()).forEach(item -> this.populateTransferTreeview(item, dbTables));
+                Arrays.stream(node.getChild()).forEach(this::populateTransferTreeview);
                 break;
             case "EJoin":
-                populateTransferTreeview(((EJoin) node).getLeftChild(), dbTables);
-                populateTransferTreeview(((EJoin) node).getRightChild(), dbTables);
+                populateTransferTreeview(((EJoin) node).getLeftChild());
+                populateTransferTreeview(((EJoin) node).getRightChild());
                 break;
             case "ESelection":
-                populateTransferTreeview(node.getChild()[0], dbTables);
+                populateTransferTreeview(node.getChild()[0]);
                 break;
             case "ETransfer", "ETransformation":
                 if (node.getChild().length > 0) {
-                    this.populateTransferTreeview(node.getChild()[0], dbTables);
+                    this.populateTransferTreeview(node.getChild()[0]);
                 }
                 break;
             case "ETable":
                 if (node.getStore() != null) {
                     String storeName = node.getStore().name;
                     // Vérifie si la clé existe dans le dictionnaire, sinon la crée
-                    dbTables.computeIfAbsent(storeName, k -> new ArrayList<>());
-                    ArrayList<String> tableList = dbTables.get(storeName);
-                    tableList.add(node.toString());
+                    dbLeaves.computeIfAbsent(storeName, k -> new ArrayList<>());
+                    dbLeaves.get(storeName).add(node);
 
                     // Le noeud racine correspondant au nom de la DBB (ex: DB1, DB2, ...)
                     TreeItem dbRoot = addValueToTree(storeName);
                     // Si la racine est déjà crée, alors on peut commencer à y ajouter des TreeItems
                     if (null != dbRoot) {
-                        TreeItem text = new TreeItem(node);
+                        TreeItem<Object> text = new TreeItem<>(node);
                         dbRoot.getChildren().add(this.bottomToTopBranchFill(text, node.getParent()));
-                        this.branchQueries.put(storeName, QueryBuilder.buildQueryFromTree(node, tableList));
-                    }
-                } else if (((ETable) node).getCorrespondingTable() != null) {
-                    String storeName = ((ETable) node).getCorrespondingTable().getStore().name;
-                    // Vérifie si la clé existe dans le dictionnaire, sinon la crée
-                    dbTables.computeIfAbsent(storeName, k -> new ArrayList<>());
-                    dbTables.get(storeName).add(node.toString());
-
-                    this.dbLeaves.computeIfAbsent(storeName, k -> new ArrayList<>());
-                    dbLeaves.get(storeName).add(node);
-
-                    ArrayList<String> tableList = dbTables.get(storeName);
-                    tableList.add(node.toString());
-
-                    TreeItem dbRoot = addValueToTree(storeName);
-                    if (null != dbRoot) {
-                        // Ajoute l'arborescence de la branhe à la racine
-                        dbRoot.getChildren().add(
-                                this.bottomToTopBranchFill(new TreeItem(node), node.getParent())
-                        );
-
-                        // Re-crée et ajoute la requête SQL à la hashmap
-                        this.branchQueries.put(storeName, QueryBuilder.buildQueryFromTree(node, tableList));
                     }
                 }
                 break;

@@ -46,7 +46,7 @@
                            <Insets top="24.0" />
                         </padding>
                      </TreeView>
-                     <Button fx:id="subRequestButton" mnemonicParsing="false" onAction="#onSubRequestButtonClick" style="-fx-background-color: FF5608; -fx-text-fill: white;" text="Générer sous requêtes" />
+                     <Button disable="true" fx:id="subRequestButton" mnemonicParsing="false" onAction="#onSubRequestButtonClick" style="-fx-background-color: FF5608; -fx-text-fill: white;" text="Générer sous requêtes" />
                   </children>
                   <padding>
                      <Insets bottom="8.0" />
