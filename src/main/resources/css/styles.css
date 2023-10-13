@@ -1,5 +1,6 @@
 * {
     -fx-main-color: #ff5608;
+    -fx-main-background-color: #F5F5F5;
 }
 
 .border-pane {
@@ -24,7 +25,7 @@
 }
 
 .tab-pane {
-    -fx-border-color: red;
+    -fx-border-color: -fx-main-color;
     -fx-tab-min-width: 90px;
 }
 
@@ -33,31 +34,36 @@
 }
 
 .tab-pane .tab {
-    -fx-background-color: #F5F5F5;
+    -fx-background-color: -fx-main-background-color;
 }
 
 .tab-pane VBox {
     -fx-background-radius: 4;
-    -fx-background-color: #F5F5F5;
+    -fx-background-color: -fx-main-background-color;
     -fx-border-width: 1 0 0 0;
 }
 
+.tab-pane .tab:selected {
+    -fx-background-color: -fx-main-color;
+}
+
 TreeView {
-    -fx-background-color: #F5F5F5 ;
+    -fx-background-color: -fx-main-background-color ;
     -fx-background-insets: 40 0 10 0;
 }
 
 TreeView .tree-cell {
-    -fx-background-color: #F5F5F5 ;
+    -fx-background-color: -fx-main-background-color ;
     -fx-background-radius: 6;
 }
 
 TreeView .tree-cell:selected {
     -fx-text-fill: -fx-main-color;
+    -fx-font-weight: 700;
 }
 
-.tab-pane .tab:selected {
-    -fx-background-color: -fx-main-color;
+TreeView .tree-cell > .tree-disclosure-node > .arrow  {
+    -fx-background-color: black;
 }
 
 .tab-pane .tab:hover {
@@ -73,7 +79,7 @@ TreeView .tree-cell:selected {
 
 .tab:selected .tab-label {
     -fx-alignment: CENTER;
-    -fx-text-fill: -fx-main-color;
+    -fx-text-fill: white;
 }
 
 .split-pane *.split-pane-divider {
