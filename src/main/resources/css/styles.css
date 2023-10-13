@@ -52,6 +52,10 @@ TreeView .tree-cell {
     -fx-background-radius: 6;
 }
 
+TreeView .tree-cell:selected {
+    -fx-text-fill: -fx-main-color;
+}
+
 .tab-pane .tab:selected {
     -fx-background-color: -fx-main-color;
 }
@@ -69,7 +73,7 @@ TreeView .tree-cell {
 
 .tab:selected .tab-label {
     -fx-alignment: CENTER;
-    -fx-text-fill: white;
+    -fx-text-fill: -fx-main-color;
 }
 
 .split-pane *.split-pane-divider {
