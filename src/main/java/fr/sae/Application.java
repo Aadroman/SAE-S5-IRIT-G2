@@ -8,8 +8,6 @@ import fr.irit.module2.MultistoreAlgebraicTree;
 import fr.irit.module3.TransformationTransferAlgebraicTree;
 import fr.sae.algebraictree.ETreeNode;
 
-import java.util.ArrayList;
-
 public class Application {
     public static void main(String[] args) {
         String query = "SELECT Customers.customer_id, Orders.order_id, Orders.total_price, Products.brand " +
