@@ -30,6 +30,7 @@ public class ETransformation extends ETreeNode {
         this.targetDatabaseType = split[1];
         list = node.listIncludedTablesRecursive();
         this.child = new ETreeNode().createTree(node.findLowestNodeContainingTables(list));
+        this.child.setParent(this);
     }
 
     @Override

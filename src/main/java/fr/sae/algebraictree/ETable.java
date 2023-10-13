@@ -9,6 +9,7 @@ public class ETable extends ETreeNode {
     //region ATTRIBUTES
     private String label;
     private Store store;
+
     //endregion
     //region CONSTRUCTOR
     /**
@@ -42,11 +43,10 @@ public class ETable extends ETreeNode {
     }
     private Table correspondingTable ;
 
-    public ETable ( Table t){
+    public ETable (Table t) {
         this.correspondingTable = t ;
         this.label = t.getLabel();
         this.store = t.getStore();
-
     }
 
     //endregion
@@ -114,4 +114,8 @@ public class ETable extends ETreeNode {
         return;
     }
     //endregion
+
+    public Table getCorrespondingTable() {
+        return this.correspondingTable;
+    }
 }

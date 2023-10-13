@@ -5,9 +5,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
+<?import java.net.URL?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <Group fx:id="transferGroup" layoutX="300.0" layoutY="170.0">
-      <Polygon fx:id="transferPolygon" fill="#ff5608" points="-10.0, 15.0, -10.0, 35.0, 40.0, 35.0, 40.0, 50.0, 70.0, 25.0, 40.0, 0.0, 40.0, 15.0" stroke="BLACK" strokeType="INSIDE" />
+      <stylesheets>
+         <URL value="@../../css/styles.css"/>
+      </stylesheets>
+      <Polygon fx:id="transferPolygon" styleClass="color-polygon" points="-10.0, 15.0, -10.0, 35.0, 40.0, 35.0, 40.0, 50.0, 70.0, 25.0, 40.0, 0.0, 40.0, 15.0"/>
       <Label fx:id="transferLeftLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="-17.0" layoutY="17.0" text="left" textAlignment="RIGHT" />
       <Label fx:id="transferRightLabel" layoutX="75.0" layoutY="17.0" text="right" />
    </Group>
