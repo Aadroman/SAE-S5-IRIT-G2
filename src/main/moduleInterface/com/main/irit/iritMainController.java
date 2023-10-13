@@ -164,7 +164,7 @@ public class iritMainController implements Initializable {
                 this.subRequestButton.setDisable(false);
                 this.renderTreeView(this.computedTrees[2], true);
                 break;
-            default:
+            case "structureTab":
                 this.subRequestButton.setDisable(true);
                 this.tvNode.setRoot(null);
                 break;

@@ -29,7 +29,7 @@
                                     <HBox alignment="CENTER" />
                                 </VBox>
                             </Tab>
-                     <Tab text="Structure ">
+                     <Tab fx:id="structureTab" text="Structure">
                         <content>
                            <ScrollPane  fitToHeight="true" fitToWidth="true">
                               <content>
