@@ -2,10 +2,12 @@ package com.main.irit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
 import fr.sae.Application;
 import fr.sae.algebraictree.*;
+import fr.sae.queryparser.QueryParser;
 import fr.sae.querybuilder.QueryBuilder;
 import fr.sae.algebraictree.EJoin;
 import fr.sae.algebraictree.EProjection;
@@ -21,6 +23,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.*;
 import javafx.scene.control.Alert;
 import javafx.scene.text.Text;
@@ -30,11 +33,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.abego.treelayout.Configuration;
 
+import org.antlr.v4.runtime.tree.Tree;
+
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -56,7 +63,10 @@ public class iritMainController implements Initializable {
     @FXML
     private TreeView tvNode;
     @FXML
+    private TextArea txtStructure;
+    @FXML
     private Button subRequestButton;
+
 
     private Tab selectedTab = null;
 
@@ -80,6 +90,7 @@ public class iritMainController implements Initializable {
         // Fait en sorte que la TreeView prenne toujours le maximum de place
         VBox.setVgrow(this.tvNode, Priority.ALWAYS);
         getAllTablesDB();
+        generateStructure();
         // Create listener for tab change
         tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> renderTabTreeView(newTab));
     }
@@ -150,6 +161,9 @@ public class iritMainController implements Initializable {
                 this.subRequestButton.setDisable(false);
                 this.renderTreeView(this.computedTrees[2], true);
                 break;
+            default:
+                this.subRequestButton.setDisable(true);
+                this.tvNode.setRoot(null);
             }
         }
     }
@@ -174,6 +188,86 @@ public class iritMainController implements Initializable {
         return foundTables;
     }
 
+    /**
+     * Genère la structure des BD dans le 4ème onglet
+     */
+    private void generateStructure(){
+        // Va gerer la conversion JSON grace à la librairie JACKSON
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try{
+            File path = new File("src/main/java/fr/irit/module2/UnifiedView/relationalUnifiedView.json");
+            JsonNode jsonNode = objectMapper.readTree(path);
+
+
+            // On recupere les tables present dans la json
+            JsonNode uvTables = jsonNode.get("uvTables");
+
+            ArrayList<String> arrayTablesNames = new ArrayList<>();
+            ArrayList<JsonNode> arrayDB = new ArrayList<>();
+            // On parcours toutes les tables et on les ajoute au tableau
+            for(JsonNode node : uvTables){
+                findNode(arrayDB,arrayTablesNames, node);
+            }
+
+            String affichage ="";
+            int i = 0;
+
+            // On parcourt la liste de toutes les tables
+            for (JsonNode node : arrayDB){
+                affichage +=  String.format(
+                        "- %s (" +
+                                "",
+                        arrayTablesNames.get(i) , node.get("name"), node.get("type")
+                );
+
+                // On recupere toutes les colonnes lié à la table
+                for (int c = 0 ; c < node.get("columns").size(); c++){
+                        // Si c'est la dernière colonne on ne mets pas de virgule à la fin
+                    if (c < ((node.get("columns").size()) - 1)) {
+                        affichage += node.get("columns").get(c).get("columnUV") + ", ";
+                    } else {
+                        affichage += node.get("columns").get(c).get("columnUV");
+                    }
+
+                }
+                affichage+= ") \n";
+            i++;
+            }
+
+            this.txtStructure.setEditable(false);
+            this.txtStructure.setText(affichage);
+
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
+    private List<Object> findNode(ArrayList<JsonNode> arrayNode , ArrayList<String> arrayTablesNames , JsonNode children){
+        String paramName = "name";
+        String paramType = "type";
+        String paramColumn = "columns";
+        String paramStores = "stores";
+
+        if((children.get(paramName) != null) && (children.get(paramType)!= null) && (children.get(paramColumn)!= null)){
+            arrayNode.add(children);
+        }else if (children.get(paramStores) != null){
+            findNode(arrayNode,arrayTablesNames,children.get("stores"));
+            // Recupere le nom de la table et l'ajoute dans l'array correspondant
+            arrayTablesNames.add(children.get("label").asText());
+        } else if (children instanceof JsonNode){
+            findNode(arrayNode, arrayTablesNames ,children.get(0));
+        }
+
+        List<Object> myList = new ArrayList<>();
+
+        myList.add(arrayNode);
+        myList.add(arrayTablesNames);
+
+
+        return myList;
+    }
     /**
      * Display a warning dialog with a custom message.
      * Also logs exception message for debugging purpose.
