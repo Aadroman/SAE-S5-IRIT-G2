@@ -2,55 +2,48 @@ package com.main.irit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.main.irit.treeviewhelper.TreeViewHelper;
 import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
 import fr.sae.Application;
-import fr.sae.algebraictree.*;
-import fr.sae.queryparser.QueryParser;
-import fr.sae.querybuilder.QueryBuilder;
 import fr.sae.algebraictree.EJoin;
 import fr.sae.algebraictree.EProjection;
 import fr.sae.algebraictree.ESelection;
 import fr.sae.algebraictree.ETreeNode;
+import fr.sae.querybuilder.QueryBuilder;
 import fxgraph.cells.*;
 import fxgraph.graph.Graph;
 import fxgraph.graph.ICell;
 import fxgraph.graph.Model;
 import fxgraph.layout.AbegoTreeLayout;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.*;
-import javafx.scene.control.Alert;
-import javafx.scene.text.Text;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.abego.treelayout.Configuration;
 
-import org.antlr.v4.runtime.tree.Tree;
-
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
+
+import static com.main.irit.treeviewhelper.TreeViewHelper.*;
 
 public class iritMainController implements Initializable {
 
     private iritMainApplication app;
 
-    private iritHelpPopup helpPopup = new iritHelpPopup();
+    private final iritHelpPopup helpPopup = new iritHelpPopup();
 
     private Stage primaryStage;
 
@@ -61,7 +54,7 @@ public class iritMainController implements Initializable {
     private TabPane tabPane;
 
     @FXML
-    private TreeView tvNode;
+    private TreeView<Object> tvNode;
     @FXML
     private TextArea txtStructure;
     @FXML
@@ -74,6 +67,7 @@ public class iritMainController implements Initializable {
 
     private final HashMap<String, String> branchQueries = new HashMap<>();
 
+    // HashMap qui stocke les feuilles de l'arbre tel que clé = le nom de la base, valeur = tableau de feuilles
     private final HashMap<String, ArrayList<ETreeNode>> dbLeaves = new HashMap<>();
 
     public void initContext(Stage mainStage, iritMainApplication iritMainApplication) {
@@ -103,6 +97,10 @@ public class iritMainController implements Initializable {
         this.app = app;
     }
 
+    /**
+     * Event handler qui s'executé lors de l'appuie du bouton "générer les requêtes".
+     *
+     */
     @FXML
     private void onSubRequestButtonClick() {
         this.renderTreeView(this.computedTrees[2], true);
@@ -143,8 +141,13 @@ public class iritMainController implements Initializable {
         alert.showAndWait();
     }
 
+    /**
+     * Recrée la TreeView en fonction de l'arbre affiché sur le panneau selectionné.
+     *
+     * @param newTab Le panneau selectionné
+     */
     private void renderTabTreeView(Tab newTab) {
-        // Save selected Tab for further user
+        // Sauvegarde le panneau selectionné pour utilisations utlérieures
         this.selectedTab = newTab;
         // Re-création de la TreeView en fonction de l'arbre correspondant au panneau selectionné
         if (this.computedTrees != null){
@@ -164,14 +167,16 @@ public class iritMainController implements Initializable {
             default:
                 this.subRequestButton.setDisable(true);
                 this.tvNode.setRoot(null);
+                break;
             }
         }
     }
 
     /**
-     * Function that gets the text field SQL query, and returns all tables found within it.
+     * Récupère la requête SQL renseignée dans le champ de texte, et retourne toutes les tables contenues dans cette
+     * dernière.
      *
-     * @return A list of tables names
+     * @return Une liste de noms de tables
      */
     private List<String> getFoundTablesFromInput(String queryString) {
         // Define a regex pattern to match table names in the SQL query
@@ -189,7 +194,7 @@ public class iritMainController implements Initializable {
     }
 
     /**
-     * Genère la structure des BD dans le 4ème onglet
+     * Genère et affiche la structure des BDD dans le 4ème onglet de l'application.
      */
     private void generateStructure(){
         // Va gerer la conversion JSON grace à la librairie JACKSON
@@ -210,33 +215,32 @@ public class iritMainController implements Initializable {
                 findNode(arrayDB,arrayTablesNames, node);
             }
 
-            String affichage ="";
+            StringBuilder affichage = new StringBuilder();
             int i = 0;
 
             // On parcourt la liste de toutes les tables
             for (JsonNode node : arrayDB){
-                affichage +=  String.format(
-                        "- %s (" +
-                                "",
-                        arrayTablesNames.get(i) , node.get("name"), node.get("type")
-                );
+                affichage.append(String.format(
+                        "- %s ( %s %s ",
+                        arrayTablesNames.get(i), node.get("name"), node.get("type")
+                ));
 
                 // On recupere toutes les colonnes lié à la table
                 for (int c = 0 ; c < node.get("columns").size(); c++){
                         // Si c'est la dernière colonne on ne mets pas de virgule à la fin
                     if (c < ((node.get("columns").size()) - 1)) {
-                        affichage += node.get("columns").get(c).get("columnUV") + ", ";
+                        affichage.append(node.get("columns").get(c).get("columnUV")).append(", ");
                     } else {
-                        affichage += node.get("columns").get(c).get("columnUV");
+                        affichage.append(node.get("columns").get(c).get("columnUV"));
                     }
 
                 }
-                affichage+= ") \n";
+                affichage.append(") \n");
             i++;
             }
 
             this.txtStructure.setEditable(false);
-            this.txtStructure.setText(affichage);
+            this.txtStructure.setText(affichage.toString());
 
 
         } catch (IOException e){
@@ -244,7 +248,11 @@ public class iritMainController implements Initializable {
         }
 
     }
-    private List<Object> findNode(ArrayList<JsonNode> arrayNode , ArrayList<String> arrayTablesNames , JsonNode children){
+
+    /**
+     * TODO: Faire la JavaDoc
+     */
+    private void findNode(ArrayList<JsonNode> arrayNode , ArrayList<String> arrayTablesNames , JsonNode children){
         String paramName = "name";
         String paramType = "type";
         String paramColumn = "columns";
@@ -256,21 +264,17 @@ public class iritMainController implements Initializable {
             findNode(arrayNode,arrayTablesNames,children.get("stores"));
             // Recupere le nom de la table et l'ajoute dans l'array correspondant
             arrayTablesNames.add(children.get("label").asText());
-        } else if (children instanceof JsonNode){
+        } else {
             findNode(arrayNode, arrayTablesNames ,children.get(0));
         }
-
-        List<Object> myList = new ArrayList<>();
-
-        myList.add(arrayNode);
-        myList.add(arrayTablesNames);
-
-
-        return myList;
     }
+
     /**
-     * Display a warning dialog with a custom message.
-     * Also logs exception message for debugging purpose.
+     * Affiche une modale d'avertissement.
+     * Log aussi l'exception dans la console.
+     *
+     * @param description La description de l'avertissement
+     * @param exception   L'erreur à log
      */
     private void displayWarningDialog(String description, Exception exception) {
         Alert warning = new Alert(Alert.AlertType.WARNING);
@@ -283,31 +287,34 @@ public class iritMainController implements Initializable {
     }
 
     /**
-     * Crée le layout d'un tree sur un graph
+     * Crée le layout d'un tree sur un graph.
+     *
+     * @param treeGraph Le FXGraph sur lequel appliquer le layout
+     * @param treePane  Le panneau sur lequel afficher le graphe
      */
     private void renderTree(Graph treeGraph, HBox treePane) {
         AbegoTreeLayout layout = new AbegoTreeLayout(100, 200, Configuration.Location.Top);
-        // Create tree layout based on fxGraph
+        // Crée le layout avec le fxgraph
         treeGraph.layout(layout);
 
-        // Initialize a childpane to add globalTreeGraph to
+        // Initialise un panneau sur lequel afficher le graphe
         Pane childPane;
         childPane = treeGraph.getCanvas();
 
         treePane.getChildren().clear();
-        // Adds generated graphs to pane
+        // Ajoute le panneau avec le graphe au panneau parent
         treePane.getChildren().add(childPane);
     }
 
     /**
      * Création d'une treeView avec comme paramètre node ainsi que la TreeItem parente
      *
-     * @param node       noeud de l'arbre a partir duquel est crée un TreeItem
+     * @param node       Noeud de l'arbre a partir duquel est crée un TreeItem
      * @param treeParent TreeItem parent sur lequel on va add les enfants
      */
     private void populateTreeView(ETreeNode node, TreeItem<ETreeNode> treeParent) {
         if (node.getClass().equals(EProjection.class)) {
-            //Boucle sur le nombre d'enfant de la projection initial
+            // Boucle sur le nombre d'enfant de la projection initial
             int nbChild = node.getChild().length;
             for (int i = 0; i < nbChild; i++) {
                 TreeItem<ETreeNode> child = new TreeItem<>(node.getChild()[i]);
@@ -341,31 +348,30 @@ public class iritMainController implements Initializable {
      * @param separateDB True si les arborescences doivent êtres séparées par BDD
      */
     private void renderTreeView(ETreeNode node, Boolean separateDB) {
-        // Reset children
+        // Reinitialise la TreeView
         this.tvNode.setRoot(null);
 
-        //Creation du root du TreeView qui va servir de racine à l'arbo
-        TreeItem<ETreeNode> rootTree = new TreeItem<>(node);
+        // Creation du root du TreeView qui va servir de racine à l'arbo
+        TreeItem<?> rootTree = new TreeItem<>(node);
 
         // On ajoute l'arbo crée au composants tree view
-        this.tvNode.setRoot(rootTree);
+        this.tvNode.setRoot((TreeItem<Object>) rootTree);
 
         if (separateDB) {
+            // Enlève valeurs des requêtes précédentes
             this.dbLeaves.clear();
             this.branchQueries.clear();
-            this.populateTransferTreeview(node);
 
-            this.dbLeaves.forEach((key, value) -> {
-                this.branchQueries.put(key, QueryBuilder.buildQueryFromTree(value));
-            });
+            this.populateTransferTreeview(node);
+            this.dbLeaves.forEach((key, value) -> this.branchQueries.put(key, QueryBuilder.buildQueryFromTree(value)));
 
             // Reverse l'ordre des TreeItems
-            List<TreeItem<String>> reversedItems = new ArrayList<>(this.tvNode.getRoot().getChildren());
+            List<TreeItem<Object>> reversedItems = new ArrayList<>(this.tvNode.getRoot().getChildren());
             Collections.reverse(reversedItems);
 
             this.tvNode.getRoot().getChildren().setAll(reversedItems);
         } else {
-            this.populateTreeView(node, rootTree);
+            this.populateTreeView(node, (TreeItem<ETreeNode>) rootTree);
             // Déplie par défault l'arbre
             rootTree.setExpanded(true);
 
@@ -375,6 +381,8 @@ public class iritMainController implements Initializable {
 
     /**
      * Ajoute récursivement les noeuds adéquats à la TreeView de transfert, en séparant l'arborescence de chaque BDD.
+     *
+     * @param node Le noeud actuel dans la récursion
      */
     private void populateTransferTreeview(ETreeNode node) {
         switch (node.getClass().getSimpleName()) {
@@ -401,70 +409,18 @@ public class iritMainController implements Initializable {
                     dbLeaves.get(storeName).add(node);
 
                     // Le noeud racine correspondant au nom de la DBB (ex: DB1, DB2, ...)
-                    TreeItem dbRoot = addValueToTree(storeName);
+                    TreeItem<Object> dbRoot = addValueToTree(this.tvNode, storeName);
                     // Si la racine est déjà crée, alors on peut commencer à y ajouter des TreeItems
                     if (null != dbRoot) {
                         TreeItem<Object> text = new TreeItem<>(node);
-                        dbRoot.getChildren().add(this.bottomToTopBranchFill(text, node.getParent()));
+                        dbRoot.getChildren().add(TreeViewHelper.bottomToTopBranchFill(text, node.getParent()));
                     }
                 }
                 break;
         }
     }
 
-    /**
-     * Remplie l'arborescence de la TreeView en partant d'une feuille, vers la racine.
-     */
-    private TreeItem<Object> bottomToTopBranchFill(TreeItem<Object> child, ETreeNode parent) {
-        if (null == parent) {
-            return child;
-        } else {
-            TreeItem<Object> parentItem = new TreeItem<>(parent);
-            parentItem.getChildren().add(child);
 
-            return this.bottomToTopBranchFill(parentItem, parent.getParent());
-        }
-    }
-
-    // Helper method to add a value to the tree if it doesn't already exist
-    private TreeItem<Object> addValueToTree(String valueToAdd) {
-        if (!isValueExists(valueToAdd)) {
-            TreeItem<Object> dbRoot = new TreeItem<Object>(valueToAdd);
-            tvNode.getRoot().getChildren().add(dbRoot);
-
-            return dbRoot;
-        }
-
-        return this.findTreeItem(this.tvNode.getRoot(), valueToAdd);
-    }
-
-    // Helper method to check if the value already exists in the tree
-    private boolean isValueExists(String value) {
-        return tvNode.getRoot().getChildren().stream()
-                .anyMatch(item -> ((TreeItem<?>) item).getValue().equals(value));
-    }
-
-    /**
-     * Recherche et retourne un TreeItem en fonction de sa valeur.
-     */
-    public TreeItem<Object> findTreeItem(TreeItem<Object> root, String value) {
-        if (root == null) {
-            return null;
-        }
-
-        if (root.getValue().equals(value)) {
-            return root;
-        }
-
-        for (TreeItem<Object> child : root.getChildren()) {
-            TreeItem<Object> result = findTreeItem(child, value);
-            if (result != null) {
-                return result;
-            }
-        }
-
-        return null;
-    }
 
     @FXML
     public void interactWithPolystore() {
@@ -480,7 +436,7 @@ public class iritMainController implements Initializable {
             // Check if the found tables are in the predefined table names list (HashSet is to improve performance)
             allTablesFound = new HashSet<>(tablesnames).containsAll(foundTables);
 
-            Query queryParsed = QueryParserUtils.parse(queryString);
+            Query<?> queryParsed = QueryParserUtils.parse(queryString);
 
             // Sauvegarde des arbres pour utilisations ultérieures
             this.computedTrees = Application.getTreeFromQuery(queryParsed);
@@ -551,9 +507,7 @@ public class iritMainController implements Initializable {
                     char[] charArray = child.toString().toCharArray();
                     AtomicReference<String> text = new AtomicReference<>("");
                     if (charArray[0] == '(' && charArray[charArray.length-1] == ')'){
-                        IntStream.range(1, charArray.length-1).forEachOrdered(index -> {
-                            text.updateAndGet(v -> v + charArray[index]);
-                        });
+                        IntStream.range(1, charArray.length-1).forEachOrdered(index -> text.updateAndGet(v -> v + charArray[index]));
                     } else {
                         text.updateAndGet(v -> child.toString());
                     }
@@ -589,7 +543,7 @@ public class iritMainController implements Initializable {
                         label = new LabelCell(child.toString().toUpperCase(), null);
                     }else {
                         String str = ""+child.getStore();
-                        String tableStr[] = str.split(" ", 2);
+                        String[] tableStr = str.split(" ", 2);
                         label = new LabelCell(child.toString().toUpperCase(), tableStr[0]+"\n"+tableStr[1]);
                     }
 
@@ -603,6 +557,13 @@ public class iritMainController implements Initializable {
         }
     }
 
+    /**
+     * Ajoute une cellule, et un lien depuis celle-ci vers son parent dans un graphe.
+     *
+     * @param model        Le modèle du graphe
+     * @param cell         La cellule à ajouter
+     * @param previousCell La cellule parent
+     */
     private void addCellAndEdge(Model model, ICell cell, ICell previousCell) {
         model.addCell(cell);
         model.addEdge(cell, previousCell);
@@ -610,6 +571,8 @@ public class iritMainController implements Initializable {
 
     /***
      * Return le nom de toutes les tables dans une List de Nom
+     *
+     * @return Liste de toutes les tables
      * */
     private List<String> getAllTablesDB() {
         List<String> tablesNames = new ArrayList<>();
@@ -642,11 +605,12 @@ public class iritMainController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return tablesNames;
     }
 
     @FXML
-    private void openHelpPopup(ActionEvent event) throws Exception {
+    private void openHelpPopup() throws Exception {
         this.helpPopup.start(this.primaryStage);
     }
 }
