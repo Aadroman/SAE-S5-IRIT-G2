@@ -7,11 +7,16 @@ import fr.irit.module1.queries.Query;
 import fr.sae.Application;
 import fr.sae.algebraictree.*;
 import fr.sae.querybuilder.QueryBuilder;
+import fr.sae.algebraictree.EJoin;
+import fr.sae.algebraictree.EProjection;
+import fr.sae.algebraictree.ESelection;
+import fr.sae.algebraictree.ETreeNode;
 import fxgraph.cells.*;
 import fxgraph.graph.Graph;
 import fxgraph.graph.ICell;
 import fxgraph.graph.Model;
 import fxgraph.layout.AbegoTreeLayout;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -19,6 +24,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.Alert;
 import javafx.scene.text.Text;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.abego.treelayout.Configuration;
 
@@ -32,12 +40,19 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public class iritMainController implements Initializable {
+
     private iritMainApplication app;
+
+    private iritHelpPopup helpPopup = new iritHelpPopup();
+
     private Stage primaryStage;
+
     @FXML
     private TextArea requestTextField;
+
     @FXML
     private TabPane tabPane;
+
     @FXML
     private TreeView tvNode;
     @FXML
@@ -66,11 +81,7 @@ public class iritMainController implements Initializable {
         VBox.setVgrow(this.tvNode, Priority.ALWAYS);
         getAllTablesDB();
         // Create listener for tab change
-        tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> {
-            if (null != this.computedTrees) {
-                renderTabTreeView(newTab);
-            }
-        });
+        tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> renderTabTreeView(newTab));
     }
 
     public iritMainApplication getApp() {
@@ -124,8 +135,8 @@ public class iritMainController implements Initializable {
     private void renderTabTreeView(Tab newTab) {
         // Save selected Tab for further user
         this.selectedTab = newTab;
-
-        // Re-création de la TreeView en fonction du panneau selectionné
+        // Re-création de la TreeView en fonction de l'arbre correspondant au panneau selectionné
+        if (this.computedTrees != null){
         switch (newTab.getId()) {
             case "globalTreeTab":
                 this.subRequestButton.setDisable(true);
@@ -139,6 +150,7 @@ public class iritMainController implements Initializable {
                 this.subRequestButton.setDisable(false);
                 this.renderTreeView(this.computedTrees[2], true);
                 break;
+            }
         }
     }
 
@@ -361,7 +373,7 @@ public class iritMainController implements Initializable {
     }
 
     @FXML
-    private void interactWithPolystore() {
+    public void interactWithPolystore() {
         List<String> tablesnames = getAllTablesDB();
         boolean allTablesFound = false;
 
@@ -424,7 +436,7 @@ public class iritMainController implements Initializable {
      */
     private void makeTree(ETreeNode child, Model model, ICell previousCell) {
         if (previousCell == null) {
-            ProjectionCell projection = new ProjectionCell("π " + child.toString());
+            ProjectionCell projection = new ProjectionCell(child.toString());
             // On l'ajoute au model deja crée précédemment
             model.addCell(projection);
             // On verifie si il a des enfants et on réexecute la methode
@@ -530,5 +542,10 @@ public class iritMainController implements Initializable {
             e.printStackTrace();
         }
         return tablesNames;
+    }
+
+    @FXML
+    private void openHelpPopup(ActionEvent event) throws Exception {
+        this.helpPopup.start(this.primaryStage);
     }
 }
