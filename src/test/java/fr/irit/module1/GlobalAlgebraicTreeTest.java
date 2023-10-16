@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GlobalAlgebraicTreeTest {
 
-    private static final Logger LOGGER = Logger.getLogger(GlobalAlgebraicTreeTest.class.getName());
+//    private static final Logger LOGGER = Logger.getLogger(GlobalAlgebraicTreeTest.class.getName());
 
     @DisplayName("Test query with '*' PROJECTION and OR SELECTION")
     @Test
