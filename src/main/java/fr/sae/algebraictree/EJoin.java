@@ -13,18 +13,23 @@ public class EJoin extends ETreeNode {
     private ETreeNode rightChild;
 
     private final EDotNotation[] condition;
+
+    private DotNotation lchild;
+    private DotNotation rchild;
+    private Join correspondingJoin ;
     //endregion
 
     //region CONSTRUCTOR
-    /**
-     * @param join
-     */
-    public EJoin (Join join) {
-        DotNotation leftChild = join.getCondition()[0];
-        DotNotation rightChild = join.getCondition()[1];
-        this.condition = new EDotNotation[]{new EDotNotation(leftChild), new EDotNotation(rightChild)};
-        this.leftChild = ETreeNode.createTree(join.getLeftChild());
-        this.rightChild = ETreeNode.createTree(join.getRightChild());
+    public EJoin (Join j) {
+
+        this.correspondingJoin = j;
+        this.lchild = j.getCondition()[0];
+        this.rchild = j.getCondition()[1];
+        this.condition = new EDotNotation[]{new EDotNotation(lchild), new EDotNotation(rchild)};
+        this.leftChild = ETreeNode.createTree(j.getLeftChild());
+        this.leftChild.setParent(this);
+        this.rightChild = ETreeNode.createTree(j.getRightChild());
+        this.rightChild.setParent(this);
     }
     //endregion
 

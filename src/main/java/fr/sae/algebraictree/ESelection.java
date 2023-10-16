@@ -38,7 +38,8 @@ public class ESelection extends ETreeNode {
         for (EPredicate ep : getPredicates(s)){
             this.predicates.add(new EPredicate(new EDotNotation(ep.getCorrespondingPredicate().attribute), ep.getCorrespondingPredicate().operator, ep.getCorrespondingPredicate().value));
         }
-        this.child = ETreeNode.createTree(s.getChild()) ;
+        this.child = ETreeNode.createTree(s.getChild());
+        this.child.setParent(this);
     }
 
     /**

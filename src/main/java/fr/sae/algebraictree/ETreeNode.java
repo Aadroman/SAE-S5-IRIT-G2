@@ -38,7 +38,6 @@ public class ETreeNode {
         return null;
     }
 
-
     //endregion
     //region GETTERS & SETTERS
     /**

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import java.net.URL?>
+<AnchorPane fx:id="popupRoot" prefHeight="400.0" prefWidth="316.0" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.main.irit.iritHelpPopup">
+   <stylesheets>
+      <URL value="@../css/styles.css" />
+   </stylesheets>
+   <BorderPane prefHeight="400.0" prefWidth="316.0">
+      <center>
+         <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <HBox prefHeight="50.0" prefWidth="316.0">
+               <Group fx:id="jointureGroup" layoutX="300.0" layoutY="170.0" translateX="20.0">
+                  <Polygon fx:id="jointurePolygon" points="-10.0, 0.0, -10.0, 50.0, 60.0, 0.0, 60.0, 50.0"
+                           styleClass="color-polygon"/>
+                  <Label fx:id="jointureEqualSign" layoutX="21.0" layoutY="30.0" text="="/>
+               </Group>
+               <Label text="Jointure" translateX="40.0" translateY="14.0">
+                  <font>
+                     <Font name="System Bold" size="15.0"/>
+                  </font>
+                  <HBox.margin>
+                     <Insets left="30.0"/>
+                  </HBox.margin>
+               </Label>
+               <padding>
+                  <Insets left="30.0" right="30.0" top="30.0"/>
+               </padding>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="10.0" prefHeight="50.0" prefWidth="316.0">
+               <padding>
+                  <Insets left="30.0" right="30.0" top="20.0"/>
+               </padding>
+               <Polygon fx:id="projectionPolygon" layoutX="280.0" layoutY="190.0"
+                        points="-10.0, 10.0, -30.0, 40.0, 80.0, 40.0, 60.0, 10.0" styleClass="color-polygon"/>
+               <Label text="Projection" translateY="4.0">
+                  <font>
+                     <Font name="System Bold" size="15.0"/>
+                  </font>
+                  <HBox.margin>
+                     <Insets left="30.0"/>
+                  </HBox.margin>
+               </Label>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="80.0" prefHeight="110.0" prefWidth="316.0">
+               <padding>
+                  <Insets left="30.0" right="30.0" top="20.0"/>
+               </padding>
+               <Polygon fx:id="selectionPolygon" points="0.0, 10.0, -20.0, 40.0, 70.0, 40.0, 50.0, 10.0"
+                        rotate="90.0" styleClass="color-polygon" translateX="15.0" translateY="30.0"/>
+               <Label text="Sélection" translateX="20.0" translateY="33.0">
+                  <font>
+                     <Font name="System Bold" size="15.0"/>
+                  </font>
+                  <HBox.margin>
+                     <Insets left="30.0"/>
+                  </HBox.margin>
+               </Label>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="130.0" prefHeight="74.0" prefWidth="316.0">
+               <padding>
+                  <Insets left="30.0" right="30.0" top="20.0"/>
+               </padding>
+               <Polygon fx:id="transferPolygon"
+                        points="-10.0, 15.0, -10.0, 35.0, 40.0, 35.0, 40.0, 50.0, 70.0, 25.0, 40.0, 0.0, 40.0, 15.0"
+                        styleClass="color-polygon" translateX="16.0"/>
+               <Label text="Transfert" translateX="30.0" translateY="13.0">
+                  <font>
+                     <Font name="System Bold" size="15.0"/>
+                  </font>
+                  <HBox.margin>
+                     <Insets left="30.0"/>
+                  </HBox.margin>
+               </Label>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="240.0" prefHeight="98.0" prefWidth="316.0">
+               <padding>
+                  <Insets left="30.0" right="30.0" top="20.0"/>
+               </padding>
+               <Polygon fx:id="transformLeftPolygon" layoutX="10.0" points="0, 0, 30, 0, 30, 30, 22, 30, 22, 8, 0, 8"
+                        rotate="45.0" styleClass="color-polygon" translateX="20.0" translateY="8.0"/>
+               <Polygon fx:id="transformRightPolygon" layoutX="30.0"
+                        points="0, 0, 30, 0, 30, 30, 22, 30, 22, 8, 0, 8" rotate="45.0" styleClass="color-polygon"
+                        translateX="20.0" translateY="8.0"/>
+               <Label text="Transformation" translateX="50.0" translateY="15.0">
+                  <font>
+                     <Font name="System Bold" size="15.0"/>
+                  </font>
+                  <HBox.margin>
+                     <Insets left="30.0"/>
+                  </HBox.margin>
+               </Label>
+            </HBox>
+         </VBox>
+      </center>
+   </BorderPane>
+</AnchorPane>
