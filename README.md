@@ -9,7 +9,7 @@
 
 :memo: **Note:** développement en cours
 
-- Version courante: [1.0](https://github.com/AurelienSP/SAE-S5-IRIT-G2/releases/tag/1.0)
+- Version courante: [2.0](https://github.com/AurelienSP/SAE-S5-IRIT-G2/releases/tag/2.0)
 - User Stories: [ici](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+label%3A%22User+Story%22), reste 2/6
 - Product Backlog et Sprint Backlog: [ici](https://github.com/users/AurelienSP/projects/1)
 
@@ -54,7 +54,6 @@
 |--------|------------------|
 | [Main](https://github.com/AurelienSP/SAE-S5-IRIT-G2) | Branche principale |
 | [Development](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/development) | Branche de développement |
-| [query/mongo_db](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/query/mongo_db) | Branche pour implémenter l'utilisation de requêtes MongoDB (à supprimer) |
 | [feature/tree-design](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/feature/tree-design) | Branche pour les modification visuelles de l'arbre |
 | [test/testApplication](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/test/testApplication) | Branche pour ajouter les tests unitaires de l'application |
 
