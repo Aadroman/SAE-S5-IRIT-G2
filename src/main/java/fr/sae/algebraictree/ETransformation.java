@@ -20,6 +20,9 @@ public class ETransformation extends ETreeNode {
         this.targetDatabaseType = targetDatabase;
     }
 
+    /**
+     * @param node
+     */
     public ETransformation(Transformation node) {
         this.correspondingTransformation = node;
         String[] split = this.correspondingTransformation.toString().split(" -> ");
@@ -27,6 +30,7 @@ public class ETransformation extends ETreeNode {
         this.targetDatabaseType = split[1];
         list = node.listIncludedTablesRecursive();
         this.child = new ETreeNode().createTree(node.findLowestNodeContainingTables(list));
+        this.child.setParent(this);
     }
 
     @Override
@@ -36,16 +40,26 @@ public class ETransformation extends ETreeNode {
         return childs;
     }
 
+    /**
+     * @return
+     */
     @Override
     public String toString() {
         return this.sourceDatabaseType + " -> " + this.targetDatabaseType;
     }
 
+    /**
+     * @return
+     */
     @Override
     public List<String> listIncludedTablesRecursive() {
         return this.child.listIncludedTablesRecursive();
     }
 
+    /**
+     * @param tableList List of table names searched
+     * @return
+     */
     @Override
     public ETreeNode findLowestNodeContainingTables(List<String> tableList) {
         if (!this.listIncludedTablesRecursive().containsAll(tableList)) {
@@ -55,11 +69,17 @@ public class ETransformation extends ETreeNode {
         }
     }
 
+    /**
+     * @return
+     */
     @Override
     public Set<EDotNotation> listDistinctColumnsRecursive() {
         return child.listDistinctColumnsRecursive();
     }
 
+    /**
+     * @param children zero or more
+     */
     @Override
     public void addChildren(ETreeNode... children) {
         if (children.length == 1) {
@@ -70,6 +90,9 @@ public class ETransformation extends ETreeNode {
         }
     }
 
+    /**
+     * @param prefix
+     */
     @Override
     public void print(String prefix) {
         if (this.getParent() instanceof EJoin) {
@@ -80,6 +103,9 @@ public class ETransformation extends ETreeNode {
         this.child.print(prefix + "    ");
     }
 
+    /**
+     * @param columnNamingMap
+     */
     @Override
     public void renameColumnsRecursive(Map<EDotNotation, EDotNotation> columnNamingMap) {
         this.child.renameColumnsRecursive(columnNamingMap);
