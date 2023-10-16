@@ -21,6 +21,7 @@
                                     <VBox alignment="CENTER">
                                         <HBox fx:id="globalPane" alignment="CENTER" />
                                     </VBox>
+
                             </Tab>
                             <Tab fx:id="multiStoreTreeTab" text="Multi-store">
                                 <VBox alignment="CENTER">

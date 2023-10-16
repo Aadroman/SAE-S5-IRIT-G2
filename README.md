@@ -17,31 +17,32 @@
 1. [Equipe](#equipe)
 2. [Documentation](#documentation)
 3. [Branches](#branches)
+4. [Détail des sprints](#détail-des-sprints)
 
 ## Equipe
 
-DRUELLE Julien
+[DRUELLE Julien](https://github.com/Julien-D234)
 
-MARCHANT Adriel
+[MARCHANT Adriel](https://github.com/AdrielMarchant)
 
-LONGEQUE Rubén
-
-SANCHEZ-PORRO Aurélien (alternant présent avant l'heure) 
+[LONGEQUE Rubén](https://github.com/Aadroman)
 
 **Alternants**
 
-BROUXEL Enzo 
+[BROUXEL Enzo](https://github.com/enzobxl)
 
-COURREJOU Matthieu
+[COURREJOU Matthieu](https://github.com/MCkeydev)
 
-ESTIVAL Ludovic
+[ESTIVAL Ludovic](https://github.com/ludovic-estival)
 
-GUINLE Loic
+[GUINLE Loic](https://github.com/Guinlel)
+
+[SANCHEZ-PORRO Aurélien](https://github.com/AurelienSP) (alternant présent avant l'heure) 
 
 ## Documentation
 
-- `Backlog Produit` => (format [adoc](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/Backlog_produit_IRIT.adoc) et [pdf](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/Backlog_produit_IRIT.pdf))
-- `Backlog Produit + Sprint` => [issues](https://github.com/users/AurelienSP/projects/1)
+- `User Stories` => (format [adoc](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/Backlog_produit_IRIT.adoc) et [pdf](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/Backlog_produit_IRIT.pdf))
+- `Backlog Produit + Backlog Sprint` => [issues](https://github.com/users/AurelienSP/projects/1)
 - `Diagramme de classes` => (format [png](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/class/module1.png) et [puml](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/class/module1.puml))
 - `Diagramme de séquence` => (format [png](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/sequence/overall_structure.png) et [puml](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/uml_diagrams/sequence/overall_structure.puml))
 - `Documentation utilisateur` => [ici](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/main/doc/doc_user.adoc)
@@ -49,8 +50,22 @@ GUINLE Loic
 
 ## Branches
 
-* [Main](https://github.com/AurelienSP/SAE-S5-IRIT-G2) : la branche principale
-* integration_interface (branche de résultats) : la branche utilisée pour l'intégration de l'application IHM à l'application de l'IRIT (voir [src/main/moduleInterface](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/integration_interface/src/main/moduleInterface))
-* Eprojet (branche de résultats) : la branche utilisée pour préparer l'application de l'IRIT à recevoir et renvoyer des données à l'application IHM (voir [src/main/java/fr/sae](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/EProjet/src/main/java/fr/sae/)) 
-* Prototype (branche d'essais) : branche pour la sous-équipe qui cherche à récupérer les données (voir [src/main/java/fr/irit/prototype.java](https://github.com/AurelienSP/SAE-S5-IRIT-G2/blob/Prototype/src/main/java/fr/irit/prototype.java)) 
-* display_tests (branche d'essais) : branche pour la sous-équipe qui cherche a faire un affichage (voir dossier ["display_tests"](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/display_tests/display_tests/Aur%C3%A9lien)) 
+| Branche | Description |
+|--------|------------------|
+| [Main](https://github.com/AurelienSP/SAE-S5-IRIT-G2) | Branche principale |
+| [Development](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/development) | Branche de développement |
+| [query/mongo_db](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/query/mongo_db) | Branche pour implémenter l'utilisation de requêtes MongoDB (à supprimer) |
+| [feature/tree-design](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/feature/tree-design) | Branche pour les modification visuelles de l'arbre |
+| [test/testApplication](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/test/testApplication) | Branche pour ajouter les tests unitaires de l'application |
+
+
+## Détail des sprints
+
+| Sprint | Issues du sprint |
+|--------|------------------|
+| Sprint n°0 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+0%22+) |
+| Sprint n°1 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+1%22+) |
+| Sprint n°2 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/milestone/3?closed=1) |
+| Sprint n°3 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+3%22+) |
+| Sprint n°4 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+4%22+) |
+| Sprint n°5 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+5%22+) |
