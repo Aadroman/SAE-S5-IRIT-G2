@@ -1,14 +1,12 @@
 package fxgraph.cells;
 
 import fxgraph.graph.Graph;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
