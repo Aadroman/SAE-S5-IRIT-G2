@@ -24,16 +24,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(ApplicationExtension.class)
 public class iritMainApplicationTest {
 
-    /**
-     * Méthode d'initialisation appelée avant chaque test
-     *
-     * @param stage La fenêtre (stage) injectée
-     */
-    @Start
-    private void start(Stage stage) throws Exception {
-        iritMainApplication app = iritMainApplication.getInstance();
-        app.start(stage);
-    }
+//    /**
+//     * Méthode d'initialisation appelée avant chaque test
+//     *
+//     * @param stage La fenêtre (stage) injectée
+//     */
+//    @Start
+//    private void start(Stage stage) throws Exception {
+//        iritMainApplication app = iritMainApplication.getInstance();
+//        app.start(stage);
+//    }
 
     @DisplayName("Test create algrebric tree into the application")
     @Test

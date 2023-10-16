@@ -14,25 +14,24 @@ import javafx.stage.Stage;
 public class iritMainApplication extends Application {
     private Stage mainStage;
     private iritMainController mainController;
-    public static volatile iritMainApplication instance = null;
+    public static iritMainApplication instance = null;
 
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    private iritMainApplication(){super();}
 
-    public static iritMainApplication getInstance() {
-        if(iritMainApplication.instance==null){
-            synchronized (iritMainApplication.class){
-                if(iritMainApplication.instance==null){
-                    iritMainApplication.instance=new iritMainApplication();
-                }
-            }
-        }
-        return iritMainApplication.instance;
-    }
+//    public static iritMainApplication getInstance() {
+//        if(iritMainApplication.instance==null){
+//            synchronized (iritMainApplication.class){
+//                if(iritMainApplication.instance==null){
+//                    iritMainApplication.instance=new iritMainApplication();
+//                }
+//            }
+//        }
+//        return iritMainApplication.instance;
+//    }
 
     @Override
     public void start(Stage stage) throws Exception {
