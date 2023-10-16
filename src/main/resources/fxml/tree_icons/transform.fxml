@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Polygon?>
+<?import java.net.URL?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <Group fx:id="transformGroup" layoutX="300.0" layoutY="170.0">
-      <Polygon fx:id="transformBas" fill="#ff5608" points="0.0, 30.0, 0.0, 50.0, 50.0, 50.0, 50.0, 60.0, 70.0, 40.0, 50.0, 20.0, 50.0, 30.0" stroke="BLACK" strokeType="INSIDE" />
-      <Polygon fx:id="transformHaut" fill="#616161" points="       45.0, 20.0,       45.0, 10.0,       15.0, 10.0,       15.0, 0.0,       0.0, 15.0,       15.0, 30.0,       15.0, 20.0" stroke="BLACK" strokeType="INSIDE" />
-      <Label fx:id="transformArrowSign" layoutX="25.0" layoutY="15.0" text="-&gt;" />
-      <Label fx:id="transformLeftLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="-10.0" layoutY="17.0" text="left" textAlignment="RIGHT" />
-      <Label fx:id="transformRightLabel" layoutX="67.0" layoutY="17.0" text="right" />
+      <stylesheets>
+         <URL value="@../../css/styles.css" />
+      </stylesheets>
+      <Label fx:id="transformLeftLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="13.0" layoutY="7.0" text="left" textAlignment="RIGHT" />
+      <Label fx:id="transformRightLabel" layoutX="70.0" layoutY="7.0" text="right" />
+      <Polygon fx:id="transformLeftPolygon" styleClass="color-polygon" layoutX="10.0" points="0, 0, 30, 0, 30, 30, 22, 30, 22, 8, 0, 8" rotate="45.0" />
+      <Polygon fx:id="transformRightPolygon" styleClass="color-polygon" layoutX="30.0" points="0, 0, 30, 0, 30, 30, 22, 30, 22, 8, 0, 8" rotate="45.0"/>
    </Group>
 </AnchorPane>

@@ -46,6 +46,7 @@ public class ProjectionCell extends AbstractCell {
                     final Tooltip tooltip = new Tooltip();
                     tooltip.setText(text);
                     tooltip.setShowDelay(Duration.seconds(0.5));
+                    tooltip.setStyle("-fx-font-size: 14");
                     this.projectionLabel.setTooltip(tooltip);
                 }
                 projectionLabelWidth = abs(widthDelta) + projectionPolygoneWidth;
