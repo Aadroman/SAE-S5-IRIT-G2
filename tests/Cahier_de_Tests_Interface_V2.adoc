@@ -11,14 +11,15 @@ Ces tests ont pour but de vérifier les fonctionnalités de la version 2 de l'ap
 :toc-title: Sommaire
 :numbered:
 
-== Test n°3: Obtention et test des sous-requêtes (dernière mise à jour le ../10/23)
+== Test n°3: Obtention et test des sous-requêtes (dernière mise à jour le 17/10/23)
 
 |=======
 |Scénario |Attendu |Résultat
 
 |L'utilisateur lance l'application et saisie une requête simple |Calcul et affichage des trois arbres correspondants à la requête |OK
 |L'utilisateur lance l'application et saisie une requête complexe |Calcul et affichage des trois arbres correspondants à la requête |OK
-|L'utilisateur lance l'application et saisie une requête non correcte |Un message d'erreur s'affiche. Il n'y a pas de calcul ni d'affichage d'arbres |OK
+|L'utilisateur se place dans la fenêtre de l'arbre algébrique avec les transferts et accède à la génération des sous-requêtes |Un bouton devient cliquable. Lorsque l'utilisateur clique dessus, cela ouvre une pop-up avec l'ensemble des sous-requêtes |OK
+| L'utilisateur peut copier les sous-requêtes et les tester dans l'application | Calcul et affichage des trois arbres correspondants à la requête | NOK
 |=======
 
 Données utilisées pour les tests:
