@@ -18,22 +18,26 @@ import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.matcher.control.LabeledMatchers;
 
+
+
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(ApplicationExtension.class)
 public class iritMainApplicationTest {
+    private iritMainApplication app;
 
-//    /**
-//     * Méthode d'initialisation appelée avant chaque test
-//     *
-//     * @param stage La fenêtre (stage) injectée
-//     */
-//    @Start
-//    private void start(Stage stage) throws Exception {
-//        iritMainApplication app = iritMainApplication.getInstance();
-//        app.start(stage);
-//    }
+    /**
+     * Méthode d'initialisation appelée avant chaque test
+     *
+     * @param stage La fenêtre (stage) injectée
+     */
+    @Start
+    private void start(Stage stage) throws Exception {
+        app = iritMainApplication.getInstance();
+        app.start(stage);
+    }
 
     @DisplayName("Test create algrebric tree into the application")
     @Test
@@ -80,6 +84,9 @@ public class iritMainApplicationTest {
         robot.write(query);
         robot.clickOn("#boutonValider");
 
+
+
+
         //FxAssert.verifyThat("#globalTreeTab", Node::isVisible);
         // Après la saisie d'une requête, vérifier que la boîte de dialogue s'ouvre et qu'aucun arbre n'est généré
 
@@ -92,6 +99,16 @@ public class iritMainApplicationTest {
 
 
     }
+    @DisplayName("Test changing tab")
+    @Test
+    public void Test_Changing_Tab(FxRobot robot){
+        FxAssert.verifyThat("#globalPane", Node::isVisible);
+
+        robot.clickOn("#multiStoreTreeTab");
+        FxAssert.verifyThat("#multiPane", Node::isVisible);
+
+    }
+
 
 
 
