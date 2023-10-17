@@ -47,4 +47,3 @@ Requêtes non correctes testées:
 |L'utilisateur saisie une requête et utilise le zoom sur les arbes |Le zoom fonctionne sans créer de problèmes visuels |OK
 |=======
 
-== Test n°3: saisie d'une sous-requête
