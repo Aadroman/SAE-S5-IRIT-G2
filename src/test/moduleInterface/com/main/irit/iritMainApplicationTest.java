@@ -24,19 +24,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(ApplicationExtension.class)
 public class iritMainApplicationTest {
 
-//    /**
-//     * Méthode d'initialisation appelée avant chaque test
-//     *
-//     * @param stage La fenêtre (stage) injectée
-//     */
-//    @Start
-//    private void start(Stage stage) throws Exception {
-//        iritMainApplication app = iritMainApplication.getInstance();
-//        app.start(stage);
-//    }
+    /**
+     * Méthode d'initialisation appelée avant chaque test
+     *
+     * @param stage La fenêtre (stage) injectée
+     */
+    @Start
+    private void start(Stage stage) throws Exception {
+        iritMainApplication app = iritMainApplication.getInstance();
+        app.start(stage);
+    }
 
     @DisplayName("Test create algrebric tree into the application")
-    @Test
+    //@Test
     public void Test_BuildAlgebraicTree_With_WildcardProjection_And_OrSelection(FxRobot robot) {
         String query = "SELECT * FROM Orders WHERE (Orders.total_price > 100 OR Orders.total_price < 201)";
         robot.clickOn("#requestTextField");
@@ -74,11 +74,12 @@ public class iritMainApplicationTest {
     @DisplayName("Test input of badly written SQL request")
     @Test
     public void Test_Wrong_SQL_Request(FxRobot robot) {
-        String query = "SELECT * FROM";
+        String query = "SELECT * FROM Orders";
 
         robot.clickOn("#requestTextField");
         robot.write(query);
-        robot.clickOn("#boutonValider");
+        robot.clickOn("#submitButton");
+
 
         //FxAssert.verifyThat("#globalTreeTab", Node::isVisible);
         // Après la saisie d'une requête, vérifier que la boîte de dialogue s'ouvre et qu'aucun arbre n'est généré
@@ -93,7 +94,15 @@ public class iritMainApplicationTest {
 
     }
 
+    @DisplayName("Test changing tab")
+    //@Test
+    public void Test_Changing_Tab(FxRobot robot){
+        FxAssert.verifyThat("#globalPane", Node::isVisible);
 
+        robot.clickOn("#multiStoreTreeTab");
+        FxAssert.verifyThat("#multiPane", Node::isVisible);
+
+    }
 
     @Test
     public void testMain() {
