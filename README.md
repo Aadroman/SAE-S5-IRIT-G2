@@ -54,6 +54,7 @@
 |--------|------------------|
 | [Main](https://github.com/AurelienSP/SAE-S5-IRIT-G2) | Branche principale |
 | [Development](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/development) | Branche de développement |
+| [feature/sub_requests](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/feature/sub_requests) | Branche pour la fonctionnalité des sous-requêtes |
 | [feature/tree-design](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/feature/tree-design) | Branche pour les modification visuelles de l'arbre |
 | [test/testApplication](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/test/testApplication) | Branche pour ajouter les tests unitaires de l'application |
 
