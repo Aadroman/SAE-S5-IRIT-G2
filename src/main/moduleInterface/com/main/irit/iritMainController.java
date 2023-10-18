@@ -127,7 +127,20 @@ public class iritMainController implements Initializable {
             subVbox.getChildren().add(label);
 
             // Création/paramétrage de la textArea affichant la requête
+            ArrayList<String> al = new ArrayList<String>();
+            for ( String val : value.split(" ")) {
+                al.add(val);
+            }
+            if ( al.get(1).equals("")){
+                al.set(1,"*");
+                value = "";
+                for( String val : al){
+                    value += val;
+                    value += " ";
+                }
+            }
             TextArea request = new TextArea(value);
+
             request.setWrapText(true);
             request.setEditable(false);
 
@@ -250,7 +263,15 @@ public class iritMainController implements Initializable {
     }
 
     /**
-     * TODO: Faire la JavaDoc
+     * Récupère les nœuds JSON correspondant à des tables de données à partir d'une structure JSON complexe.
+     *
+     * Cette méthode récursive parcourt la structure JSON en profondeur pour identifier les nœuds
+     * correspondant à des tables de données. Les nœuds identifiés sont stockés dans la liste
+     * arrayNode, et les noms des tables sont ajoutés à la liste arrayTablesNames.
+     *
+     * @param arrayNode       Liste dans laquelle les nœuds correspondant aux tables de données seront stockés.
+     * @param arrayTablesNames Liste dans laquelle les noms des tables de données seront stockés.
+     * @param children        Le nœud JSON à analyser.
      */
     private void findNode(ArrayList<JsonNode> arrayNode , ArrayList<String> arrayTablesNames , JsonNode children){
         String paramName = "name";
@@ -542,9 +563,7 @@ public class iritMainController implements Initializable {
                     if (child.getStore() == null){
                         label = new LabelCell(child.toString().toUpperCase(), null);
                     }else {
-                        String str = ""+child.getStore();
-                        String[] tableStr = str.split(" ", 2);
-                        label = new LabelCell(child.toString().toUpperCase(), tableStr[0]+"\n"+tableStr[1]);
+                        label = new LabelCell(child.toString().toUpperCase(), child.getStore().name+"\n"+child.getStore().columns);
                     }
 
                     this.addCellAndEdge(model, label, previousCell);
