@@ -127,7 +127,20 @@ public class iritMainController implements Initializable {
             subVbox.getChildren().add(label);
 
             // Création/paramétrage de la textArea affichant la requête
+            ArrayList<String> al = new ArrayList<String>();
+            for ( String val : value.split(" ")) {
+                al.add(val);
+            }
+            if ( al.get(1).equals("")){
+                al.set(1,"*");
+                value = "";
+                for( String val : al){
+                    value += val;
+                    value += " ";
+                }
+            }
             TextArea request = new TextArea(value);
+
             request.setWrapText(true);
             request.setEditable(false);
 
