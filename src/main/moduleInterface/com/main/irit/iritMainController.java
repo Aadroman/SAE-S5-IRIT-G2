@@ -58,8 +58,6 @@ public class iritMainController implements Initializable {
     @FXML
     private TextArea txtStructure;
     @FXML
-    private TextArea txtStructureEP;
-    @FXML
     private Button subRequestButton;
 
 
@@ -71,6 +69,10 @@ public class iritMainController implements Initializable {
 
     // HashMap qui stocke les feuilles de l'arbre tel que clé = le nom de la base, valeur = tableau de feuilles
     private final HashMap<String, ArrayList<ETreeNode>> dbLeaves = new HashMap<>();
+
+    //arraylist des tables temporaires
+    private ArrayList<String> tableTemp;
+    private int nb=1; //numérotation des bases de données temporaires
 
     public void initContext(Stage mainStage, iritMainApplication iritMainApplication) {
         this.primaryStage = mainStage;
@@ -87,7 +89,6 @@ public class iritMainController implements Initializable {
         VBox.setVgrow(this.tvNode, Priority.ALWAYS);
         getAllTablesDB();
         generateStructure();
-        generateStructure2();
         // Create listener for tab change
         tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> renderTabTreeView(newTab));
     }
@@ -266,62 +267,6 @@ public class iritMainController implements Initializable {
     }
 
     /**
-     * Genère et affiche la structure des BDD dans le 4ème onglet de l'application.
-     */
-    private void generateStructure2(){
-        // Va gerer la conversion JSON grace à la librairie JACKSON
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        try{
-            File path = new File("src/main/java/fr/irit/module2/UnifiedView/relationalUnifiedView.json");
-            JsonNode jsonNode = objectMapper.readTree(path);
-
-
-            // On recupere les tables present dans la json
-            JsonNode uvTables = jsonNode.get("uvTables");
-
-            ArrayList<String> arrayTablesNames = new ArrayList<>();
-            ArrayList<JsonNode> arrayDB = new ArrayList<>();
-            // On parcours toutes les tables et on les ajoute au tableau
-            for(JsonNode node : uvTables){
-                findNode(arrayDB,arrayTablesNames, node);
-            }
-
-            StringBuilder affichage = new StringBuilder();
-            int i = 0;
-
-            // On parcourt la liste de toutes les tables
-            for (JsonNode node : arrayDB){
-                affichage.append(String.format(
-                        "- %s ( %s %s ",
-                        arrayTablesNames.get(i), node.get("name"), node.get("type")
-                ));
-
-                // On recupere toutes les colonnes lié à la table
-                for (int c = 0 ; c < node.get("columns").size(); c++){
-                    // Si c'est la dernière colonne on ne mets pas de virgule à la fin
-                    if (c < ((node.get("columns").size()) - 1)) {
-                        affichage.append(node.get("columns").get(c).get("columnUV")).append(", ");
-                    } else {
-                        affichage.append(node.get("columns").get(c).get("columnUV"));
-                    }
-
-                }
-                affichage.append(") \n");
-                i++;
-            }
-
-            this.txtStructureEP.setEditable(false);
-            this.txtStructureEP.setText(affichage.toString());
-
-
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-
-    }
-
-    /**
      * Récupère les nœuds JSON correspondant à des tables de données à partir d'une structure JSON complexe.
      *
      * Cette méthode récursive parcourt la structure JSON en profondeur pour identifier les nœuds
@@ -397,7 +342,7 @@ public class iritMainController implements Initializable {
             // Boucle sur le nombre d'enfant de la projection initial
             int nbChild = node.getChild().length;
             for (int i = 0; i < nbChild; i++) {
-                TreeItem<ETreeNode> child = new TreeItem<>(node.getChild()[i]);
+                TreeItem<ETreeNode> child = new TreeItem<>(node);
                 child.setExpanded(true);
                 treeParent.getChildren().add((child));
                 this.populateTreeView(node.getChild()[i], child);
@@ -504,6 +449,7 @@ public class iritMainController implements Initializable {
 
     @FXML
     public void interactWithPolystore() {
+        this.tableTemp = new ArrayList<>();
         List<String> tablesnames = getAllTablesDB();
         boolean allTablesFound = false;
 
@@ -602,7 +548,33 @@ public class iritMainController implements Initializable {
                 case "ETransfer":
                     TransferCell transfer = new TransferCell(child.toString());
 
-                    this.addCellAndEdge(model, transfer, previousCell);
+                    //SOLUCE TEMPORAIRE POUR LES TABLES TEMPO
+                    //PEUT ETRE CREE CLASSE ETABLETEMP A METTRE EN LIEN AVEC LES AUTRES
+                    TableTempCell nameDbTemp = null;
+                    if(tableTemp.isEmpty()){
+                        this.nb = 1; //retour de la variable à sa valeur initiale
+                        String name = "Tabletemp"+nb;
+                        tableTemp.add(name);
+                        nameDbTemp = new TableTempCell(tableTemp.get(0),null);
+                        this.nb++;
+                    }else {
+                        for(int i=0; i<tableTemp.size();i++){
+                            String name = "Tabletemp"+nb;
+                            if(tableTemp.get(i).equals(name)){
+                                this.nb++;
+                                break;
+                            }
+                            tableTemp.add(name);
+                        }
+                        nameDbTemp = new TableTempCell(tableTemp.get(tableTemp.size()-1),null);
+                    }
+//                    DBTempCell nameDbTemp = new DBTempCell(dbTemp.get(dbTemp.size()-1),null);
+
+                    previousCell.addCellChild(nameDbTemp);
+                    transfer.addCellParent(nameDbTemp);
+                    this.addCellAndEdge(model,nameDbTemp, previousCell);
+                    this.addCellAndEdge(model,transfer, nameDbTemp);
+//                    this.addCellAndEdge(model, transfer, previousCell);
 
                     if (child.getChild().length > 0) {
                         makeTree(child.getChild()[0], model, transfer);
