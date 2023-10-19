@@ -54,7 +54,7 @@
                         <content>
                            <ScrollPane fitToHeight="true" fitToWidth="true">
                               <content>
-                                 <TextArea fx:id="txtStructure1" />
+                                 <TextArea fx:id="txtStructureEP" />
                               </content>
                            </ScrollPane>
                         </content>
