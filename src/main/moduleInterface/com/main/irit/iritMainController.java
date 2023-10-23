@@ -241,8 +241,9 @@ public class iritMainController implements Initializable {
             // On parcourt la liste de toutes les tables
             for (JsonNode node : arrayDB){
                 affichage.append(String.format(
-                        "- %s ( %s %s ",
-                        arrayTablesNames.get(i), node.get("name"), node.get("type")
+                        "- %s (",
+                        arrayTablesNames.get(i)
+//                        node.get("name"), node.get("type")
                 ));
 
                 // On recupere toutes les colonnes lié à la table
