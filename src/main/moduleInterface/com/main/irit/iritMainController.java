@@ -90,8 +90,8 @@ public class iritMainController implements Initializable {
         // Fait en sorte que la TreeView prenne toujours le maximum de place
         VBox.setVgrow(this.tvNode, Priority.ALWAYS);
         getAllTablesDB();
-        generateStructure();
-        generateStructure2();
+        generateStructureUnifiedView();
+        generateStructurePhysic();
         // Create listener for tab change
         tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> renderTabTreeView(newTab));
     }
@@ -216,7 +216,7 @@ public class iritMainController implements Initializable {
     /**
      * Genère et affiche la structure des BDD dans le 4ème onglet de l'application.
      */
-    private void generateStructure(){
+    private void generateStructureUnifiedView(){
         // Va gerer la conversion JSON grace à la librairie JACKSON
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -270,9 +270,9 @@ public class iritMainController implements Initializable {
     }
 
     /**
-     * Genère et affiche la structure des BDD dans le 4ème onglet de l'application.
+     * Genère et affiche la structure des BDD dans le 5ème onglet de l'application.
      */
-    private void generateStructure2(){
+    private void generateStructurePhysic(){
         // Va gerer la conversion JSON grace à la librairie JACKSON
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -305,9 +305,9 @@ public class iritMainController implements Initializable {
                 for (int c = 0 ; c < node.get("columns").size(); c++){
                     // Si c'est la dernière colonne on ne mets pas de virgule à la fin
                     if (c < ((node.get("columns").size()) - 1)) {
-                        affichage.append(node.get("columns").get(c).get("columnUV")).append(", ");
+                        affichage.append(node.get("columns").get(c).get("columnLinked")).append(", ");
                     } else {
-                        affichage.append(node.get("columns").get(c).get("columnUV"));
+                        affichage.append(node.get("columns").get(c).get("columnLinked"));
                     }
 
                 }
