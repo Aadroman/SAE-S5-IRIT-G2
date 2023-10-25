@@ -9,7 +9,7 @@
 
 :memo: **Note:** développement en cours
 
-- Version courante: [2.0](https://github.com/AurelienSP/SAE-S5-IRIT-G2/releases/tag/2.0)
+- Version courante: [2.3](https://github.com/AurelienSP/SAE-S5-IRIT-G2/releases/tag/2.3)
 - User Stories: [ici](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+label%3A%22User+Story%22), reste 0/6
 - Product Backlog et Sprint Backlog: [ici](https://github.com/users/AurelienSP/projects/1)
 
