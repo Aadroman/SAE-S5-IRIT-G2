@@ -10,7 +10,7 @@
 :memo: **Note:** développement en cours
 
 - Version courante: [2.0](https://github.com/AurelienSP/SAE-S5-IRIT-G2/releases/tag/2.0)
-- User Stories: [ici](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+label%3A%22User+Story%22), reste 1/6
+- User Stories: [ici](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+label%3A%22User+Story%22), reste 0/6
 - Product Backlog et Sprint Backlog: [ici](https://github.com/users/AurelienSP/projects/1)
 
 ## Table des matières:
@@ -54,6 +54,7 @@
 |--------|------------------|
 | [Main](https://github.com/AurelienSP/SAE-S5-IRIT-G2) | Branche principale |
 | [Development](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/development) | Branche de développement |
+| [feature/sub_requests](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/feature/sub_requests) | Branche pour la fonctionnalité des sous-requêtes |
 | [feature/tree-design](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/feature/tree-design) | Branche pour les modification visuelles de l'arbre |
 | [test/testApplication](https://github.com/AurelienSP/SAE-S5-IRIT-G2/tree/test/testApplication) | Branche pour ajouter les tests unitaires de l'application |
 
@@ -68,3 +69,4 @@
 | Sprint n°3 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+3%22+) |
 | Sprint n°4 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+4%22+) |
 | Sprint n°5 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+5%22+) |
+| Sprint n°6 | [Lien](https://github.com/AurelienSP/SAE-S5-IRIT-G2/issues?q=is%3Aissue+milestone%3A%22Sprint+6%22+) |

@@ -18,11 +18,17 @@ import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.matcher.control.LabeledMatchers;
 
+
+
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(ApplicationExtension.class)
 public class iritMainApplicationTest {
+  
+    private iritMainApplication app;
+
 
     /**
      * Méthode d'initialisation appelée avant chaque test
@@ -31,7 +37,9 @@ public class iritMainApplicationTest {
      */
     @Start
     private void start(Stage stage) throws Exception {
+
         iritMainApplication app = iritMainApplication.getInstance();
+        app = iritMainApplication.getInstance();
         app.start(stage);
     }
 
@@ -81,6 +89,9 @@ public class iritMainApplicationTest {
         robot.clickOn("#submitButton");
 
 
+
+
+
         //FxAssert.verifyThat("#globalTreeTab", Node::isVisible);
         // Après la saisie d'une requête, vérifier que la boîte de dialogue s'ouvre et qu'aucun arbre n'est généré
 
@@ -93,6 +104,16 @@ public class iritMainApplicationTest {
 
 
     }
+    @DisplayName("Test changing tab")
+    @Test
+    public void Test_Changing_Tab(FxRobot robot){
+        FxAssert.verifyThat("#globalPane", Node::isVisible);
+
+        robot.clickOn("#multiStoreTreeTab");
+        FxAssert.verifyThat("#multiPane", Node::isVisible);
+
+    }
+
 
     @DisplayName("Test changing tab")
     //@Test
