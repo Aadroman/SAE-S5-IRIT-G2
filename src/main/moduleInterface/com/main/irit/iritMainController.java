@@ -56,9 +56,9 @@ public class iritMainController implements Initializable {
     @FXML
     private TreeView<Object> tvNode;
     @FXML
-    private TextArea txtStructure;
+    private TextArea txtStructureUV;
     @FXML
-    private TextArea txtStructureEP;
+    private TextArea txtStructureP;
     @FXML
     private Button subRequestButton;
 
@@ -90,8 +90,7 @@ public class iritMainController implements Initializable {
         // Fait en sorte que la TreeView prenne toujours le maximum de place
         VBox.setVgrow(this.tvNode, Priority.ALWAYS);
         getAllTablesDB();
-        generateStructureUnifiedView();
-        generateStructurePhysic();
+        generateStructure();
         // Create listener for tab change
         tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> renderTabTreeView(newTab));
     }
@@ -214,9 +213,9 @@ public class iritMainController implements Initializable {
     }
 
     /**
-     * Genère et affiche la structure des BDD dans le 4ème onglet de l'application.
+     * Genère et affiche la structure des BDD dans le 4ème et du 5ème onglet de l'application.
      */
-    private void generateStructureUnifiedView(){
+    private void generateStructure(){
         // Va gerer la conversion JSON grace à la librairie JACKSON
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -235,89 +234,49 @@ public class iritMainController implements Initializable {
                 findNode(arrayDB,arrayTablesNames, node);
             }
 
-            StringBuilder affichage = new StringBuilder();
+            StringBuilder affichageUV = new StringBuilder(); // Vue Unifiée
+            StringBuilder affichageP = new StringBuilder(); // Emplacement Physique
+
             int i = 0;
 
             // On parcourt la liste de toutes les tables
             for (JsonNode node : arrayDB){
-                affichage.append(String.format(
+                affichageUV.append(String.format(
                         "- %s (",
                         arrayTablesNames.get(i)
 //                        node.get("name"), node.get("type")
                 ));
 
-                // On recupere toutes les colonnes lié à la table
-                for (int c = 0 ; c < node.get("columns").size(); c++){
-                        // Si c'est la dernière colonne on ne mets pas de virgule à la fin
-                    if (c < ((node.get("columns").size()) - 1)) {
-                        affichage.append(node.get("columns").get(c).get("columnUV")).append(", ");
-                    } else {
-                        affichage.append(node.get("columns").get(c).get("columnUV"));
-                    }
-
-                }
-                affichage.append(") \n");
-            i++;
-            }
-
-            this.txtStructure.setEditable(false);
-            this.txtStructure.setText(affichage.toString());
-
-
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-
-    }
-
-    /**
-     * Genère et affiche la structure des BDD dans le 5ème onglet de l'application.
-     */
-    private void generateStructurePhysic(){
-        // Va gerer la conversion JSON grace à la librairie JACKSON
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        try{
-            File path = new File("src/main/java/fr/irit/module2/UnifiedView/relationalUnifiedView.json");
-            JsonNode jsonNode = objectMapper.readTree(path);
-
-
-            // On recupere les tables present dans la json
-            JsonNode uvTables = jsonNode.get("uvTables");
-
-            ArrayList<String> arrayTablesNames = new ArrayList<>();
-            ArrayList<JsonNode> arrayDB = new ArrayList<>();
-            // On parcours toutes les tables et on les ajoute au tableau
-            for(JsonNode node : uvTables){
-                findNode(arrayDB,arrayTablesNames, node);
-            }
-
-            StringBuilder affichage = new StringBuilder();
-            int i = 0;
-
-            // On parcourt la liste de toutes les tables
-            for (JsonNode node : arrayDB){
-                affichage.append(String.format(
+                affichageP.append(String.format(
                         "- %s ( %s %s ",
                         arrayTablesNames.get(i), node.get("name"), node.get("type")
                 ));
 
                 // On recupere toutes les colonnes lié à la table
                 for (int c = 0 ; c < node.get("columns").size(); c++){
-                    // Si c'est la dernière colonne on ne mets pas de virgule à la fin
+                        // Si c'est la dernière colonne on ne mets pas de virgule à la fin
                     if (c < ((node.get("columns").size()) - 1)) {
-                        affichage.append(node.get("columns").get(c).get("columnLinked")).append(", ");
+                        affichageUV.append(node.get("columns").get(c).get("columnUV")).append(", ");
+                        affichageP.append(node.get("columns").get(c).get("columnLinked")).append(", ");
                     } else {
-                        affichage.append(node.get("columns").get(c).get("columnLinked"));
+                        affichageUV.append(node.get("columns").get(c).get("columnUV"));
+                        affichageP.append(node.get("columns").get(c).get("columnLinked"));
+
                     }
 
                 }
-                affichage.append(") \n");
-                i++;
+                affichageUV.append(") \n");
+                affichageP.append(") \n");
+            i++;
             }
 
-            this.txtStructureEP.setEditable(false);
-            this.txtStructureEP.setText(affichage.toString());
+            // Structure de la Vue Unifiée
+            this.txtStructureUV.setEditable(false);
+            this.txtStructureUV.setText(affichageUV.toString());
+
+            // Structure de l'Emplacement Physique
+            this.txtStructureP.setEditable(false);
+            this.txtStructureP.setText(affichageP.toString());
 
 
         } catch (IOException e){
