@@ -56,7 +56,9 @@ public class iritMainController implements Initializable {
     @FXML
     private TreeView<Object> tvNode;
     @FXML
-    private TextArea txtStructure;
+    private TextArea txtStructureUV;
+    @FXML
+    private TextArea txtStructureP;
     @FXML
     private Button subRequestButton;
 
@@ -69,6 +71,10 @@ public class iritMainController implements Initializable {
 
     // HashMap qui stocke les feuilles de l'arbre tel que clé = le nom de la base, valeur = tableau de feuilles
     private final HashMap<String, ArrayList<ETreeNode>> dbLeaves = new HashMap<>();
+
+    //arraylist des tables temporaires
+    private ArrayList<String> tableTemp;
+    private int nb=1; //numérotation des bases de données temporaires
 
     public void initContext(Stage mainStage, iritMainApplication iritMainApplication) {
         this.primaryStage = mainStage;
@@ -127,7 +133,20 @@ public class iritMainController implements Initializable {
             subVbox.getChildren().add(label);
 
             // Création/paramétrage de la textArea affichant la requête
+            ArrayList<String> al = new ArrayList<String>();
+            for ( String val : value.split(" ")) {
+                al.add(val);
+            }
+            if ( al.get(1).equals("")){
+                al.set(1,"*");
+                value = "";
+                for( String val : al){
+                    value += val;
+                    value += " ";
+                }
+            }
             TextArea request = new TextArea(value);
+
             request.setWrapText(true);
             request.setEditable(false);
 
@@ -194,7 +213,7 @@ public class iritMainController implements Initializable {
     }
 
     /**
-     * Genère et affiche la structure des BDD dans le 4ème onglet de l'application.
+     * Genère et affiche la structure des BDD dans le 4ème et du 5ème onglet de l'application.
      */
     private void generateStructure(){
         // Va gerer la conversion JSON grace à la librairie JACKSON
@@ -215,12 +234,20 @@ public class iritMainController implements Initializable {
                 findNode(arrayDB,arrayTablesNames, node);
             }
 
-            StringBuilder affichage = new StringBuilder();
+            StringBuilder affichageUV = new StringBuilder(); // Vue Unifiée
+            StringBuilder affichageP = new StringBuilder(); // Emplacement Physique
+
             int i = 0;
 
             // On parcourt la liste de toutes les tables
             for (JsonNode node : arrayDB){
-                affichage.append(String.format(
+                affichageUV.append(String.format(
+                        "- %s (",
+                        arrayTablesNames.get(i)
+//                        node.get("name"), node.get("type")
+                ));
+
+                affichageP.append(String.format(
                         "- %s ( %s %s ",
                         arrayTablesNames.get(i), node.get("name"), node.get("type")
                 ));
@@ -229,18 +256,27 @@ public class iritMainController implements Initializable {
                 for (int c = 0 ; c < node.get("columns").size(); c++){
                         // Si c'est la dernière colonne on ne mets pas de virgule à la fin
                     if (c < ((node.get("columns").size()) - 1)) {
-                        affichage.append(node.get("columns").get(c).get("columnUV")).append(", ");
+                        affichageUV.append(node.get("columns").get(c).get("columnUV")).append(", ");
+                        affichageP.append(node.get("columns").get(c).get("columnLinked")).append(", ");
                     } else {
-                        affichage.append(node.get("columns").get(c).get("columnUV"));
+                        affichageUV.append(node.get("columns").get(c).get("columnUV"));
+                        affichageP.append(node.get("columns").get(c).get("columnLinked"));
+
                     }
 
                 }
-                affichage.append(") \n");
+                affichageUV.append(") \n");
+                affichageP.append(") \n");
             i++;
             }
 
-            this.txtStructure.setEditable(false);
-            this.txtStructure.setText(affichage.toString());
+            // Structure de la Vue Unifiée
+            this.txtStructureUV.setEditable(false);
+            this.txtStructureUV.setText(affichageUV.toString());
+
+            // Structure de l'Emplacement Physique
+            this.txtStructureP.setEditable(false);
+            this.txtStructureP.setText(affichageP.toString());
 
 
         } catch (IOException e){
@@ -250,7 +286,15 @@ public class iritMainController implements Initializable {
     }
 
     /**
-     * TODO: Faire la JavaDoc
+     * Récupère les nœuds JSON correspondant à des tables de données à partir d'une structure JSON complexe.
+     *
+     * Cette méthode récursive parcourt la structure JSON en profondeur pour identifier les nœuds
+     * correspondant à des tables de données. Les nœuds identifiés sont stockés dans la liste
+     * arrayNode, et les noms des tables sont ajoutés à la liste arrayTablesNames.
+     *
+     * @param arrayNode       Liste dans laquelle les nœuds correspondant aux tables de données seront stockés.
+     * @param arrayTablesNames Liste dans laquelle les noms des tables de données seront stockés.
+     * @param children        Le nœud JSON à analyser.
      */
     private void findNode(ArrayList<JsonNode> arrayNode , ArrayList<String> arrayTablesNames , JsonNode children){
         String paramName = "name";
@@ -317,7 +361,7 @@ public class iritMainController implements Initializable {
             // Boucle sur le nombre d'enfant de la projection initial
             int nbChild = node.getChild().length;
             for (int i = 0; i < nbChild; i++) {
-                TreeItem<ETreeNode> child = new TreeItem<>(node.getChild()[i]);
+                TreeItem<ETreeNode> child = new TreeItem<>(node);
                 child.setExpanded(true);
                 treeParent.getChildren().add((child));
                 this.populateTreeView(node.getChild()[i], child);
@@ -424,6 +468,7 @@ public class iritMainController implements Initializable {
 
     @FXML
     public void interactWithPolystore() {
+        this.tableTemp = new ArrayList<>();
         List<String> tablesnames = getAllTablesDB();
         boolean allTablesFound = false;
 
@@ -522,7 +567,33 @@ public class iritMainController implements Initializable {
                 case "ETransfer":
                     TransferCell transfer = new TransferCell(child.toString());
 
-                    this.addCellAndEdge(model, transfer, previousCell);
+                    //SOLUCE TEMPORAIRE POUR LES TABLES TEMPO
+                    //PEUT ETRE CREE CLASSE ETABLETEMP A METTRE EN LIEN AVEC LES AUTRES
+                    TableTempCell nameDbTemp = null;
+                    if(tableTemp.isEmpty()){
+                        this.nb = 1; //retour de la variable à sa valeur initiale
+                        String name = "Tabletemp"+nb;
+                        tableTemp.add(name);
+                        nameDbTemp = new TableTempCell(tableTemp.get(0),null);
+                        this.nb++;
+                    }else {
+                        for(int i=0; i<tableTemp.size();i++){
+                            String name = "Tabletemp"+nb;
+                            if(tableTemp.get(i).equals(name)){
+                                this.nb++;
+                                break;
+                            }
+                            tableTemp.add(name);
+                        }
+                        nameDbTemp = new TableTempCell(tableTemp.get(tableTemp.size()-1),null);
+                    }
+//                    DBTempCell nameDbTemp = new DBTempCell(dbTemp.get(dbTemp.size()-1),null);
+
+                    previousCell.addCellChild(nameDbTemp);
+                    transfer.addCellParent(nameDbTemp);
+                    this.addCellAndEdge(model,nameDbTemp, previousCell);
+                    this.addCellAndEdge(model,transfer, nameDbTemp);
+//                    this.addCellAndEdge(model, transfer, previousCell);
 
                     if (child.getChild().length > 0) {
                         makeTree(child.getChild()[0], model, transfer);
@@ -542,9 +613,7 @@ public class iritMainController implements Initializable {
                     if (child.getStore() == null){
                         label = new LabelCell(child.toString().toUpperCase(), null);
                     }else {
-                        String str = ""+child.getStore();
-                        String[] tableStr = str.split(" ", 2);
-                        label = new LabelCell(child.toString().toUpperCase(), tableStr[0]+"\n"+tableStr[1]);
+                        label = new LabelCell(child.toString().toUpperCase(), child.getStore().name+"\n"+child.getStore().columns);
                     }
 
                     this.addCellAndEdge(model, label, previousCell);

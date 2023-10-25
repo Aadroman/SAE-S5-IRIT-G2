@@ -22,16 +22,16 @@ public class iritMainApplication extends Application {
     }
 
 
-//    public static iritMainApplication getInstance() {
-//        if(iritMainApplication.instance==null){
-//            synchronized (iritMainApplication.class){
-//                if(iritMainApplication.instance==null){
-//                    iritMainApplication.instance=new iritMainApplication();
-//                }
-//            }
-//        }
-//        return iritMainApplication.instance;
-//    }
+    public static iritMainApplication getInstance() {
+        if(iritMainApplication.instance==null){
+            synchronized (iritMainApplication.class){
+                if(iritMainApplication.instance==null){
+                    iritMainApplication.instance=new iritMainApplication();
+                }
+            }
+        }
+        return iritMainApplication.instance;
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
