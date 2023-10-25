@@ -19,7 +19,7 @@ Ces tests ont pour but de vérifier les fonctionnalités de la version 2 de l'ap
 |L'utilisateur lance l'application et saisie une requête simple |Calcul et affichage des trois arbres correspondants à la requête |OK
 |L'utilisateur lance l'application et saisie une requête complexe |Calcul et affichage des trois arbres correspondants à la requête |OK
 |L'utilisateur se place dans la fenêtre de l'arbre algébrique avec les transferts et accède à la génération des sous-requêtes |Un bouton devient cliquable. Lorsque l'utilisateur clique dessus, cela ouvre une pop-up avec l'ensemble des sous-requêtes |OK
-| L'utilisateur peut copier les sous-requêtes et les tester dans l'application | Calcul et affichage des trois arbres correspondants à la requête | NOK
+| L'utilisateur peut obtenir des sous-requêtes et les tester dans les bases de données associés | Obtention de requête SQL propre pour chaque base de données du polystore | NOK
 |=======
 
 Données utilisées pour les tests:
@@ -40,13 +40,11 @@ Requêtes non correctes testées:
 
 `SELECT * FROM Produits`
 
-== Test n°4: Obtention des arbres sous forme d'arborescence (dernière mise à jour le ../10/23)
+== Test n°4: Obtention des arbres sous forme d'arborescence (dernière mise à jour le 25/10/23)
 
 |=======
 |Scénario |Attendu |Résultat
-|L'utilisateur saisie une requête et déplace les éléments des arbres |Les éléments sont déplaces sans créer de problèmes visuels |OK
-|L'utilisateur saisie une requête et utilise le zoom sur les arbes |Le zoom fonctionne sans créer de problèmes visuels |OK
+|L'utilisateur peut visualiser le chemin de l'arbre algébrique sous la forme d'une arborescence de fichier |Les éléments de l'arbre sont retranscrit au sein d'une arborescence de fichier |OK
+|L'utilisateur peut visualiser le chemin de l'arbre algébrique, dans chaque base de donnée, sous la forme d'une arborescence de fichier |Les éléments de l'arbre, propre à chaque base de donnée, sont retranscrit au sein d'une arborescence de fichier  |OK
 |=======
-
-== Test n°5: saisie d'une sous-requête
 
