@@ -47,4 +47,3 @@ Requêtes non correctes testées:
 |L'utilisateur peut visualiser le chemin de l'arbre algébrique sous la forme d'une arborescence de fichier |Les éléments de l'arbre sont retranscrit au sein d'une arborescence de fichier |OK
 |L'utilisateur peut visualiser le chemin de l'arbre algébrique, dans chaque base de donnée, sous la forme d'une arborescence de fichier |Les éléments de l'arbre, propre à chaque base de donnée, sont retranscrit au sein d'une arborescence de fichier  |OK
 |=======
-
