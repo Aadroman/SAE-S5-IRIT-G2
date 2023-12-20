@@ -24,7 +24,7 @@ Feature: Creating algebraic logic trees :
     As a user, i can enter a SQL Query in a java application to get algebraic logic trees 
 
     Scenario : Getting an empty tree
-        Given User who enters a query 
+        Given an empty query
         When nodes are created when the tree is created
         Then the tree doesn't have nodes
 

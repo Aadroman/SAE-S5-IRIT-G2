@@ -7,6 +7,7 @@ import fr.irit.module1.GlobalAlgebraicTree;
 import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
 import javafx.scene.Node;
+import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,19 +23,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(ApplicationExtension.class)
-public class SaeS5Cucumber {
 
-    @Given("User who enters a query ")
-    public void GenerateTree() {
+@ExtendWith(ApplicationExtension.class)
+public class SaeS5Cucumber extends TestFxBase{
+
+
+    @Given("An empty query")
+    public void emptyQuery(FxRobot robot){
+        String query = "";
+        robot.clickOn("#requestTextField");
+        robot.write(query);
+        robot.clickOn("#boutonValider");
+        
     }
 
     @When("nodes are created when the tree is created")
-    public void allStepDefinitionsAreImplemented() {
+    public void nodesAreCreated() {
+       
     }
 
     @Then("the tree doesn't have nodes")
-    public void theScenarioPasses() {
+    public void treeHasNoNodes() {
     }
 
 }
