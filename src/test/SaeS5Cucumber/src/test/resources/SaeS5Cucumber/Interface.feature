@@ -28,3 +28,11 @@ Feature: Creating algebraic logic trees :
         When nodes are created when the tree is created
         Then the tree doesn't have nodes
 
+Feature: Getting database information :
+
+  As a user, i want to know te most basic information about database structure
+
+  Scenario : Getting database information
+    Given an stated application
+    When choosing database information window
+    Then application show database information
