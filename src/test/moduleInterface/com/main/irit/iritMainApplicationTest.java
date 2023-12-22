@@ -52,6 +52,7 @@ public class iritMainApplicationTest {
         robot.write(query);
         robot.clickOn("#boutonValider");
 
+
         // Le but est de vérifier que le pane n'est pas vide,
         // Il y a sûrement une meilleure solution pour remplacer 'isVisible'
 
