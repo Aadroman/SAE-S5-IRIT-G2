@@ -1,6 +1,7 @@
-package com.main.irit;
+package com.main.irit_test;
 
 
+import com.main.irit.iritMainApplication;
 import fr.irit.algebraictree.Projection;
 import fr.irit.algebraictree.Selection;
 import fr.irit.module1.GlobalAlgebraicTree;
@@ -104,15 +105,15 @@ public class iritMainApplicationTest {
 
 
     }
-    @DisplayName("Test changing tab")
-    @Test
-    public void Test_Changing_Tab(FxRobot robot){
-        FxAssert.verifyThat("#globalPane", Node::isVisible);
-
-        robot.clickOn("#multiStoreTreeTab");
-        FxAssert.verifyThat("#multiPane", Node::isVisible);
-
-    }
+//    @DisplayName("Test changing tab")
+//    @Test
+//    public void Test_Changing_Tab(FxRobot robot){
+//        FxAssert.verifyThat("#globalPane", Node::isVisible);
+//
+//        robot.clickOn("#multiStoreTreeTab");
+//        FxAssert.verifyThat("#multiPane", Node::isVisible);
+//
+//    }
 
 
     @DisplayName("Test changing tab")

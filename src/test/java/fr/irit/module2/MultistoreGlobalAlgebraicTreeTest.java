@@ -1,10 +1,11 @@
-package fr.irit.module2;
+package fr.irit.module2_test;
 
 import fr.irit.algebraictree.Join;
 import fr.irit.algebraictree.TreeNode;
 import fr.irit.module1.GlobalAlgebraicTree;
 import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
+import fr.irit.module2.MultistoreAlgebraicTree;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
