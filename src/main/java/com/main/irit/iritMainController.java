@@ -61,6 +61,8 @@ public class iritMainController implements Initializable {
     private TextArea txtStructureP;
     @FXML
     private Button subRequestButton;
+    private Tab structureUV;
+    private Tab structureEP;
 
 
     private Tab selectedTab = null;
@@ -324,6 +326,8 @@ public class iritMainController implements Initializable {
         Alert warning = new Alert(Alert.AlertType.WARNING);
         warning.setTitle("Requête incorrecte");
         warning.setContentText(description);
+        Button errorButton = (Button) warning.getDialogPane().lookupButton(ButtonType.OK);
+        errorButton.setId("requestError");
 
         // Log error message for debugging purpose
         System.out.println(exception.toString());
@@ -356,7 +360,7 @@ public class iritMainController implements Initializable {
      * @param node       Noeud de l'arbre a partir duquel est crée un TreeItem
      * @param treeParent TreeItem parent sur lequel on va add les enfants
      */
-    private void populateTreeView(ETreeNode node, TreeItem<ETreeNode> treeParent) {
+    protected void populateTreeView(ETreeNode node, TreeItem<ETreeNode> treeParent) {
         if (node.getClass().equals(EProjection.class)) {
             // Boucle sur le nombre d'enfant de la projection initial
             int nbChild = node.getChild().length;
@@ -681,5 +685,11 @@ public class iritMainController implements Initializable {
     @FXML
     private void openHelpPopup() throws Exception {
         this.helpPopup.start(this.primaryStage);
+    }
+
+    //methode pour test
+
+    public TabPane getTabPane() {
+        return tabPane;
     }
 }

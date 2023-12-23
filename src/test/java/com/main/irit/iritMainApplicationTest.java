@@ -1,4 +1,4 @@
-package com.main.irit_test;
+package com.main.irit;
 
 
 import com.main.irit.iritMainApplication;
@@ -9,7 +9,6 @@ import fr.irit.module1.QueryParserUtils;
 import fr.irit.module1.queries.Query;
 import javafx.scene.Node;
 import javafx.stage.Stage;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,9 +16,6 @@ import org.testfx.api.FxAssert;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
-import org.testfx.matcher.control.LabeledMatchers;
-
-
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,8 +34,6 @@ public class iritMainApplicationTest {
      */
     @Start
     private void start(Stage stage) throws Exception {
-
-        iritMainApplication app = iritMainApplication.getInstance();
         app = iritMainApplication.getInstance();
         app.start(stage);
     }
