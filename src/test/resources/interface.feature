@@ -12,7 +12,7 @@
 
 Feature: testing interface :
 
-  As a user, i want to know te most basic information about database structure
+  As a user, i want to get a tree based on my query
 
   Scenario: Getting an empty tree
     Given an empty query
